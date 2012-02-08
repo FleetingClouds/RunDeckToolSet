@@ -35,7 +35,7 @@ mv SomePublicKeys.txt /home/${OUR_USER}/.ssh/authorized_keys
 chown -R ${OUR_USER}:${OUR_USER} /home/${OUR_USER}
 #
 pushd /etc/ssh/
-# mv sshd_config sshd_config_backup
+mv sshd_config sshd_config_backup
 sed 's/#PasswordAuthentication yes/PasswordAuthentication no/' <sshd_config_backup >sshd_config
 cat sshd_config* | grep PasswordAuthentication
 popd
