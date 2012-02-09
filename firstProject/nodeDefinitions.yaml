@@ -1,2 +1,10 @@
-#
-
+www.warehouseman.com:
+  description: Rundeck server node for www.warehouseman.com
+  hostname: www.warehouseman.com
+  nodename: meta
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.11
+  tags: ''
+  username: rundeck
