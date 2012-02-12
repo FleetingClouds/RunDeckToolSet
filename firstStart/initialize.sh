@@ -5,6 +5,7 @@
 #  If you do not have an authorized key you will be locked out.
 #  Try these commands (within the if block) :
 if [  0 == 1 ]; then
+   rm -f ./initialize.sh
    wget https://raw.github.com/HummingCloud/RunDeckToolSet/master/firstStart/initialize.sh
    chmod a+x ./initialize.sh
    ./initialize.sh
