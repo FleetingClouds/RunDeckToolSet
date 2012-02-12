@@ -1,5 +1,8 @@
 #!/bin/bash
-#  Get Ready
+#
+#  This script has the purpose of preparing a remote VPS for first time use.
+#  It adds the bare minimum of tools for replacing UID/PWD security with SSH key security.
+#
 export OUR_USER="rundeck"
 echo "Setting up access for ${OUR_USER}."
 #
