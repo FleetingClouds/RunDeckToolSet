@@ -3,7 +3,9 @@
 #  This script has the purpose of preparing a remote VPS for first time use.
 #  It adds the bare minimum of tools for replacing UID/PWD security with SSH key security.
 #  If you do not have an authorized key you will be locked out.
-#  Try these commands (within the if block) :
+#  To easily run this script, using the root password supplied by the hosting 
+#   service, log into the vacant VPS (Ubuntu server) and paste these four commands :
+#   (but NOT the if block, itself)
 if [  0 == 1 ]; then
    rm -f ./initialize.sh*
    wget https://raw.github.com/HummingCloud/RunDeckToolSet/master/firstStart/initialize.sh
