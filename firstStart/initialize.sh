@@ -13,6 +13,11 @@ if [  0 == 1 ]; then
    ./initialize.sh
 fi
 #
+#  Next : From the command line in your rundeck server, start up an SSH session with
+#   the VPS using rundeck as the user name : 
+#              ssh rundeck@www.warehouseman.com
+#  You will be prompted to change your password from "okokok" to something more secure.
+#
 export OUR_USER="rundeck"
 echo "Setting up access for ${OUR_USER}."
 #
