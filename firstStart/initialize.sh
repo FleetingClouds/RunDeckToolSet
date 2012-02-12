@@ -38,7 +38,7 @@ useradd -m -G admin,sudo -p ${PASS_HASH} ${OUR_USER}
 passwd -e ${OUR_USER}
 #
 mkdir -p /home/${OUR_USER}/.ssh
-wget https://github.com/downloads/martinhbramwell/Cloud-Fitnesse-Tester/SomePublicKeys.txt
+wget https://github.com/downloads/martinhbramwell/Cloud-Fitnesse-Tester/PublicKeys.txt
 mv SomePublicKeys.txt /home/${OUR_USER}/.ssh/authorized_keys
 #
 chown -R ${OUR_USER}:${OUR_USER} /home/${OUR_USER}
