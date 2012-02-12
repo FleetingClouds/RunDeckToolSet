@@ -2,6 +2,7 @@
 #
 #  This script has the purpose of preparing a remote VPS for first time use.
 #  It adds the bare minimum of tools for replacing UID/PWD security with SSH key security.
+#  If you do not have an authorized key you will be locked out.
 #  Try these commands (within the if block) :
 if [  0 == 1 ]; then
    wget https://raw.github.com/HummingCloud/RunDeckToolSet/master/firstStart/initialize.sh
@@ -39,7 +40,7 @@ passwd -e ${OUR_USER}
 #
 mkdir -p /home/${OUR_USER}/.ssh
 wget https://github.com/downloads/martinhbramwell/Cloud-Fitnesse-Tester/PublicKeys.txt
-mv SomePublicKeys.txt /home/${OUR_USER}/.ssh/authorized_keys
+mv PublicKeys.txt /home/${OUR_USER}/.ssh/authorized_keys
 #
 chown -R ${OUR_USER}:${OUR_USER} /home/${OUR_USER}
 #
