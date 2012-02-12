@@ -2,6 +2,12 @@
 #
 #  This script has the purpose of preparing a remote VPS for first time use.
 #  It adds the bare minimum of tools for replacing UID/PWD security with SSH key security.
+#  Try these commands (within the if block) :
+if [  0 == 1 ]; then
+   wget https://raw.github.com/HummingCloud/RunDeckToolSet/master/firstStart/initialize.sh
+   chmod a+x ./initialize.sh
+   ./initialize.sh
+fi
 #
 export OUR_USER="rundeck"
 echo "Setting up access for ${OUR_USER}."
