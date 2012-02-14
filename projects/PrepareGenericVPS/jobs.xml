@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<joblist> 
+  <job> 
+    <id>com.warehouseman.meta.status</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>ls -la</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>RootDirListing</name>  
+    <context> 
+      <project>PrepareGenericVPS</project> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>true</keepgoing>  
+      <excludePrecedence>true</excludePrecedence> 
+    </dispatch>  
+    <uuid>com.warehouseman.meta.status</uuid>  
+    <nodefilters> 
+      <include> 
+        <name>w.*</name> 
+      </include> 
+    </nodefilters>  
+    <group>a/b/c</group> 
+  </job> 
+</joblist>
