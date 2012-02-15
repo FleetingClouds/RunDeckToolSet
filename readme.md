@@ -1,4 +1,4 @@
-Fleeting Clouds is a suite of RunDeck scripts dedicated to effortless provisioning and management of a development group's continuous integration and test virtual data center.
+Fleeting Clouds is a suite of RunDeck scripts dedicated to effortless provisioning and management of a development group's CITE (Continuous Integration and Test Environment),
 
 This repository contains general scripts for the basic tools used by all development integration and test environments:
 
