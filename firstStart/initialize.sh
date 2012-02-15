@@ -8,7 +8,7 @@
 #   (but NOT the if block, itself)
 if [  0 == 1 ]; then
    rm -f ./initialize.sh*
-   wget https://raw.github.com/HummingCloud/RunDeckToolSet/master/firstStart/initialize.sh
+   wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/firstStart/initialize.sh
    chmod a+x ./initialize.sh
    ./initialize.sh
 fi
