@@ -4,7 +4,7 @@
   <job> 
     <id>com.warehouseman.meta.status</id>  
     <loglevel>INFO</loglevel>  
-    <sequence keepgoing="false" strategy="node-first"> 
+    <sequence keepgoing="true" strategy="node-first"> 
       <command> 
         <exec>ls -la</exec> 
       </command> 
@@ -17,7 +17,8 @@
     <dispatch> 
       <threadcount>1</threadcount>  
       <keepgoing>true</keepgoing>  
-      <excludePrecedence>true</excludePrecedence> 
+      <excludePrecedence>true</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
     </dispatch>  
     <uuid>com.warehouseman.meta.status</uuid>  
     <nodefilters> 
@@ -26,5 +27,97 @@
       </include> 
     </nodefilters>  
     <group>a/b/c</group> 
+  </job>  
+  <job> 
+    <id>net.fleetingclouds.initial.boot</id>  
+    <loglevel>DEBUG</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>expect -c 'spawn ssh root@www.fleetingclouds.net ; expect "16:6b:bf" ; send "yes\n" ; expect assword ; send "Q2lhe1yf8dhk5F3GZEcx\n" ; expect assword ; send "Q2lhe1yf8dhk5F3GZEcx\n" ; interact'</exec> 
+      </command>  
+      <command> 
+        <exec>ls -la</exec> 
+      </command>  
+      <command> 
+        <exec>pwd</exec> 
+      </command>  
+      <command> 
+        <exec>whoami</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>firstContact</name>  
+    <context> 
+      <project>PrepareGenericVPS</project> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>true</keepgoing>  
+      <excludePrecedence>true</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
+    </dispatch>  
+    <uuid>net.fleetingclouds.initial.boot</uuid>  
+    <nodefilters> 
+      <include> 
+        <name>localhost</name> 
+      </include> 
+    </nodefilters>  
+    <group>net/fleetingclouds/initial</group> 
+  </job>  
+  <job> 
+    <id>3c5f6b61-555a-43d6-b7e0-efabf56eaf7c</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>expect -c 'spawn ssh root@www.fleetingclouds.net ; expect "16:6b:bf" ; send "yes\n" ; expect assword ; send "Q2lhe1yf8dhk5F3GZEcx\n" ; expect assword ; send "Q2lhe1yf8dhk5F3GZEcx\n" ; interact'</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>firstContact</name>  
+    <context> 
+      <project>PrepareGenericVPS</project> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>true</keepgoing>  
+      <excludePrecedence>true</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
+    </dispatch>  
+    <uuid>3c5f6b61-555a-43d6-b7e0-efabf56eaf7c</uuid>  
+    <nodefilters> 
+      <include> 
+        <name>localhost</name> 
+      </include> 
+    </nodefilters> 
+  </job>  
+  <job> 
+    <id>tryOut</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>/var/rundeck/projects/PrepareGenericVPS/tsts.sh ${option.XYZ}</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>usingParms</name>  
+    <context> 
+      <project>PrepareGenericVPS</project>  
+      <options> 
+        <option required="true" name="XYZ" value="jello"/> 
+      </options> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>true</keepgoing>  
+      <excludePrecedence>true</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
+    </dispatch>  
+    <uuid>tryOut</uuid>  
+    <nodefilters> 
+      <include> 
+        <name>localhost</name> 
+      </include> 
+    </nodefilters>  
+    <group>net/fleetingclouds/initial</group> 
   </job> 
 </joblist>
