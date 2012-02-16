@@ -18,6 +18,22 @@
     include:
       name: w.*
   group: a/b/c
+- id: net.fleetingclouds.initial.boot2
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo $RD_OPTION_HOST
+  description: ''
+  name: firstContact
+  uuid: net.fleetingclouds.initial.boot2
+  group: net/fleetingclouds/initial
+  options:
+    host:
+      required: true
+      value: www.fleetingcloud.net
 - id: net.fleetingclouds.initial.boot
   project: PrepareGenericVPS
   loglevel: DEBUG
