@@ -1,0 +1,16 @@
+- id: net.fleetingclouds.initial.boot2
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo ${option.host}
+  description: ''
+  name: firstContact
+  uuid: net.fleetingclouds.initial.boot2
+  group: net/fleetingclouds/initial
+  options:
+    host:
+      required: true
+      value: www.fleetingcloud.net
