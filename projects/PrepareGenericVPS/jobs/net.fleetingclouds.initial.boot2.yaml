@@ -5,7 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo ${option.host}
+    - exec: echo $RD_OPTION_HOST
   description: ''
   name: firstContact
   uuid: net.fleetingclouds.initial.boot2
