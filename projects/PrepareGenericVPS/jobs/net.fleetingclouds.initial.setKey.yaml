@@ -10,13 +10,12 @@
     - exec: ssh-keygen -R $RD_OPTION_HOST
     - exec: echo "Now push  key to host"
     - script: |-
-        expect -c 'spawn ssh-copy-id root@$RD_OPTION_HOST
-        ; expect "$RD_OPTION_FINGERPRINT" ; send "yes\n"
-        ; expect assword ; send "$RD_OPTION_PASSWORD\n"
-        ; expect "root@meta:" ; send "whoami\n"
-        ; expect "root@meta:" ; send "ls -la\n"
-        ; expect "root@meta:" ; send "exit\n"
-        ; interact'
+        export COMMAND="spawn ssh-copy-id root@$RD_OPTION_HOST ; 
+        expect \"$RD_OPTION_FINGERPRINT\" ; send \"yes\n\" ;
+        expect assword ; send \"$RD_OPTION_PASSWORD\n\" ;
+        interact"
+        echo $COMMAND
+        eval expect -c "'$COMMAND'"
     - exec: echo "Pushed RunDeck public key to host"
   description: ''
   name: Push RunDeck public key to host
@@ -28,4 +27,4 @@
     Host:
       value: www.fleetingclouds.net
     Password:
-      value: Q2lhe1yf8dhk5F3GZEcx
+      secure: true
