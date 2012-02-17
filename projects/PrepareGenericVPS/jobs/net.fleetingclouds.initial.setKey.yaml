@@ -1,0 +1,31 @@
+- id: net.fleetingclouds.initial.setKey
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Pushing RunDeck public key to host"
+    - exec: echo "Make sure we ARE asked to accept remote host fingerprint."
+    - exec: ssh-keygen -R $RD_OPTION_HOST
+    - exec: echo "Now push  key to host"
+    - script: |-
+        expect -c 'spawn ssh-copy-id root@$RD_OPTION_HOST
+        ; expect "$RD_OPTION_FINGERPRINT" ; send "yes\n"
+        ; expect assword ; send "$RD_OPTION_PASSWORD\n"
+        ; expect "root@meta:" ; send "whoami\n"
+        ; expect "root@meta:" ; send "ls -la\n"
+        ; expect "root@meta:" ; send "exit\n"
+        ; interact'
+    - exec: echo "Pushed RunDeck public key to host"
+  description: ''
+  name: Push RunDeck public key to host
+  uuid: net.fleetingclouds.initial.setKey
+  group: net/fleetingclouds/initial
+  options:
+    FingerPrint:
+      value: 16:6b:bf:6f:af:09:d2:6f:7b:0f:fc:69:35:f0:bb:b7
+    Host:
+      value: www.fleetingclouds.net
+    Password:
+      value: Q2lhe1yf8dhk5F3GZEcx
