@@ -9,9 +9,9 @@ www.warehouseman.com:
   tags: ''
   username: rundeck
 
-www.fleetingclouds.net:
-  description: Rundeck server node for fleetingclouds.net
-  hostname: www.fleetingclouds.net
+gateway.fleetingclouds.net:
+  description: Gateway for fleetingclouds.net
+  hostname: gateway.fleetingclouds.net
   nodename: meta
   osArch: x86_64
   osFamily: unix
