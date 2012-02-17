@@ -8,3 +8,16 @@ www.warehouseman.com:
   osVersion: 2.6.32-042stab039.11
   tags: ''
   username: rundeck
+
+www.fleetingclouds.net:
+  description: Rundeck server node for fleetingclouds.net
+  hostname: www.fleetingclouds.net
+  nodename: meta
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.11
+  tags: ''
+  username: rundeck
+
+
