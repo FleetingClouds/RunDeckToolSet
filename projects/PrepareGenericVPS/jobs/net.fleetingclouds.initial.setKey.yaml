@@ -17,14 +17,23 @@
         echo $COMMAND
         eval expect -c "'$COMMAND'"
     - exec: echo "Pushed RunDeck public key to host"
-  description: ''
+  description: |
+    This job wraps the ssh-copy-id command so that it is idempotent.
+    
+    Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  This will RunDeck's public key.
+    
+    It is expected that execution of this Job will be followed immediately by another script that eliminates UID/PWD logins, and removes the authorized keys file from root, thereby prohibiting any future root or UID/PWD logins.
+    
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
   group: net/fleetingclouds/initial
   options:
     FingerPrint:
+      description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
       value: 16:6b:bf:6f:af:09:d2:6f:7b:0f:fc:69:35:f0:bb:b7
     Host:
+      description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
     Password:
+      description: This is the root password for the indicated host.  It should be used just this one time, and never again.
       secure: true
