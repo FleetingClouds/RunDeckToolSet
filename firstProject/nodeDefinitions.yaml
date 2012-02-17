@@ -9,7 +9,7 @@ www.warehouseman.com:
   tags: ''
   username: rundeck
 
-gateway.fleetingclouds.net:
+www.fleetingclouds.net:
   description: Gateway for fleetingclouds.net
   hostname: gateway.fleetingclouds.net
   nodename: meta
