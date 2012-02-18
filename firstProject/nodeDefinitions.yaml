@@ -16,8 +16,10 @@ gateway.fleetingclouds.net:
   osArch: x86_64
   osFamily: unix
   osName: GNU/Linux
-  osVersion: 2.6.32-042stab039.11
+  osVersion: 2.6.32-042stab039.10
   tags: ''
   username: rundeck
+  myProperty: FOUND
+
 
 
