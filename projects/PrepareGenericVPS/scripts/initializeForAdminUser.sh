@@ -66,6 +66,9 @@ sed 's/#PasswordAuthentication yes/PasswordAuthentication no/' <sshd_config_back
 cat sshd_config* | grep PasswordAuthentication
 popd
 #
+echo "Turn off root access completely  ..........................."
+sudo rm -fr /root/.ssh
+#
 echo "Restart SSH server ............................................."
 restart ssh
 #
