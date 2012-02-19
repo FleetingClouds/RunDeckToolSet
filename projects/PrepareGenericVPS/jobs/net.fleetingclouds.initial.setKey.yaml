@@ -18,12 +18,21 @@
         eval expect -c "'$COMMAND'"
         #
     - exec: echo "Pushed RunDeck public key to host"
+    - exec: pwd
+    - exec: env
   description: |
-    This job wraps the ssh-copy-id command so that it is idempotent.
+    This job pushes rundeck,s SSH key to the remote host, creates a "rundeck" admin user, and disables all other access.
+    
+    * * This Job is can be run exactly once. * *
     
     Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
     
-    It is expected that execution of this Job will be followed immediately by another script that eliminates UID/PWD logins, and removes the authorized keys file from root, thereby prohibiting any future root or UID/PWD logins.
+    Immediately following that a script is pushed to the remote host that does the following : 
+     - creates a new user ("rundeck")
+     - eliminates UID/PWD logins 
+     - moves the authorized keys file from root's account rundeck's account
+    
+    The script, thereby prohibiting any future root or UID/PWD logins.
     
     
     
