@@ -8,21 +8,25 @@
     - exec: echo "Pushing RunDeck public key to host"
     - exec: echo "Make sure we ARE asked to accept remote host fingerprint."
     - exec: ssh-keygen -R $RD_OPTION_HOST
-    - exec: echo "Now push  key to host"
-    - script: |-
-        export COMMAND="spawn ssh-copy-id root@$RD_OPTION_HOST ; 
-        expect \"$RD_OPTION_FINGERPRINT\" ; send \"yes\n\" ;
-        expect assword ; send \"$RD_OPTION_PASSWORD\n\" ;
-        interact"
-        echo $COMMAND
+    - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
+    - script: |
+        #
+        export COMMAND="spawn ssh-copy-id root@$RD_OPTION_HOST ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
+        #
+        echo Execute this $COMMAND
+        #
         eval expect -c "'$COMMAND'"
+        #
     - exec: echo "Pushed RunDeck public key to host"
   description: |
     This job wraps the ssh-copy-id command so that it is idempotent.
     
-    Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  This will RunDeck's public key.
+    Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
     
     It is expected that execution of this Job will be followed immediately by another script that eliminates UID/PWD logins, and removes the authorized keys file from root, thereby prohibiting any future root or UID/PWD logins.
+    
+    
+    
     
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
@@ -35,5 +39,5 @@
       description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
     Password:
+      required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      secure: true

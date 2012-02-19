@@ -5,22 +5,25 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo testing for $RD_OPTION_ADMINUSERID
+    - exec: echo scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUser.sh    root@${RD_OPTION_HOST}:.
+    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUser.sh    root@${RD_OPTION_HOST}:.
+    - exec: echo  .............................................................
+    - script: |-
+        # 
+        export COMMAND="spawn ssh root@$RD_OPTION_HOST ; set timeout 60 ; expect "root@meta:" ; sleep 10 ; send \"bash initializeForAdminUser.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
+        # 
+        echo Execute this $COMMAND 
+        # 
+        eval expect -c "'$COMMAND'" 
+        #
+    - exec: echo  .............................................................
   description: 'In a vacant machine this script will create an administrative user
     with the indicated user name.  '
   name: Create Admin user
   uuid: net.fleetingclouds.initial.makeAdmin
-  nodefilters:
-    dispatch:
-      threadcount: 1
-      keepgoing: false
-      excludePrecedence: false
-      rankOrder: ascending
-    include:
-      name: gate.*
   group: net/fleetingclouds/initial
   options:
-    AdminUserID:
+    Host:
       required: true
-      description: The UID of the principal admin user of this machine.
-      value: yourself
+      description: This is a host that RunDeck will be accessing in the future.
+      value: www.fleetingclouds.net
