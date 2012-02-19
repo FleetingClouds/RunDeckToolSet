@@ -20,6 +20,7 @@ gateway.fleetingclouds.net:
   tags: ''
   username: rundeck
   myProperty: FOUND
-
+  sudo-command-enabled: true
+  sudo-password-option: option.sudoPwdRunDeck
 
 
