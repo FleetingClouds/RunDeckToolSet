@@ -19,7 +19,7 @@ gateway.fleetingclouds.net:
   osVersion: 2.6.32-042stab039.10
   tags: ''
   username: rundeck
-  myProperty: FOUND
+  myProperty: CanWeSeeThisFromOurScripts
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
 
