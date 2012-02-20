@@ -1,0 +1,48 @@
+- id: net.fleetingclouds.initial.setKey
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Pushing RunDeck public key to host"
+    - exec: echo "Make sure we ARE asked to accept remote host fingerprint."
+    - exec: ssh-keygen -R $RD_OPTION_HOST
+    - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
+    - script: |
+        #
+        export COMMAND="spawn ssh-copy-id root@$RD_OPTION_HOST ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
+        #
+        echo Execute this $COMMAND
+        #
+        eval expect -c "'$COMMAND'"
+        #
+    - exec: echo "Pushed RunDeck public key to host"
+    - exec: pwd
+    - exec: env
+  description: |
+    This job pushes rundeck,s SSH key to the remote host, creates a "rundeck" admin user, and disables all other access.
+
+    * * This Job is can be run exactly once. * *
+
+    Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
+
+    Immediately following that a script is pushed to the remote host that does the following : 
+     - creates a new user ("rundeck")
+     - eliminates UID/PWD logins 
+     - moves the authorized keys file from root's account rundeck's account
+
+    The script, thereby prohibiting any future root or UID/PWD logins.
+  name: Push RunDeck public key to host
+  uuid: net.fleetingclouds.initial.setKey
+  group: net/fleetingclouds/initial
+  options:
+    FingerPrint:
+      description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
+      value: 16:6b:bf:6f:af:09:d2:6f:7b:0f:fc:69:35:f0:bb:b7
+    Host:
+      description: This is a host that RunDeck will be accessing in the future.
+      value: www.fleetingclouds.net
+    Password:
+      required: true
+      description: This is the root password for the indicated host.  It should be used just this one time, and never again.
