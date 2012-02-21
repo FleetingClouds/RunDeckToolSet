@@ -1,0 +1,27 @@
+- id: net.fleetingclouds.install.java
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: sudo pwd
+    - jobref:
+        group: net/fleetingclouds/global
+        name: AddVariableToEnvironment
+        args: -variableName JAVA_HOME -variableValue /usr/lib/jvm/jdk -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+  description: This installs Java 7
+  name: InstallJava
+  uuid: net.fleetingclouds.install.java
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install
+  options:
+    sudoPwdRunDeck:
+      secure: true
