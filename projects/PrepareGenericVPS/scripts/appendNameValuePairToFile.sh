@@ -8,7 +8,7 @@ variableValue=""
 
 #  Input validations
 function giveHelp {
-   
+
    echo "Usage: $0 -p targetFilePath -n variableName -v variableValue"
    echo " - -p absolute path of the file"
    echo " - -n name of the pair"
@@ -21,7 +21,7 @@ function giveHelp {
 if [ $# -lt 3 ] ; then
   giveHelp
   exit 1
-fi 
+fi
 #
 while [ $# -gt 1 ] ; do
   case $1 in
@@ -39,7 +39,7 @@ fi
 #
 [ ! -f ${targetFilePath} ] && echo "${targetFilePath} : File not found!" && exit 1
 
-echo Will append the text \"${variableName}=${variableValue}\" to the file ${targetFilePath}.
+echo Will try to append the text \"${variableName}=${variableValue}\" to the file ${targetFilePath}.
 echo ""
 #exit 1
 
