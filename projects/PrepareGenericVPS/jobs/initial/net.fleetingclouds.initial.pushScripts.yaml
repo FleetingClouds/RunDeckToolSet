@@ -1,0 +1,12 @@
+- id: net.fleetingclouds.initial.pushScripts
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh    root@${RD_OPTION_HOST}:.
+  description: ''
+  name: PushOverSomeInitializationScripts
+  uuid: net.fleetingclouds.initial.pushScripts
+  group: net/fleetingclouds/initial
