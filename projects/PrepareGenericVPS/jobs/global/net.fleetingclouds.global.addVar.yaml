@@ -1,0 +1,42 @@
+- id: net.fleetingclouds.global.addVar
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: sudo grep -q ${option.variableName} ${option.targetFilePath} || echo ${option.variableName}=${option.variableValue}  | sudo tee -a ${option.targetFilePath}
+    - exec: tail -n20 /etc/environment
+  description: |
+    This script simply adds a variable to /etc/environment if there is not one already.
+    
+    It will NOT over-write one that is already there.
+  name: AddVariableToEnvironment
+  uuid: net.fleetingclouds.global.addVar
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/global
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: Admin user's password
+      value: okmmpl,,
+      secure: true
+    targetFilePath:
+      required: true
+      description: The file and path onto which the new value must be appended
+      value: /etc/environment
+    variableName:
+      required: true
+      description: The name of a variable to add to /etc/environment
+      value: INS
+    variableValue:
+      required: true
+      description: The value of a variable to add to /etc/environment
+      value: /tmp/installers
