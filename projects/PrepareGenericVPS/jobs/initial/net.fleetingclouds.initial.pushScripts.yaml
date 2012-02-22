@@ -5,8 +5,12 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh    root@${RD_OPTION_HOST}:.
+    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
   description: ''
   name: PushOverSomeInitializationScripts
   uuid: net.fleetingclouds.initial.pushScripts
   group: net/fleetingclouds/initial
+  options:
+    Host:
+      description: the host where the file should go
+      value: gateway.fleetingclouds.net
