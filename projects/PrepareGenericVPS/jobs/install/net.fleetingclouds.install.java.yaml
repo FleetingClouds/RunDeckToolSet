@@ -5,11 +5,10 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo sudo pwd
+    - exec: ls -l
     - exec: sudo pwd
-    - jobref:
-        group: net/fleetingclouds/global
-        name: AddVariableToEnvironment
-        args: -variableName JAVA_HOME -variableValue /usr/lib/jvm/jdk -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: sudo ./appendNameValuePairToFile.sh -p /etc/environment -n JAVA_HOME -v /usr/lib/jvm/jdk
   description: This installs Java 7
   name: InstallJava
   uuid: net.fleetingclouds.install.java
@@ -24,4 +23,5 @@
   group: net/fleetingclouds/install
   options:
     sudoPwdRunDeck:
+      required: true
       secure: true
