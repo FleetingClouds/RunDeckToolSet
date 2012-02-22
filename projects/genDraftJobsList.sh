@@ -9,6 +9,8 @@ if [  -d  ${PROJECT}  ]; then
 
 	echo Generating draft jobs manifest of project : ${PROJECT}
 	wget "http://localhost:4440/api/1/jobs?authtoken=$AUTH_TOKEN&project=$PROJECT" -O - | xpath -q -e "result/jobs"  -e "job[*]/@id" > ./${PROJECT}/${MANIFEST}
+
+##  cat jobList.txt | sed -e "s| id=\"||g" | sed -e "s|\"|.yaml|g"
 else
 	echo No such project ${PROJECT}
 fi
