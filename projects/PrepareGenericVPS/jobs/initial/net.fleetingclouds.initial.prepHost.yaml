@@ -1,0 +1,44 @@
+- id: net.fleetingclouds.initial.prepHost
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " . . . .  . . . .  . . . . Run First Step  . . . .  . . . .  . . . .  . . . . "
+    - jobref:
+        group: net/fleetingclouds/initial
+        name: Push RunDeck public key to host
+        args: -FingerPrint ${option.FingerPrint} -Host ${option.Host} -Password ${option.Password}
+    - exec: echo " . . . .  . . . .  . . . . Run Second Step  . . . .  . . . .  . . . .  . . . . "
+    - jobref:
+        group: net/fleetingclouds/initial
+        name: Create Admin user
+        args: -Host ${option.Host}
+    - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
+    - script: |
+        echo "*****************************************"
+        echo "****                                 ****"
+        echo "**** You must now connect to         ****"
+        echo "**** $RD_OPTION_HOST         ****"
+        echo "**** in order to change the password ****"
+        echo "**** 'okokok' to a real on.          ****"
+        echo "****                                 ****"
+        echo "*****************************************"
+  description: Calls Steps One, Two & Three
+  name: PrepareHost
+  uuid: net.fleetingclouds.initial.prepHost
+  group: net/fleetingclouds/initial
+  options:
+    FingerPrint:
+      required: true
+      description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
+      value: 4a:1a:b5:e0:c0:c5:9b:a7:a4:7d:a1:e2:3a:19:f7:16
+    Host:
+      required: true
+      description: This is a host that RunDeck will be accessing in the future.
+      value: www.fleetingclouds.net
+    Password:
+      required: true
+      description: This is the root password for the indicated host.  It should be used just this one time, and never again.
+      value: z8fm3TFWf9DyfY0ntf0g
