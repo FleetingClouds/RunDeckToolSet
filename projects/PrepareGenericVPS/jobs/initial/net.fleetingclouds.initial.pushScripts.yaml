@@ -8,7 +8,8 @@
     - exec: echo "Copying  . . . .  . . . .  . . . .  "
     - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
     - exec: echo ". . . .  . . . .  . . . .  Done . . . .  . . . .  . . . .  "
-  description: This script copies shell scripts over to the default directory of the user's account in the indicated remote host.
+  description: 'Step Three: This script copies shell scripts over to the default directory
+    of the user''s account in the indicated remote host.'
   name: PushOverSomeInitializationScripts
   uuid: net.fleetingclouds.initial.pushScripts
   group: net/fleetingclouds/initial

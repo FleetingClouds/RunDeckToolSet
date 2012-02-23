@@ -17,8 +17,19 @@
         eval expect -c "'$COMMAND'" 
         #
     - exec: echo  .............................................................
-  description: 'In a vacant machine this script will create an administrative user
-    with the indicated user name.  '
+  description: |
+    Step Two : Prepare a vacant machine to allow entry exclusively to an administrative user and exclusively by means of SSH cryptographic keys.
+    
+    This script creates a "rundeck" admin user, and disables all other forms of access except SSH key access by the admin users.
+    
+       * * This Job is can be run exactly once. * *
+    
+    A script is pushed to the remote host that does the following : 
+     - creates a new user ("rundeck")
+     - eliminates UID/PWD logins 
+     - moves the authorized keys file from root's account rundeck's account
+    
+    The script, thereby prohibiting any future root or UID/PWD logins.
   name: Create Admin user
   uuid: net.fleetingclouds.initial.makeAdmin
   group: net/fleetingclouds/initial

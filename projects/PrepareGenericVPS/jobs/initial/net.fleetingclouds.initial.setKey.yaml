@@ -25,18 +25,15 @@
     - exec: echo "Pushed RunDeck public key to host"
     - exec: echo " . . . .  . . . .  . . . .  . . . . Done . . . .  . . . .  . . . . "
   description: |
-    This job pushes rundeck,s SSH key to the remote host, creates a "rundeck" admin user, and disables all other access.
+    Step One: Pushes rundeck's SSH key to the remote host.
     
-    * * This Job is can be run exactly once. * *
+    * * This Job is idempotent.  Multiple executions always have the same end result. * *
     
     Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
     
-    Immediately following that a script is pushed to the remote host that does the following : 
-     - creates a new user ("rundeck")
-     - eliminates UID/PWD logins 
-     - moves the authorized keys file from root's account rundeck's account
+    Before doing so it ensures it removes any prior reference to the remote host, both IP address and domain name, so as to force a refresh of that data.
     
-    The script, thereby prohibiting any future root or UID/PWD logins.
+    
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
   group: net/fleetingclouds/initial

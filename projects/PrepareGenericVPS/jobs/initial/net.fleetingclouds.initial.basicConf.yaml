@@ -13,7 +13,8 @@
     - exec: sudo aptitude -y purge apache2-utils
     - exec: sudo aptitude -y purge apache2-doc
     - exec: echo "Finished  .................................................."
-  description: This script does the basic initial configurations required by all Fleeting Clouds hosts
+  description: 'Step Four: This script does the basic initial configurations required
+    by all Fleeting Clouds hosts'
   name: BasicGeneralInitialConfigurations
   uuid: net.fleetingclouds.initial.basicConf
   nodefilters:
