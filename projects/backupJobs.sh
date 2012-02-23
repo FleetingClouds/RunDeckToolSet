@@ -3,8 +3,9 @@
 #
 export PROJECT=$1
 export MANIFEST=jobList.txt
-export AUTH_TOKEN=VrdKke6c84sEpe4k5dk82p2p9rcO81OC
+export AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
 export RUNDECK_HOST="http://localhost:4440"
+export SYSTEM_ACTION="api/1/system/info"
 export JOBLISTING_ACTION="api/1/jobs"
 export JOBEXPORT_ACTION="api/1/jobs/export"
 export AUTH_PARM="authtoken=${AUTH_TOKEN}"
@@ -12,9 +13,20 @@ export PROJECT_PARM="project=${PROJECT}"
 export FORMAT_PARM="format=yaml"
 export PATH_PREFIX="net.fleetingclouds."
 
-if [  -d  ${PROJECT}  ]; then 
+ echo Project is ${PROJECT}
 
+if [  -d  "${PROJECT}"  ]; then 
+#
+	wget --quiet "${RUNDECK_HOST}/${SYSTEM_ACTION}?${AUTH_PARM}"
+	RESULT=$?
+	if [  $RESULT == 8 ]; then
+		echo You need to edit this script to put in a valid Authentication Token
+		exit $RESULT;
+	fi
+#
 	echo Generating draft jobs manifest to ./${PROJECT}/${MANIFEST}
+	echo Rundeck API URL will be "${RUNDECK_HOST}/${JOBLISTING_ACTION}?${PROJECT_PARM}&authtoken=xoxox..."
+#
 	wget --quiet "${RUNDECK_HOST}/${JOBLISTING_ACTION}?${AUTH_PARM}&${PROJECT_PARM}" \
 	-O - | xpath -q -e "result/jobs"  -e "job[*]/@id" \
 	 | sed -e "s| id=\"||g" \
