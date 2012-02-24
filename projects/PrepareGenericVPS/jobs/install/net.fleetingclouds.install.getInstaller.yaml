@@ -10,6 +10,9 @@
     - script: |
         cd ~/installers
         pwd
+        echo " . . . . Removing prior files . . . . . "
+        rm -f @option.LogFileName@
+        rm -f @option.InstallerFileName@
         echo " . . Downloading to ~/installers. . . . "
         wget -cNb --output-file=@option.LogFileName@ @option.DownloadServer@/@option.InstallerFileName@
         echo " . . . . . Download begun now . . . . . "
