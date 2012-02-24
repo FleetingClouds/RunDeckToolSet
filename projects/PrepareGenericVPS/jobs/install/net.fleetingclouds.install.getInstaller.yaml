@@ -1,0 +1,39 @@
+- id: net.fleetingclouds.install.getInstaller
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: ls -l
+    - exec: mkdir -p ~/installers
+    - script: |
+        cd ~/installers
+        pwd
+        echo " . . Downloading to ~/installers. . . . "
+        wget -cNb --output-file=@option.LogFileName@ @option.DownloadServer@/@option.InstallerFileName@
+        echo " . . . . . Download begun now . . . . . "
+  description: |
+    This script gets the specified installer program from the specified server.  It downloads in the background, logging activity to the specified file.  Unless otherwise indicated, always writes to a directory called installers, under rundeck's default directory.
+    
+  name: GetInstaller
+  uuid: net.fleetingclouds.install.getInstaller
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install
+  options:
+    DownloadServer:
+      required: true
+      description: The server from which you want to get the installer
+    InstallerFileName:
+      required: true
+      description: The file you want to get from the indicated server
+    LogFileName:
+      required: true
+      description: The name of the log file where download progress will be recorded.
