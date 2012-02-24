@@ -1,0 +1,42 @@
+- id: net.fleetingclouds.install.java.get
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo Getting Java JDK
+    - script: |
+        cd ~/installers
+        pwd
+        echo wget -cNb --output-file=@option.JdkVersion@
+    - jobref:
+        group: net/fleetingclouds/install
+        name: GetInstaller
+        args: -DownloadServer ${option.JdkDownloadServer} -InstallerFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile}
+    - exec: echo Got JDK
+  description: This installs Java 7
+  name: GetJava
+  uuid: net.fleetingclouds.install.java.get
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install/java
+  options:
+    JdkDownloadServer:
+      required: true
+      description: The server from which you want to get the JDK
+      value: http://download.oracle.com/otn-pub/java/jdk/7u3-b04
+    JdkVersion:
+      required: true
+      description: The version you want to get from the indicated server
+      value: jdk-7u3-linux-x64.tar.gz
+    ProgressFile:
+      required: true
+      description: A file to keep download results.
+      value: dldJdk.log
