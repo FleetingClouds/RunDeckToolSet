@@ -18,7 +18,6 @@
         echo " . . . . . Download begun now . . . . . "
   description: |
     This script gets the specified installer program from the specified server.  It downloads in the background, logging activity to the specified file.  Unless otherwise indicated, always writes to a directory called installers, under rundeck's default directory.
-    
   name: GetInstaller
   uuid: net.fleetingclouds.install.getInstaller
   nodefilters:

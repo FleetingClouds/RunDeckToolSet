@@ -9,7 +9,7 @@
     - exec: tail -n20 /etc/environment
   description: |
     This script simply adds a variable to /etc/environment if there is not one already.
-    
+
     It will NOT over-write one that is already there.
   name: AddVariableToEnvironment
   uuid: net.fleetingclouds.global.addVar
