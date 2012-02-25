@@ -1,57 +1,70 @@
 #!/bin/bash
 # Script to extract a list of RunDeck Job definitions to Git managed directory.
 #
-export PROJECT=$1
-export MANIFEST=jobList.txt
-export AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
-export RUNDECK_HOST="http://localhost:4440"
-export SYSTEM_ACTION="api/1/system/info"
-export JOBLISTING_ACTION="api/1/jobs"
-export JOBEXPORT_ACTION="api/1/jobs/export"
-export AUTH_PARM="authtoken=${AUTH_TOKEN}"
-export PROJECT_PARM="project=${PROJECT}"
-export FORMAT_PARM="format=yaml"
-export PATH_PREFIX="net.fleetingclouds."
+declare PROJECT=$1
+declare MANIFEST=jobList.txt
+# declare AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
+declare AUTH_TOKEN=""
+declare RUNDECK_HOST="http://localhost:4440"
+declare SYSTEM_ACTION="api/1/system/info"
+declare JOBLISTING_ACTION="api/1/jobs"
+declare JOBEXPORT_ACTION="api/1/jobs/export"
+#
+declare PROJECT_PARM="project=${PROJECT}"
+declare FORMAT="yaml"
+#declare FORMAT="xml"
+declare FORMAT_PARM="format=${FORMAT}"
+declare PATH_PREFIX="net.fleetingclouds."
 
- echo Project is ${PROJECT}
+read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+echo -e "\n"
 
 if [  -d  "${PROJECT}"  ]; then 
 #
-	wget --quiet "${RUNDECK_HOST}/${SYSTEM_ACTION}?${AUTH_PARM}"
+	wget --quiet -O /dev/null "${RUNDECK_HOST}/${SYSTEM_ACTION}?authtoken=${AUTH_TOKEN}"
 	RESULT=$?
+#
 	if [  $RESULT == 8 ]; then
-		echo You need to edit this script to put in a valid Authentication Token
+		echo -e "Failed : You need to use a *valid* Authentication Token"
 		exit $RESULT;
 	fi
 #
-	echo Generating draft jobs manifest to ./${PROJECT}/${MANIFEST}
-	echo Rundeck API URL will be "${RUNDECK_HOST}/${JOBLISTING_ACTION}?${PROJECT_PARM}&authtoken=xoxox..."
+	echo -e "Generating draft jobs manifest to ./${PROJECT}/${MANIFEST}"
+	echo -e "Rundeck API URL is set to :\n ${RUNDECK_HOST}/${JOBLISTING_ACTION}?${PROJECT_PARM}&authtoken=${AUTH_TOKEN:0:10}xxx..."
 #
-	wget --quiet "${RUNDECK_HOST}/${JOBLISTING_ACTION}?${AUTH_PARM}&${PROJECT_PARM}" \
+	wget --quiet "${RUNDECK_HOST}/${JOBLISTING_ACTION}?authtoken=${AUTH_TOKEN}&${PROJECT_PARM}" \
 	-O - | xpath -q -e "result/jobs"  -e "job[*]/@id" \
 	 | sed -e "s| id=\"||g" \
 	 | sed -e "s|\"||g" \
 	> ./${PROJECT}/${MANIFEST}
 #
-	echo Now process it
+	echo Processing now ...
 #
 	mapfile -t JOB_LIST < "./${PROJECT}/${MANIFEST}"
 
 	DEFAULT_LOCATION=`pwd`
 #	echo DEFAULT_LOCATION = ${DEFAULT_LOCATION}
 
-	FULL_URL="${RUNDECK_HOST}/${JOBEXPORT_ACTION}?${AUTH_PARM}&${PROJECT_PARM}&${FORMAT_PARM}&idlist="
+	FULL_URL="${RUNDECK_HOST}/${JOBEXPORT_ACTION}?authtoken=${AUTH_TOKEN}&${PROJECT_PARM}&${FORMAT_PARM}&idlist="
 	for JOB in "${JOB_LIST[@]}"
 	do
 		FILE_PATH=`echo $JOB | sed s/$PATH_PREFIX// | sed 's/\(.*\)\..*/\1/' | sed -e 's|\.|/|g' `
 #		echo Path : ${DEFAULT_LOCATION}/${PROJECT}/jobs/${FILE_PATH}
-#		echo File : ${JOB}.yaml
+#		echo File : ${JOB}.${FORMAT}
 
 		LOCAL_PATH=${PROJECT}/jobs/${FILE_PATH}
 		FULL_PATH=${DEFAULT_LOCATION}/${LOCAL_PATH}
 		mkdir -p ${FULL_PATH}
-		wget --quiet ${FULL_URL}${JOB} -O ${FULL_PATH}/${JOB}.yaml
-		echo Wrote : ./${LOCAL_PATH}/${JOB}.yaml
+		wget --quiet ${FULL_URL}${JOB} -O ~/tmp/intermediateResult.txt
+		RESULT=$?
+#
+		if [  $RESULT == 8 ]; then
+			echo -e "Failed : You need to use a *valid* Authentication Token"
+			exit $RESULT;
+		else
+			mv ~/tmp/intermediateResult.txt ${FULL_PATH}/${JOB}.${FORMAT}
+			echo Wrote : ./${LOCAL_PATH}/${JOB}.${FORMAT}
+		fi
 
 	done
 
