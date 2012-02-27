@@ -5,7 +5,9 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo "Install Git ......................................................."
     - exec: sudo aptitude -y install git-core
+    - exec: echo "Done installing Git ................................................."
   description: Install Git
   name: InstallGit
   uuid: net.fleetingclouds.install.git
