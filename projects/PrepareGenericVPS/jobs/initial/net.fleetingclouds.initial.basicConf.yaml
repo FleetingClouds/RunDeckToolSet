@@ -6,9 +6,17 @@
     strategy: node-first
     commands:
     - exec: echo "We will use aptitude rather than apt-get .................."
+    - exec: sudo apt-get -y update
+    - exec: echo "Updated  .................................................."
+    - exec: sudo apt-get -y upgrade
+    - exec: echo "Upgraded  .................................................."
     - exec: sudo apt-get -y install aptitude
+    - exec: echo "Switching to aptitude  .................................................."
     - exec: sudo aptitude install nano
+    - exec: echo "Installed nano .................................................."
     - exec: sudo aptitude -y purge apache2.2-common
+    - exec: echo "Purge Apache  .................................................."
+    - exec: echo "................................................................."
     - exec: sudo aptitude -y purge apache2.2-bin
     - exec: sudo aptitude -y purge apache2-utils
     - exec: sudo aptitude -y purge apache2-doc
