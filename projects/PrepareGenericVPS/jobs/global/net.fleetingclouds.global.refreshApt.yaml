@@ -8,7 +8,9 @@
     commands:
     - exec: echo "Clear any problem packages ................................."
     - exec: sudo aptitude -y update
+    - exec: echo "Updated  .................................................."
     - exec: sudo aptitude -y upgrade
+    - exec: echo "Upgraded  .................................................."
     - exec: sudo aptitude -fy install
     - exec: echo "Finished  .................................................."
   description: |-
