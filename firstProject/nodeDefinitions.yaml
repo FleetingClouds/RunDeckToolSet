@@ -22,5 +22,9 @@ gateway.fleetingclouds.net:
   myProperty: CanWeSeeThisFromOurScripts
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
+  sudo-prompt-max-timeout: 15000
+  sudo-response-max-timeout: 15000
+  sudo-fail-on-response-timeout: true
+
 
 
