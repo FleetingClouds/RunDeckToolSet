@@ -6,10 +6,6 @@
     strategy: node-first
     commands:
     - exec: echo Getting Java JDK
-    - script: |
-        cd ~/installers
-        pwd
-        echo wget -cNb --output-file=@option.JdkVersion@
     - jobref:
         group: net/fleetingclouds/install
         name: GetInstaller
