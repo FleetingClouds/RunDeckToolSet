@@ -17,15 +17,17 @@
         args: -Host ${option.Host}
     - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
     - script: |
-        echo "*****************************************"
-        echo "****                                 ****"
-        echo "**** You must now connect to         ****"
-        echo "**** $RD_OPTION_HOST         ****"
-        echo "**** in order to change the password ****"
-        echo "**** 'okokok' to a real on.          ****"
-        echo "****                                 ****"
-        echo "*****************************************"
-  description: Calls Steps One, Two & Three
+        echo "*******************************************************************"
+        echo "****"
+        echo "**** You must now connect, as the *rundeck* user, to $RD_OPTION_HOST "
+        echo "**** in order to change the password 'okokok' to a real one. "
+        echo "****"
+        echo "**** Use :"
+        echo "****   - sudo -sHu rundeck"
+        echo "****   - ssh $RD_OPTION_HOST"
+        echo "****"
+        echo "*******************************************************************"
+  description: Calls Steps One & Two
   name: PrepareHost
   uuid: net.fleetingclouds.initial.prepHost
   group: net/fleetingclouds/initial
