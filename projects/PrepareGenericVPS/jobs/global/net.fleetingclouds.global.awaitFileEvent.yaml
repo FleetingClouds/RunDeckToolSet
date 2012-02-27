@@ -5,6 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo Will wait @option.Delay@ seconds for either "@option.SuccessPattern@" OR "@option.FailPattern@" to appear in "@option.LogFileName@"
     - script: |-
         #!/bin/bash
         # Script to collect prepare an empty Jenkins server with an empty Fitnesse wiki.

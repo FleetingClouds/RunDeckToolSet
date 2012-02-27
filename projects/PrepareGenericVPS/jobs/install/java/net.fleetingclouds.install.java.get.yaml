@@ -5,12 +5,13 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo Getting Java JDK
+    - exec: 'echo Starting Java JDK download . . . . .  . . . . .  . . . . .  . .
+        . . . '
     - jobref:
         group: net/fleetingclouds/install
         name: GetInstaller
-        args: -DownloadServer ${option.JdkDownloadServer} -InstallerFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile}
-    - exec: echo Got JDK
+        args: -DownloadServer ${option.JdkDownloadServer} -InstallerFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile} -InstallersRepository  ${option.InstallersRepository}
+    - exec: 'echo JDK download started . . . . .  . . . . .  . . . . .  . . . . . '
   description: This installs Java 7
   name: GetJava
   uuid: net.fleetingclouds.install.java.get
@@ -24,6 +25,9 @@
       name: gate.*
   group: net/fleetingclouds/install/java
   options:
+    InstallersRepository:
+      required: true
+      description: Single location for all installation scripts
     JdkDownloadServer:
       required: true
       description: The server from which you want to get the JDK
