@@ -6,9 +6,9 @@
     strategy: node-first
     commands:
     - exec: ls -l
-    - exec: mkdir -p ~/installers
-    - script: |
-        cd ~/installers
+    - exec: mkdir -p ${option.InstallersRepository}
+    - script: |-
+        cd @option.InstallersRepository@
         pwd
         echo " . . . . Removing prior files . . . . . "
         rm -f @option.LogFileName@
@@ -16,6 +16,8 @@
         echo " . . Downloading to ~/installers. . . . "
         wget -cNb --output-file=@option.LogFileName@ @option.DownloadServer@/@option.InstallerFileName@
         echo " . . . . . Download begun now . . . . . "
+        ls -l 
+        tail -n 25 @option.LogFileName@
   description: |
     This script gets the specified installer program from the specified server.  It downloads in the background, logging activity to the specified file.  Unless otherwise indicated, always writes to a directory called installers, under rundeck's default directory.
   name: GetInstaller
@@ -36,6 +38,9 @@
     InstallerFileName:
       required: true
       description: The file you want to get from the indicated server
+    InstallersRepository:
+      required: true
+      description: Single location for all installation scripts
     LogFileName:
       required: true
       description: The name of the log file where download progress will be recorded.
