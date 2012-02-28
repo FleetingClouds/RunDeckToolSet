@@ -1,4 +1,4 @@
-- id: net.fleetingclouds.install.java
+- id: net.fleetingclouds.install.java.jdk
   project: PrepareGenericVPS
   loglevel: INFO
   sequence:
@@ -6,6 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo "Getting Java JDK . . . .   . . . .   . . . .   . . . .   . . . .  "
+    - exec: sudo pwd
     - jobref:
         group: net/fleetingclouds/install/java
         name: GetJava
@@ -16,41 +17,25 @@
         name: WaitForFileEvent
         args: -Delay 3660 -FailPattern "Not found" -LogFileName  ~/installers/${option.ProgressFile}  -SuccessPattern ${option.SuccessIndicator}
     - exec: echo "It seems to have arrived.  Now install it  . . . .   . . . .   . . . .   . . . .  "
-    - script: |
-        cd /usr/lib/jvm
-        echo "Unpacking from installation directory :: @option.InstallersRepository@  . . . .  . . . . "
-        sudo tar zxvf @option.InstallersRepository@/jdk-7u2-linux-x64.tar.gz
-        sudo ln -sf jdk1.7.0_02/ jdk
-        echo "Setting as default JVM . . . .  . . . .  . . . .  . . . .  . . . . "
-        sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk/jre/bin/java 1
-        sudo update-alternatives --set java /usr/lib/jvm/java-6-openjdk/jre/bin/java
-        echo "... also setting that is admin user ($ADMIN_USERZ_HOME) profile . . . .. . . .  . . . .  . . . . "
-        cd $ADMIN_USERZ_HOME
-        echo "export JAVA_HOME=/usr/lib/jvm/jdk" >> .bashrc 
-        echo "PATH=\$PATH:\$JAVA_HOME/bin" >> .bashrc 
-        echo "" >> .bashrc 
-    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
-    - exec: echo "Create JAVA_HOME directory as $RD_OPTION_JAVA_HOME
-    - exec: 'sudo mkdir -p $RD_OPTION_JAVA_HOME '
+    - exec: echo "Create JAVA_HOME directory as $RD_OPTION_JAVA_HOME"
+    - exec: sudo rm -fr ${option.JAVA_HOME}
+    - exec: sudo mkdir -p ${option.JAVA_HOME}
+    - exec: ls -l ${option.JAVA_HOME}/..
     - exec: 'echo "Unpacking from installation directory :: @option.InstallersRepository@
         . . . . . . . . " '
-    - exec: sudo tar zxvf @option.InstallersRepository@/@option.JdkVersion@ -C @option.JAVA_HOME@
+    - exec: echo sudo tar zxvf ${option.InstallersRepository}/${option.JdkVersion} -C ${option.JAVA_HOME}
+    - exec: echo JAVA_HOME = ${option.JAVA_HOME}
+    - exec: cd ${option.JAVA_HOME} && cd .. && pwd
+    - exec: cd ${option.JAVA_HOME} && cd .. && sudo chown -R rundeck:rundeck .
+    - exec: echo "Now the tricky bit . . . .   . . . .   . . . .   . . . .  "
     - exec: 'sudo ln -sf jdk1.7.0_03/ jdk '
-    - exec: cd $JAVA_HOME && cd .. && sudo chown -R rundeck:rundeck .
+    - exec: 'sudo chown rundeck:rundeck $RD_OPTION_JAVA_HOME '
     - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
+    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
     - exec: sudo pwd
   description: This installs Java 7
   name: InstallJava
-  uuid: net.fleetingclouds.install.java
+  uuid: net.fleetingclouds.install.java.jdk
   nodefilters:
     dispatch:
       threadcount: 1
@@ -59,7 +44,7 @@
       rankOrder: ascending
     include:
       name: gate.*
-  group: net/fleetingclouds/install
+  group: net/fleetingclouds/install/java
   options:
     InstallersRepository:
       required: true
@@ -84,3 +69,7 @@
       required: true
       description: A Regex for the success report of a download.
       value: jdk-7u3.*saved
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true

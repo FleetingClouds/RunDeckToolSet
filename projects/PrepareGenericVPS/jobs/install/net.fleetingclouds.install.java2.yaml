@@ -1,0 +1,69 @@
+- id: net.fleetingclouds.install.java2
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "First try  . . . .   . . . .   . . . .   . . . .   . . . .  "
+    - exec: sudo mkdir -p /usr/lib/xyz
+    - exec: echo "Second try . . . .   . . . .   . . . .   . . . .   . . . .  "
+    - exec: sudo pwd && sudo pwd
+    - exec: echo "It seems to have arrived.  Now install it  . . . .   . . . .   . . . .   . . . .  "
+    - exec: sudo pwd
+    - exec: echo "Create JAVA_HOME directory as ${option.JAVA_HOME}"
+    - exec: sudo mkdir -p ${option.JAVA_HOME}
+    - exec: 'echo . . . . . . . '
+    - exec: cd ${option.JAVA_HOME} && cd .. && sudo chown -R rundeck:rundeck .
+    - exec: 'echo Unpacking from installation directory :: ${option.InstallersRepository}
+        . . . . . . . . '
+    - exec: sudo tar zxvf ${option.InstallersRepository}/${option.JdkVersion} -C ${option.JAVA_HOME}
+    - exec: 'sudo ln -sf jdk1.7.0_03/ jdk '
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
+  description: This installs Java 7
+  name: InstallJava2
+  uuid: net.fleetingclouds.install.java2
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install
+  options:
+    InstallersRepository:
+      required: true
+      description: Single location for all installation scripts
+      value: ~/installers
+    JAVA_HOME:
+      required: true
+      value: /usr/lib/jvm/jdk
+    JdkDownloadServer:
+      required: true
+      description: The server from which you want to get the JDK
+      value: http://download.oracle.com/otn-pub/java/jdk/7u3-b04
+    JdkVersion:
+      required: true
+      description: The version you want to get from the indicated server
+      value: jdk-7u3-linux-x64.tar.gz
+    ProgressFile:
+      required: true
+      description: A file to keep download results.
+      value: dldJdk.log
+    SuccessIndicator:
+      required: true
+      description: A Regex for the success report of a download.
+      value: jdk-7u3.*saved
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
