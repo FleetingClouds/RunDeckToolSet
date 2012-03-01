@@ -2,6 +2,8 @@
 # Script to extract a list of RunDeck Job definitions to Git managed directory.
 #
 declare PROJECT=$1
+declare AUTH_TOKEN=$2
+#
 declare MANIFEST=jobList.txt
 # declare AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
 declare AUTH_TOKEN=""
@@ -16,7 +18,12 @@ declare FORMAT="yaml"
 declare FORMAT_PARM="format=${FORMAT}"
 declare PATH_PREFIX="net.fleetingclouds."
 
-read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+if [ 32 == "${#AUTH_TOKEN}" ]; then
+        echo "Found token on command line"
+else
+        read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+fi
+#
 echo -e "\n"
 
 if [  -d  "${PROJECT}"  ]; then 
