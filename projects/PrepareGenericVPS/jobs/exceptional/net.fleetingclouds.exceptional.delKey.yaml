@@ -1,0 +1,22 @@
+- id: net.fleetingclouds.exceptional.delKey
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - script: |
+        echo $RD_OPTION_HOST
+        IP_ADDR=`echo $RD_OPTION_HOST | nslookup | grep Address | sed '1,1d' | sed s/Address://g`
+        echo $IP_ADDR
+        ssh-keygen -R $IP_ADDR
+        ssh-keygen -R $RD_OPTION_HOST
+  description: 'This script will remove SSH knowledge of the indicated host by nam and by IP address'
+  name: DeleteSSHKey
+  uuid: net.fleetingclouds.exceptional.delKey
+  group: net/fleetingclouds/exceptional
+  options:
+    Host:
+      required: true
+      description: This is a host that RunDeck will be accessing in the future.
+      value: www.fleetingclouds.net
