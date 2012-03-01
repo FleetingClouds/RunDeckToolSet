@@ -1,0 +1,31 @@
+- id: net.fleetingclouds.exceptional.toggleAptCache
+  project: PrepareGenericVPS
+  loglevel: INFO
+  multipleExecutions: true
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: sudo pwd
+    - exec: '# ls -l && ls -l /etc/apt/apt.conf.d/'
+    - exec: sudo ./toggleAptCache.sh
+    - exec: '# ls -l && ls -l /etc/apt/apt.conf.d/'
+  description: |-
+    This script turns VPS usage of apt caching on/off..
+  name: toggleAptCache
+  uuid: net.fleetingclouds.exceptional.toggleAptCache
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/exceptional
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
