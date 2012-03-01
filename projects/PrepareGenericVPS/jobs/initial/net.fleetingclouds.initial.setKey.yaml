@@ -7,12 +7,10 @@
     commands:
     - exec: echo "Pushing RunDeck public key to host"
     - exec: echo "Make sure we ARE asked to accept remote host fingerprint."
-    - exec: ssh-keygen -R $RD_OPTION_HOST
-    - script: |
-        echo $RD_OPTION_HOST
-        IP_ADDR=`echo $RD_OPTION_HOST | nslookup | grep Address | sed '1,1d' | sed s/Address://g`
-        echo $IP_ADDR
-        ssh-keygen -R $IP_ADDR
+    - jobref:
+        group: net/fleetingclouds/exceptional
+        name: DeleteSSHKey
+        args: -Host ${option.Host}
     - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
     - script: |
         #
@@ -26,11 +24,11 @@
     - exec: echo " . . . .  . . . .  . . . .  . . . . Done . . . .  . . . .  . . . . "
   description: |
     Step One: Pushes rundeck's SSH key to the remote host.
-
+    
     * * This Job is idempotent.  Multiple executions always have the same end result. * *
-
+    
     Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
-
+    
     Before doing so it ensures it removes any prior reference to the remote host, both IP address and domain name, so as to force a refresh of that data.
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
