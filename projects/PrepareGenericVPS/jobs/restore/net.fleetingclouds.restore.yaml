@@ -1,0 +1,20 @@
+- id: net.fleetingclouds.restore
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - script: |
+        cd ${RUNDECK_PROJECTS}
+        ls -la
+        ./restoreJobs.sh ${RD_JOB_PROJECT} ${RD_OPTION_TOKEN}
+  description: |
+    This'll restore the jobs of any project, but it's here until we get global jobs.
+  name: RestoreThisProjectzJobs
+  uuid: net.fleetingclouds.restore
+  group: net/fleetingclouds
+  options:
+    Token:
+      required: true
+      description: Get your authorization token and paste it here.
