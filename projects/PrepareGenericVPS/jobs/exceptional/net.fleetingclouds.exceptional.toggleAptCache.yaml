@@ -10,8 +10,7 @@
     - exec: '# ls -l && ls -l /etc/apt/apt.conf.d/'
     - exec: sudo ./toggleAptCache.sh
     - exec: '# ls -l && ls -l /etc/apt/apt.conf.d/'
-  description: |-
-    This script turns VPS usage of apt caching on/off..
+  description: This script turns VPS usage of apt caching on/off..
   name: toggleAptCache
   uuid: net.fleetingclouds.exceptional.toggleAptCache
   nodefilters:
