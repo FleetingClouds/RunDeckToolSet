@@ -6,7 +6,6 @@ declare AUTH_TOKEN=$2
 #
 declare MANIFEST=jobList.txt
 # declare AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
-declare AUTH_TOKEN=""
 declare RUNDECK_HOST="http://localhost:4440"
 declare SYSTEM_ACTION="api/1/system/info"
 declare JOBLISTING_ACTION="api/1/jobs"
