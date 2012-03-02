@@ -26,7 +26,7 @@ echo "Setting up access for \"${OUR_USER}\" and for \"${CHEF_USER}\" ...........
 #
 echo "Activate apt-get  .............................................."
 dpkg --configure -a
-apt-get install -f
+apt-get install -fy
 #
 # 
 #
@@ -37,7 +37,7 @@ dpkg-reconfigure locales
 # 
 #
 echo "Install nano ..................................................."
-apt-get install nano
+apt-get -y install nano
 #
 # 
 #
