@@ -68,7 +68,7 @@ passwd -e ${CHEF_USER}
 echo "Get public keys of expected clients  ..........................."
 mkdir -p /home/${CHEF_USER}/.ssh
 wget https://github.com/downloads/FleetingClouds/RunDeckToolSet/PublicKeys
-mv PublicKeys.txt /home/${CHEF_USER}/.ssh/authorized_keys
+mv PublicKeys /home/${CHEF_USER}/.ssh/authorized_keys
 #
 echo "Assign correct ownership  ......................................"
 chown -R ${OUR_USER}:${OUR_USER} /home/${OUR_USER}
