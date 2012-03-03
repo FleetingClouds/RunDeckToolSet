@@ -1,3 +1,17 @@
+localhost:
+  description: Gateway for fleetingclouds.net
+  hostname: localhost
+  nodename: localhost
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: rundeck
+  myProperty: CanWeSeeThisFromOurScripts
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+
 www.warehouseman.com:
   description: Rundeck server node for www.warehouseman.com
   hostname: www.warehouseman.com
@@ -20,6 +34,22 @@ gateway.fleetingclouds.net:
   tags: ''
   username: rundeck
   myProperty: CanWeSeeThisFromOurScripts
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "15000"
+  sudo-prompt-max-timeout: "15000"
+
+chef.www.fleetingclouds.net:
+  description: Use this for accessing www.fleetingclouds in the Chef role
+  hostname: gateway.fleetingclouds.net
+  nodename: meta
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: chef
+  myProperty: Use this for accessing www.fleetingclouds in the Chef role
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
   sudo-response-max-timeout: "15000"
