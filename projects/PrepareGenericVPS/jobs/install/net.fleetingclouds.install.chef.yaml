@@ -1,0 +1,35 @@
+- id: net.fleetingclouds.install.chef
+  project: PrepareGenericVPS
+  loglevel: INFO
+  multipleExecutions: true
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Prepare a complete Chef workstation locally and client remotely . . . . . "
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: PrepareWorkstation
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: PrepareClient
+    - exec: echo "Finished preparing Chef workstation and client . . . . . "
+    - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+  description: |-
+    Refresh database of installed software.
+    This script can be called at any time to run your usual update and upgrade of installed software.
+  name: PrepareChef
+  uuid: net.fleetingclouds.install.chef
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: localhost
+  group: net/fleetingclouds/install
+  options:
+    sudoPwdRunDeck:
+      description: The password the script must use for sudo steps.
+      secure: true
