@@ -16,7 +16,7 @@ declare FORMAT="yaml"
 #declare FORMAT="xml"
 declare FORMAT_PARM="format=${FORMAT}"
 declare PATH_PREFIX="net.fleetingclouds."
-
+#
 if [ 32 == "${#AUTH_TOKEN}" ]; then
         echo "Found token on command line"
 else
@@ -60,15 +60,17 @@ if [  -d  "${PROJECT}"  ]; then
 
 		LOCAL_PATH=${PROJECT}/jobs/${FILE_PATH}
 		FULL_PATH=${DEFAULT_LOCATION}/${LOCAL_PATH}
+		TMP_PATH=${DEFAULT_LOCATION}/tmp
 		mkdir -p ${FULL_PATH}
-		wget --quiet ${FULL_URL}${JOB} -O ~/tmp/intermediateResult.txt
+		mkdir -p ${TMP_PATH}
+		wget --quiet ${FULL_URL}${JOB} -O ${TMP_PATH}/intermediateResult.txt
 		RESULT=$?
 #
 		if [  $RESULT == 8 ]; then
 			echo -e "Failed : You need to use a *valid* Authentication Token"
 			exit $RESULT;
 		else
-			mv ~/tmp/intermediateResult.txt ${FULL_PATH}/${JOB}.${FORMAT}
+			mv ${TMP_PATH}/intermediateResult.txt ${FULL_PATH}/${JOB}.${FORMAT}
 			echo Wrote : ./${LOCAL_PATH}/${JOB}.${FORMAT}
 		fi
 
