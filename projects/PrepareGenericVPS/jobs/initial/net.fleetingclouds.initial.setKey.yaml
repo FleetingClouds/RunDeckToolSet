@@ -26,11 +26,11 @@
     - exec: echo " . . . .  . . . .  . . . .  . . . . Done . . . .  . . . .  . . . . "
   description: |
     Step One: Pushes rundeck's SSH key to the remote host.
-
+    
     * * This Job is idempotent.  Multiple executions always have the same end result. * *
-
+    
     Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
-
+    
     Before doing so it ensures it removes any prior reference to the remote host, both IP address and domain name, so as to force a refresh of that data.
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
@@ -39,11 +39,11 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 52:24:74:48:6c:e0:c4:bb:bb:43:af:47:ee:19:a3:6f
+      value: ec:d6:a5:08:88:fa:33:46:9a:e1:a7:43:f3:50:a0:2b
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
     Password:
-      required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
+      value: m7vam9JHYG6glG1d2hdk
