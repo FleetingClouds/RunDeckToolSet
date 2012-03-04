@@ -9,15 +9,10 @@
     - exec: echo "Prepare a complete Chef workstation locally and client remotely . . . . . "
     - jobref:
         group: net/fleetingclouds/install/chef
-        name: PrepareWorkstation
-    - jobref:
-        group: net/fleetingclouds/install/chef
         name: PrepareClient
     - exec: echo "Finished preparing Chef workstation and client . . . . . "
     - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
-  description: |-
-    Refresh database of installed software.
-    This script can be called at any time to run your usual update and upgrade of installed software.
+  description: Calls sub-projects that prepare Chef for first time use.
   name: PrepareChef
   uuid: net.fleetingclouds.install.chef
   nodefilters:
