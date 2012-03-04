@@ -49,6 +49,7 @@ chef.www.fleetingclouds.net:
   osVersion: 2.6.32-042stab039.10
   tags: ''
   username: chef
+  ssh-keypath: /var/lib/rundeck/.ssh/chef/id_rsa
   myProperty: Use this for accessing www.fleetingclouds in the Chef role
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
