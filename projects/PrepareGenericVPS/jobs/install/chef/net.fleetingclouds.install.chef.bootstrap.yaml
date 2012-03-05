@@ -1,0 +1,31 @@
+- id: net.fleetingclouds.install.chef.bootstrap
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Preparing Chef client ............................................."
+    - exec: cd /home/chef/chef-repo  &&  knife bootstrap ${option.Host} -x rundeck -i ${option.KeyPath} --sudo
+    - exec: echo "Done preparing Chef hostname ................................................."
+  description: ** THIS DOES NOT WORK IF WORKSTATION IS LOCALHOST ** From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
+  name: BootstrapClient
+  uuid: net.fleetingclouds.install.chef.bootstrap
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: localhost
+  group: net/fleetingclouds/install/chef
+  options:
+    Host:
+      required: true
+      description: The host to prepare.
+      value: www.fleetingclouds.net
+    KeyPath:
+      required: true
+      description: Absolute path toRunDeck's copy of Chef's SSH key for this host.
+      value: /home/rundeck/.ssh/id_rsa
