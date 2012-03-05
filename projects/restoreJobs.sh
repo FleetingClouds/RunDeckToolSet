@@ -2,6 +2,7 @@
 # Script to inject a list of Git managed RunDeck Job definitions back into RunDeck.
 #
 declare PROJECT=$1
+declare AUTH_TOKEN=$2
 #
 declare RUNDECK_HOST="http://localhost:4440"
 declare IMPORT_ACTION="api/3/jobs/import"
@@ -33,7 +34,11 @@ recursiveList() {
 	done
 }
 #
-read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+if [ 32 == "${#AUTH_TOKEN}" ]; then
+        echo "Found token on command line"
+else
+        read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+fi
 echo -e "\nRundeck API URL is set to :\n ${RUNDECK_HOST}/${IMPORT_ACTION}?format=${FILE_FORMAT}&dupeOption=${DUPE_OPTION}&authtoken=${AUTH_TOKEN:0:10}xxx..."
 #
 mkdir -p ~/tmp/rdLogs

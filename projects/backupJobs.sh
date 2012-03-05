@@ -2,9 +2,10 @@
 # Script to extract a list of RunDeck Job definitions to Git managed directory.
 #
 declare PROJECT=$1
+declare AUTH_TOKEN=$2
+#
 declare MANIFEST=jobList.txt
 # declare AUTH_TOKEN=NOn57K48k3C4cKRCN48kU1cK7ds6KSrS
-declare AUTH_TOKEN=""
 declare RUNDECK_HOST="http://localhost:4440"
 declare SYSTEM_ACTION="api/1/system/info"
 declare JOBLISTING_ACTION="api/1/jobs"
@@ -15,8 +16,13 @@ declare FORMAT="yaml"
 #declare FORMAT="xml"
 declare FORMAT_PARM="format=${FORMAT}"
 declare PATH_PREFIX="net.fleetingclouds."
-
-read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+#
+if [ 32 == "${#AUTH_TOKEN}" ]; then
+        echo "Found token on command line"
+else
+        read -n 32 -s -p "Please paste your 32 digit authorization token here, now : " AUTH_TOKEN
+fi
+#
 echo -e "\n"
 
 if [  -d  "${PROJECT}"  ]; then 
@@ -54,15 +60,17 @@ if [  -d  "${PROJECT}"  ]; then
 
 		LOCAL_PATH=${PROJECT}/jobs/${FILE_PATH}
 		FULL_PATH=${DEFAULT_LOCATION}/${LOCAL_PATH}
+		TMP_PATH=${DEFAULT_LOCATION}/tmp
 		mkdir -p ${FULL_PATH}
-		wget --quiet ${FULL_URL}${JOB} -O ~/tmp/intermediateResult.txt
+		mkdir -p ${TMP_PATH}
+		wget --quiet ${FULL_URL}${JOB} -O ${TMP_PATH}/intermediateResult.txt
 		RESULT=$?
 #
 		if [  $RESULT == 8 ]; then
 			echo -e "Failed : You need to use a *valid* Authentication Token"
 			exit $RESULT;
 		else
-			mv ~/tmp/intermediateResult.txt ${FULL_PATH}/${JOB}.${FORMAT}
+			mv ${TMP_PATH}/intermediateResult.txt ${FULL_PATH}/${JOB}.${FORMAT}
 			echo Wrote : ./${LOCAL_PATH}/${JOB}.${FORMAT}
 		fi
 
