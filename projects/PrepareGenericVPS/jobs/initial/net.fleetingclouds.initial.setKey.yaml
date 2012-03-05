@@ -7,10 +7,12 @@
     commands:
     - exec: echo "Pushing RunDeck public key to host"
     - exec: echo "Make sure we ARE asked to accept remote host fingerprint."
-    - jobref:
-        group: net/fleetingclouds/exceptional
-        name: DeleteSSHKey
-        args: -Host ${option.Host}
+    - exec: ssh-keygen -R $RD_OPTION_HOST
+    - script: |
+        echo $RD_OPTION_HOST
+        IP_ADDR=`echo $RD_OPTION_HOST | nslookup | grep Address | sed '1,1d' | sed s/Address://g`
+        echo $IP_ADDR
+        ssh-keygen -R $IP_ADDR
     - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
     - script: |
         #
