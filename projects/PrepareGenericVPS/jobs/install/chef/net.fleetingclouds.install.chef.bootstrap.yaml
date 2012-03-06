@@ -6,9 +6,19 @@
     strategy: node-first
     commands:
     - exec: echo "Preparing Chef client ............................................."
-    - exec: cd /home/chef/chef-repo  &&  knife bootstrap ${option.Host} -x rundeck -i ${option.KeyPath} --sudo
+    - exec: sudo pwd
+    - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
+    - exec: echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | tee ./opscode.list
+    - exec: sudo mv opscode.list /etc/apt/sources.list.d/
+    - exec: echo "Get its GPG key . . . . . . . . . . . . . . . . . . . "
+    - exec: ' gpg --keyserver keys.gnupg.net --recv-keys 83EF826A'
+    - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
+    - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg
+    - exec: sudo mkdir -p /etc/apt/trusted.gpg.d/
+    - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
     - exec: echo "Done preparing Chef hostname ................................................."
-  description: ** THIS DOES NOT WORK IF WORKSTATION IS LOCALHOST ** From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
+    - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
+  description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
   name: BootstrapClient
   uuid: net.fleetingclouds.install.chef.bootstrap
   nodefilters:
@@ -18,14 +28,11 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: localhost
+      name: gate.*
   group: net/fleetingclouds/install/chef
   options:
-    Host:
+    sudoPwdRunDeck:
       required: true
-      description: The host to prepare.
-      value: www.fleetingclouds.net
-    KeyPath:
-      required: true
-      description: Absolute path toRunDeck's copy of Chef's SSH key for this host.
-      value: /home/rundeck/.ssh/id_rsa
+      description: Chef's password.
+      value: okmmpl,,
+      secure: true
