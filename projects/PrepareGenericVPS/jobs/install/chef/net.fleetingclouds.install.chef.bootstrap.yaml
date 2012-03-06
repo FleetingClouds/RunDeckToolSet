@@ -33,13 +33,14 @@
     - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
     - exec: sudo debconf-set-selections chefPrompts.txt
     - exec: echo "Update aptitude . . . . . . . . . . . . . . . . . . "
-    - exec: sudo aptitude update
+    - exec: sudo aptitude -y update
     - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
-    - exec: sudo aptitude install opscode-keyring
+    - exec: sudo aptitude -y purge opscode-keyring
+    - exec: sudo aptitude -y install opscode-keyring
     - exec: echo "Upgrade to latest . . . . . "
-    - exec: sudo aptitude upgrade
+    - exec: sudo aptitude -y upgrade
     - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
-    - exec: sudo apt-get install chef -y
+    - exec: sudo apt-get -y install chef -y
     - exec: echo "Done preparing Chef hostname ................................................."
     - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
   description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
