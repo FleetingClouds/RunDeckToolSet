@@ -35,7 +35,7 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 83:24:2b:17:31:4d:4a:1a:d8:67:cd:ec:d4:31:fc:96
+      value: 9c:5b:1a:f6:71:19:ac:0c:c8:72:5c:26:c7:46:3c:92
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
@@ -43,4 +43,4 @@
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: fcyR5OXqK1jn4Y46muen
+      value: muLd7BehuU69wmUSfm52
