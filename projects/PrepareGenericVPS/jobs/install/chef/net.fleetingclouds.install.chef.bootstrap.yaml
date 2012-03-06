@@ -2,7 +2,7 @@
   project: PrepareGenericVPS
   loglevel: INFO
   sequence:
-    keepgoing: false
+    keepgoing: true
     strategy: node-first
     commands:
     - exec: echo "Preparing Chef client ............................................."
@@ -11,11 +11,18 @@
     - exec: echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | tee ./opscode.list
     - exec: sudo mv opscode.list /etc/apt/sources.list.d/
     - exec: echo "Get its GPG key . . . . . . . . . . . . . . . . . . . "
-    - exec: ' gpg --keyserver keys.gnupg.net --recv-keys 83EF826A'
-    - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
-    - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg
+    - exec: gpg --fetch-key http://apt.opscode.com/packages@opscode.com.gpg.key > /dev/null
+    - exec: echo "Make a directory for the key ring . . . . . . . . . . . . . . . . . . "
     - exec: sudo mkdir -p /etc/apt/trusted.gpg.d/
+    - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
+    - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg > /dev/null
     - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
+    - exec: echo "Update aptitude . . . . . . . . . . . . . . . . . . "
+    - exec: sudo aptitude update
+    - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
+    - exec: sudo aptitude install opscode-keyring
+    - exec: echo "Upgrade to latest . . . . . "
+    - exec: sudo aptitude upgrade
     - exec: echo "Done preparing Chef hostname ................................................."
     - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
   description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
