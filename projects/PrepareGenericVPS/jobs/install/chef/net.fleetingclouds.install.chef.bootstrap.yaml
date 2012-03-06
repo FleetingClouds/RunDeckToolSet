@@ -8,7 +8,12 @@
     - exec: echo "Preparing Chef client ............................................."
     - exec: sudo pwd
     - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
-    - exec: echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | tee ./opscode.list
+    - script: |+
+        VER=`lsb_release -cs`
+        echo ${VER}
+        DEB="deb http://apt.opscode.com/ ${VER}-0.10 main"
+        echo ${DEB} | tee  ./opscode.list
+
     - exec: sudo mv opscode.list /etc/apt/sources.list.d/
     - exec: echo "Get its GPG key . . . . . . . . . . . . . . . . . . . "
     - exec: gpg --fetch-key http://apt.opscode.com/packages@opscode.com.gpg.key > /dev/null
@@ -25,6 +30,7 @@
     - exec: sudo aptitude upgrade
     - exec: echo "Done preparing Chef hostname ................................................."
     - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
+    - exec: VER=`lsb_release -cs`  && echo ${VER}
   description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
   name: BootstrapClient
   uuid: net.fleetingclouds.install.chef.bootstrap
