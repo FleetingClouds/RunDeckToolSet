@@ -7,6 +7,13 @@
     commands:
     - exec: echo "Preparing Chef client ............................................."
     - exec: sudo pwd
+    - exec: echo "Collect and place pem validator . . . . . . . . . . . . . . . . . . . . . "
+    - exec: sudo mkdir -p ${option.ChefWorkDir}
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: PreBootStrap
+        args: -Validator ${option.Validator}
+    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}
     - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
     - script: |+
         VER=`lsb_release -cs`
@@ -22,15 +29,19 @@
     - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
     - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg > /dev/null
     - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
+    - exec: echo "Prepare answers to Chef installer prompts . . . . . . . . "
+    - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
+    - exec: sudo debconf-set-selections chefPrompts.txt
     - exec: echo "Update aptitude . . . . . . . . . . . . . . . . . . "
     - exec: sudo aptitude update
     - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
     - exec: sudo aptitude install opscode-keyring
     - exec: echo "Upgrade to latest . . . . . "
     - exec: sudo aptitude upgrade
+    - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
+    - exec: sudo apt-get install chef -y
     - exec: echo "Done preparing Chef hostname ................................................."
     - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
-    - exec: VER=`lsb_release -cs`  && echo ${VER}
   description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
   name: BootstrapClient
   uuid: net.fleetingclouds.install.chef.bootstrap
@@ -44,6 +55,14 @@
       name: gate.*
   group: net/fleetingclouds/install/chef
   options:
+    ChefWorkDir:
+      required: true
+      description: One of Chef's working directories
+      value: /etc/chef
+    Validator:
+      required: true
+      description: Opscode's Chef public hosting access validation key file name.
+      value: fltgclds-validator.pem
     sudoPwdRunDeck:
       required: true
       description: Chef's password.
