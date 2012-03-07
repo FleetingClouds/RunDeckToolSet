@@ -13,7 +13,7 @@
         group: net/fleetingclouds/install/chef
         name: PreBootStrap
         args: -Validator ${option.Validator}
-    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}
+    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}/validation.pem
     - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
     - script: |+
         VER=`lsb_release -cs`
@@ -31,12 +31,13 @@
     - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
     - exec: echo "Prepare answers to Chef installer prompts . . . . . . . . "
     - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
+    - exec: ls -l ch*.txt
+    - exec: echo " + + + + + + "
     - exec: sudo debconf-set-selections chefPrompts.txt
-    - exec: echo "Update aptitude . . . . . . . . . . . . . . . . . . "
+    - exec: echo "Update aptitude . . . . . . . . . . . . . . "
     - exec: sudo aptitude -y update
     - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
-    - exec: sudo aptitude -y purge opscode-keyring
-    - exec: sudo aptitude -y install opscode-keyring
+    - exec: yes yes | sudo aptitude -y install opscode-keyring
     - exec: echo "Upgrade to latest . . . . . "
     - exec: sudo aptitude -y upgrade
     - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
