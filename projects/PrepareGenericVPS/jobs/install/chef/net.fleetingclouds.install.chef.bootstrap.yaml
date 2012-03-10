@@ -2,18 +2,19 @@
   project: PrepareGenericVPS
   loglevel: INFO
   sequence:
-    keepgoing: true
+    keepgoing: false
     strategy: node-first
     commands:
     - exec: echo "Preparing Chef client ............................................."
     - exec: sudo pwd
+    - exec: hostname
     - exec: echo "Collect and place pem validator . . . . . . . . . . . . . . . . . . . . . "
     - exec: sudo mkdir -p ${option.ChefWorkDir}
     - jobref:
         group: net/fleetingclouds/install/chef
         name: PreBootStrap
         args: -Validator ${option.Validator}
-    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}/validation.pem
+    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}
     - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
     - script: |+
         VER=`lsb_release -cs`
@@ -28,6 +29,7 @@
     - exec: sudo mkdir -p /etc/apt/trusted.gpg.d/
     - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
     - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg > /dev/null
+    - exec: echo ". . .Store it . . . . . . . . . . . . . . . . . . . . . . . . "
     - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
     - exec: echo "Prepare answers to Chef installer prompts . . . . . . . . "
     - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
@@ -37,12 +39,21 @@
     - exec: echo "Update aptitude . . . . . . . . . . . . . . "
     - exec: sudo aptitude -y update
     - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
-    - exec: yes yes | sudo aptitude -y install opscode-keyring
+    - exec: sudo aptitude -y -o DPkg::Options::="--force-confnew"  install opscode-keyring
     - exec: echo "Upgrade to latest . . . . . "
     - exec: sudo aptitude -y upgrade
     - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
     - exec: sudo apt-get -y install chef -y
-    - exec: echo "Done preparing Chef hostname ................................................."
+    - exec: echo ". . Register client auth details . . . . . . . . . . . . . . . . . . . . "
+    - exec: sudo cp /etc/chef/client.rb .
+    - exec: sudo chmod a+rw client.rb
+    - exec: sudo echo 'validation_client_name "fltgclds-validator" ' >> ./client.rb
+    - exec: sudo echo 'validation_key         "/etc/chef/fltgclds-validator.pem" ' >> ./client.rb
+    - exec: sudo chmod 640 client.rb
+    - exec: sudo mv client.rb /etc/chef/
+    - exec: echo "Restart daemon ..........................................."
+    - exec: sudo /etc/init.d/chef-client restart
+    - exec: echo "Done preparing Chef ................................................."
     - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
   description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
   name: BootstrapClient
