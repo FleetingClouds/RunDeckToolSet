@@ -11,7 +11,7 @@
         echo $IP_ADDR
         ssh-keygen -R $IP_ADDR
         ssh-keygen -R $RD_OPTION_HOST
-  description: 'This script will remove SSH knowledge of the indicated host by nam and by IP address'
+  description: This script will remove SSH knowledge of the indicated host by name and by IP address
   name: DeleteSSHKey
   uuid: net.fleetingclouds.exceptional.delKey
   group: net/fleetingclouds/exceptional
