@@ -17,5 +17,5 @@
   options:
     Token:
       required: true
-      description: Get your authorization token and paste it here.
+      description: Get your RunDeck authorization token and paste it here.
       value: 3010DE2V29u1VnOoD9U2eosUK07rVC0O
