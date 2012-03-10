@@ -5,9 +5,12 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Preparing Chef client ............................................."
-    - exec: hostname
-    - exec: echo "Done reparing Chef hostname ................................................."
+    - exec: echo "Preparing Chef client ${env.User}........................................"
+    - script: |-
+        cd /home/chef/chef-repo
+        knife node delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+        knife client delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+    - exec: echo "Done preparing Chef hostname ................................................."
   description: This completes the steps on the local host for creating a Chef workstation.
   name: PrepareClient
   uuid: net.fleetingclouds.install.chef.client
@@ -18,9 +21,25 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: loca.*
   group: net/fleetingclouds/install/chef
   options:
+    Environment:
+      required: true
+      value: /home/rundeck/chef-repo
+    Host:
+      required: true
+      value: www.fleetingclouds.net
+    KeyPath:
+      required: true
+      value: /home/chef/.ssh/id_rsa
+    NodeName:
+      required: true
+      value: meta
+    User:
+      required: true
+      value: chef
     sudoPwdRunDeck:
       required: true
+      value: okmmpl,,
       secure: true
