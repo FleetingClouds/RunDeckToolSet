@@ -10,6 +10,7 @@
     - exec: hostname
     - exec: echo "Collect and place pem validator . . . . . . . . . . . . . . . . . . . . . "
     - exec: sudo mkdir -p ${option.ChefWorkDir}
+    - exec: sudo rm -f ${option.ChefWorkDir}/client.pem
     - jobref:
         group: net/fleetingclouds/install/chef
         name: PreBootStrap
@@ -45,10 +46,10 @@
     - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
     - exec: sudo apt-get -y install chef -y
     - exec: echo ". . Register client auth details . . . . . . . . . . . . . . . . . . . . "
-    - exec: sudo cp /etc/chef/client.rb .
+    - exec: sudo cp ${option.ChefWorkDir}/client.rb .
     - exec: sudo chmod a+rw client.rb
     - exec: sudo echo 'validation_client_name "fltgclds-validator" ' >> ./client.rb
-    - exec: sudo echo 'validation_key         "/etc/chef/fltgclds-validator.pem" ' >> ./client.rb
+    - exec: sudo echo 'validation_key         "${option.ChefWorkDir}/fltgclds-validator.pem" ' >> ./client.rb
     - exec: sudo chmod 640 client.rb
     - exec: sudo mv client.rb /etc/chef/
     - exec: echo "Restart daemon ..........................................."
