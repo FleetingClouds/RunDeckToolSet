@@ -1,0 +1,45 @@
+- id: net.fleetingclouds.install.chef.killClient
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Removing all knowledge of node and client named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    - script: |-
+        cd /home/chef/chef-repo
+        knife node delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+        knife client delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+    - exec: echo "Done eliminating ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+  description: This completes the steps on the local host for creating a Chef workstation.
+  name: KillNodeAndClient
+  uuid: net.fleetingclouds.install.chef.killClient
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: loca.*
+  group: net/fleetingclouds/install/chef
+  options:
+    Environment:
+      required: true
+      value: /home/rundeck/chef-repo
+    Host:
+      required: true
+      value: www.fleetingclouds.net
+    KeyPath:
+      required: true
+      value: /home/chef/.ssh/id_rsa
+    NodeName:
+      required: true
+      value: meta
+    User:
+      required: true
+      value: chef
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
