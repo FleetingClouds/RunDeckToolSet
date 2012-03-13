@@ -5,12 +5,13 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    root@${RD_OPTION_HOST}:.
-    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    root@${RD_OPTION_HOST}:.
+    - exec: echo ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}
+    - exec: echo scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
+    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
     - exec: echo  .............................................................
     - script: |-
         # 
-        export COMMAND="spawn ssh root@$RD_OPTION_HOST ; set timeout 60 ; expect "root@meta:" ; sleep 10 ; send \"bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
+        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect "root@meta:" ; sleep 10 ; send \"bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
         # 
         echo Execute this $COMMAND 
         # 
@@ -19,16 +20,16 @@
     - exec: echo  .............................................................
   description: |
     Step Two : Prepare a vacant machine to allow entry exclusively to an administrative user and exclusively by means of SSH cryptographic keys.
-
+    
     This script creates a "rundeck" admin user, and disables all other forms of access except SSH key access by the admin users.
-
+    
        * * This Job is can be run exactly once. * *
-
+    
     A script is pushed to the remote host that does the following : 
      - creates a new user ("rundeck")
      - eliminates UID/PWD logins 
      - moves the authorized keys file from root's account rundeck's account
-
+    
     The script, thereby prohibiting any future root or UID/PWD logins.
   name: CreateAdminUsers
   uuid: net.fleetingclouds.initial.makeAdmins
@@ -38,3 +39,7 @@
       required: true
       description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
+    User:
+      required: true
+      description: 'The authorized user on host : ${option.Host}'
+      value: root

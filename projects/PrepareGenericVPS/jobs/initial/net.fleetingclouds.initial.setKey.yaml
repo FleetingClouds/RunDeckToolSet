@@ -16,7 +16,7 @@
     - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
     - script: |
         #
-        export COMMAND="spawn ssh-copy-id root@$RD_OPTION_HOST ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
+        export COMMAND="spawn ssh-copy-id $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
         #
         echo Execute this $COMMAND
         #
@@ -26,11 +26,11 @@
     - exec: echo " . . . .  . . . .  . . . .  . . . . Done . . . .  . . . .  . . . . "
   description: |
     Step One: Pushes rundeck's SSH key to the remote host.
-
+    
     * * This Job is idempotent.  Multiple executions always have the same end result. * *
-
+    
     Given a remote host, its SSH fingerprint and the password for root, this Job injects an initial SSH key.  It is RunDeck's public key, to be used for all future interactions between RunDeck and the indicated host.
-
+    
     Before doing so it ensures it removes any prior reference to the remote host, both IP address and domain name, so as to force a refresh of that data.
   name: Push RunDeck public key to host
   uuid: net.fleetingclouds.initial.setKey
@@ -45,5 +45,10 @@
       description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
     Password:
-      description: This is the root password for the indicated host.  It should be used just this one time, and never again.
+      required: true
+      description: This is the password for ${option.User} for the host ${option.Host.  It should be used just this one time, and never again.
       value: m7vam9JHYG6glG1d2hdk
+    User:
+      required: true
+      description: 'The user authorized to do this : ${option.User}'
+      value: root
