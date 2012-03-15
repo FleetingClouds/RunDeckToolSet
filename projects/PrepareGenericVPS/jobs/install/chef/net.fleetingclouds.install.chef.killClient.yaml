@@ -8,8 +8,8 @@
     - exec: echo "Removing all knowledge of node and client named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
     - script: |-
         cd /home/chef/chef-repo
-        knife node delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
-        knife client delete meta --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+        knife node delete @option.NodeName@ --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
+        knife client delete @option.NodeName@ --yes --key "/home/chef/chef-repo/.chef/hasanb.pem"
     - exec: echo "Done eliminating ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
   description: This completes the steps on the local host for creating a Chef workstation.
   name: KillNodeAndClient
