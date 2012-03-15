@@ -18,7 +18,11 @@
     - jobref:
         group: net/fleetingclouds/install/chef
         name: PreBootStrap
-        args: -Validator ${option.Validator}
+        args: -Validator ${option.Validator} -Host ${option.Host} -MirrorUrl ${option.MirrorUrl}
+    - exec: echo " + + + + + + "
+    - exec: whoami
+    - exec: pwd
+    - exec: ls -la
     - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}
     - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
     - script: |+
@@ -39,7 +43,6 @@
     - exec: echo "Prepare answers to Chef installer prompts . . . . . . . . "
     - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
     - exec: ls -l ch*.txt
-    - exec: echo " + + + + + + "
     - exec: sudo debconf-set-selections chefPrompts.txt
     - exec: echo "Update aptitude . . . . . . . . . . . . . . "
     - exec: sudo aptitude -y update
@@ -69,13 +72,21 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cont.*
   group: net/fleetingclouds/install/chef
   options:
     ChefWorkDir:
       required: true
       description: One of Chef's working directories
       value: /etc/chef
+    Host:
+      required: true
+      description: The host we will prepare as a Chef client machine.
+      value: www.fleetingclouds.net
+    MirrorUrl:
+      required: true
+      description: URL where we are keeping keys'n things.
+      value: http://openerpns.warehouseman.com/downloads/chef
     NodeName:
       required: true
       description: The name of the node and client that will be created.
