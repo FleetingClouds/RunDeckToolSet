@@ -11,9 +11,9 @@
     - exec: echo  .............................................................
     - script: |-
         # 
-        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect "root@meta:" ; sleep 10 ; send \"bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
+        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect "$RD_OPTION_USER@$RD_OPTION_HOST:" ; sleep 10 ; send \"sudo bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
         # 
-        echo Execute this $COMMAND 
+        echo Execute this == $COMMAND ==
         # 
         eval expect -c "'$COMMAND'" 
         #
@@ -23,14 +23,14 @@
     
     This script creates a "rundeck" admin user, and disables all other forms of access except SSH key access by the admin users.
     
-       * * This Job is can be run exactly once. * *
+       * * This Job can be run exactly once. * *
     
     A script is pushed to the remote host that does the following : 
      - creates a new user ("rundeck")
      - eliminates UID/PWD logins 
-     - moves the authorized keys file from root's account rundeck's account
+     - moves the authorized keys file from the original login user's account to rundeck's account
     
-    The script, thereby prohibiting any future root or UID/PWD logins.
+    The script, thereby prohibits any future root or UID/PWD logins.
   name: CreateAdminUsers
   uuid: net.fleetingclouds.initial.makeAdmins
   group: net/fleetingclouds/initial
@@ -43,3 +43,7 @@
       required: true
       description: 'The authorized user on host : ${option.Host}'
       value: root
+    sudoPwdRunDeck:
+      required: true
+      description: Admin user's password
+      secure: true
