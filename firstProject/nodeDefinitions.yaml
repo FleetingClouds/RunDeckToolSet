@@ -74,4 +74,19 @@ chef.www.fleetingclouds.net:
   sudo-prompt-max-timeout: "15000"
 
 
+cgf.justtrade.net:
+  description: Host for Common Good Finance R-Credits
+  hostname: cgf.justtrade.net
+  nodename: cgf
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: rundeck
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "15000"
+  sudo-prompt-max-timeout: "15000"
+
 
