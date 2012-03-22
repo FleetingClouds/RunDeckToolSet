@@ -9,12 +9,12 @@
     - jobref:
         group: net/fleetingclouds/initial
         name: Push RunDeck public key to host
-        args: -FingerPrint ${option.FingerPrint} -Host ${option.Host} -Password ${option.Password}
+        args: -FingerPrint ${option.FingerPrint} -Host ${option.Host} -Password ${option.Password} -User ${option.User}
     - exec: echo " . . . .  . . . .  . . . . Run Second Step  . . . .  . . . .  . . . .  . . . . "
     - jobref:
         group: net/fleetingclouds/initial
         name: CreateAdminUsers
-        args: -Host ${option.Host}
+        args: -Host ${option.Host} -User ${option.User}
     - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
     - script: |
         echo "*******************************************************************"
@@ -35,7 +35,7 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 83:24:2b:17:31:4d:4a:1a:d8:67:cd:ec:d4:31:fc:96
+      value: 95:aa:d1:17:ed:68:c9:25:be:e7:8a:fc:cf:c7:ac:c3
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
@@ -43,4 +43,8 @@
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: fcyR5OXqK1jn4Y46muen
+      value: Hbr91NGi3J6qhob5lXht
+    User:
+      required: true
+      description: 'The user authorized to do this : ${option.User}'
+      value: root

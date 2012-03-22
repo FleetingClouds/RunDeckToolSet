@@ -1,0 +1,34 @@
+- id: net.fleetingclouds.install.installRuby
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Preparing Ruby engine ............................................."
+    - exec: sudo pwd
+    - exec: sudo dpkg --configure -a
+    - exec: sudo apt-get -y install ruby ruby-dev libopenssl-ruby rdoc ri irb build-essential wget ssl-cert curl
+    - exec: echo "Get Ruby Gems installer . . . . . . . . "
+    - exec: wget http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
+    - exec: tar zxf rubygems-1.8.10.tgz
+    - exec: sudo ruby ./rubygems-1.8.10/setup.rb --no-format-executable
+    - exec: echo "Done preparing Ruby engine ................................................."
+  description: This installs Ruby and Gems
+  name: PrepareRuby
+  uuid: net.fleetingclouds.install.installRuby
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install/ruby
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true

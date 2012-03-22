@@ -1,0 +1,36 @@
+- id: net.fleetingclouds.install.chef.pre-bootstrap
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Send across Chef client prerequisite files . . . . . . . . . . . . . . . . "
+    - exec: wget ${option.MirrorUrl}/${option.Validator}
+    - exec: scp ${option.Validator} ${option.Host}:.
+    - exec: rm -f  ${option.Validator}
+    - exec: wget ${option.MirrorUrl}/${option.ClientKey}
+    - exec: scp ${option.ClientKey} ${option.Host}:.
+    - exec: rm -f  ${option.ClientKey}
+    - exec: echo "Sent across Chef client prerequisite files . . . . . . . . . . . . . . . . "
+  description: Passes prerequisite files over to the remote client.
+  name: PreBootStrap
+  uuid: net.fleetingclouds.install.chef.pre-bootstrap
+  group: net/fleetingclouds/install/chef
+  options:
+    ClientKey:
+      required: true
+      description: Opscode's Chef public hosting access validation key file name for single individualss.
+      value: hasanb.pem
+    Host:
+      required: true
+      description: The host we will prepare as a Chef client machine.
+      value: www.fleetingclouds.net
+    MirrorUrl:
+      required: true
+      description: URL where we are keeping keys'n things.
+      value: http://openerpns.warehouseman.com/downloads/chef
+    Validator:
+      required: true
+      description: Opscode's Chef public hosting access validation key file name.
+      value: fltgclds-validator.pem
