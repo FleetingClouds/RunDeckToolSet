@@ -6,9 +6,63 @@
     strategy: node-first
     commands:
     - exec: echo "Preparing Chef client ............................................."
-    - exec: cd /home/chef/chef-repo  &&  knife bootstrap ${option.Host} -x rundeck -i ${option.KeyPath} --sudo
-    - exec: echo "Done preparing Chef hostname ................................................."
-  description: ** THIS DOES NOT WORK IF WORKSTATION IS LOCALHOST ** From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
+    - exec: sudo pwd
+    - exec: echo "Eliminate the existing - ${option.NodeName} - if one is defined already. . . . . . . . ."
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: KillNodeAndClient
+        args: -NodeName ${option.NodeName}
+    - exec: echo "Collect and place pem validator . . . . . . . . . . . . . . . . . . . . . "
+    - exec: sudo mkdir -p ${option.ChefWorkDir}
+    - exec: sudo rm -f ${option.ChefWorkDir}/client.pem
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: PreBootStrap
+        args: -Validator ${option.Validator} -Host ${option.Host} -MirrorUrl ${option.MirrorUrl}
+    - exec: echo " + + + + + + "
+    - exec: whoami
+    - exec: pwd
+    - exec: ls -la
+    - exec: sudo mv ${option.Validator} ${option.ChefWorkDir}
+    - exec: echo "Register OpsCode as apt repo. . . . . . . . . . . . . "
+    - script: |+
+        VER=`lsb_release -cs`
+        echo ${VER}
+        DEB="deb http://apt.opscode.com/ ${VER}-0.10 main"
+        echo ${DEB} | tee  ./opscode.list
+
+    - exec: sudo mv opscode.list /etc/apt/sources.list.d/
+    - exec: echo "Get its GPG key . . . . . . . . . . . . . . . . . . . "
+    - exec: gpg --fetch-key http://apt.opscode.com/packages@opscode.com.gpg.key > /dev/null
+    - exec: echo "Make a directory for the key ring . . . . . . . . . . . . . . . . . . "
+    - exec: sudo mkdir -p /etc/apt/trusted.gpg.d/
+    - exec: echo "Get packages key ring. . . . . . . . . . . . . . . . . . . . . "
+    - exec: gpg --export packages@opscode.com | tee ./opscode-keyring.gpg > /dev/null
+    - exec: echo ". . .Store it . . . . . . . . . . . . . . . . . . . . . . . . "
+    - exec: sudo mv ./opscode-keyring.gpg /etc/apt/trusted.gpg.d/
+    - exec: echo "Prepare answers to Chef installer prompts . . . . . . . . "
+    - exec: echo "chef chef/chef_server_url string https://api.opscode.com/organizations/fltgclds" | cat > chefPrompts.txt
+    - exec: ls -l ch*.txt
+    - exec: sudo debconf-set-selections chefPrompts.txt
+    - exec: echo "Update aptitude . . . . . . . . . . . . . . "
+    - exec: sudo aptitude -y update
+    - exec: echo "Prepare a permanent upgradeable keyring. . . . . . . "
+    - exec: sudo aptitude -y -o DPkg::Options::="--force-confnew"  install opscode-keyring
+    - exec: echo "Upgrade to latest . . . . . "
+    - exec: sudo aptitude -y upgrade
+    - exec: echo "Ready to install chef. . . . . . . . . . . . . . "
+    - exec: sudo apt-get -y install chef -y
+    - exec: echo ". . Register client auth details . . . . . . . . . . . . . . . . . . . . "
+    - exec: sudo chown -R rundeck:rundeck ${option.ChefWorkDir}
+    - exec: echo 'validation_client_name "fltgclds-validator" ' >> ${option.ChefWorkDir}/client.rb
+    - exec: echo 'validation_key         "${option.ChefWorkDir}/fltgclds-validator.pem" ' >> ${option.ChefWorkDir}/client.rb
+    - exec: echo "Give conf files to Chef."
+    - exec: sudo chown -R chef:chef ${option.ChefWorkDir}
+    - exec: echo "Restart daemon ..........................................."
+    - exec: sudo /etc/init.d/chef-client restart
+    - exec: echo "Done preparing Chef ................................................."
+    - exec: echo ". . . . . . . . . . . . . . . . . . . . . . . . . . . . "
+  description: From a properly configured Chef workstation this sends across the bootstrap scripts to the client,.
   name: BootstrapClient
   uuid: net.fleetingclouds.install.chef.bootstrap
   nodefilters:
@@ -18,14 +72,31 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: localhost
+      name: cont.*
   group: net/fleetingclouds/install/chef
   options:
+    ChefWorkDir:
+      required: true
+      description: One of Chef's working directories
+      value: /etc/chef
     Host:
       required: true
-      description: The host to prepare.
+      description: The host we will prepare as a Chef client machine.
       value: www.fleetingclouds.net
-    KeyPath:
+    MirrorUrl:
       required: true
-      description: Absolute path toRunDeck's copy of Chef's SSH key for this host.
-      value: /home/rundeck/.ssh/id_rsa
+      description: URL where we are keeping keys'n things.
+      value: http://openerpns.warehouseman.com/downloads/chef
+    NodeName:
+      required: true
+      description: The name of the node and client that will be created.
+      value: meta
+    Validator:
+      required: true
+      description: Opscode's Chef public hosting access validation key file name.
+      value: fltgclds-validator.pem
+    sudoPwdRunDeck:
+      required: true
+      description: Chef's password.
+      value: okmmpl,,
+      secure: true
