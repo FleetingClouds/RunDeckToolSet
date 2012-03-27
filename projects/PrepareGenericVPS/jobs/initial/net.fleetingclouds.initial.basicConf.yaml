@@ -35,7 +35,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cont.*
   group: net/fleetingclouds/initial
   options:
     sudoPwdRunDeck:

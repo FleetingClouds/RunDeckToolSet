@@ -40,6 +40,21 @@ continuous.warehouseman.com:
   sudo-prompt-max-timeout: "15000"
 
 
+test7.warehouseman.com:
+  description: Local test server
+  hostname: test7.warehouseman.com
+  nodename: test7
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 3.0.0-16-server
+  tags: ''
+  username: rundeck
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "15000"
+  sudo-prompt-max-timeout: "15000"
+
 gateway.fleetingclouds.net:
   description: Gateway for fleetingclouds.net
   hostname: gateway.fleetingclouds.net
