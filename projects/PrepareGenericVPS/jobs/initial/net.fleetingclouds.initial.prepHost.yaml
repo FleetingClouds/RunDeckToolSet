@@ -33,17 +33,16 @@
   group: net/fleetingclouds/initial
   options:
     FingerPrint:
-      required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 95:aa:d1:17:ed:68:c9:25:be:e7:8a:fc:cf:c7:ac:c3
+      value: 29:94:90:f9:68:1a:e7:56:05:b5:85:23:3f:a3:e2:63
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: www.fleetingclouds.net
+      value: cgf.justtrade.net
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: Hbr91NGi3J6qhob5lXht
+      value: uKa7Uk4UyV2pJiu2zs8p
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'

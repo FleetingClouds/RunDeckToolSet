@@ -5,6 +5,14 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo "Preparing Ruby engine ............................................."
+    - exec: sudo dpkg --configure -a
+    - exec: sudo apt-get -y install ruby ruby-dev libopenssl-ruby rdoc ri irb build-essential wget ssl-cert curl
+    - exec: echo "Get Ruby Gems installer . . . . . . . . "
+    - exec: wget http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
+    - exec: tar zxf rubygems-1.8.10.tgz
+    - exec: sudo ruby ./rubygems-1.8.10/setup.rb --no-format-executable
+    - exec: echo "Done preparing Ruby engine ................................................."
     - exec: echo "Preparing Chef client ............................................."
     - exec: sudo pwd
     - exec: echo "Eliminate the existing - ${option.NodeName} - if one is defined already. . . . . . . . ."
@@ -72,7 +80,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cont.*
+      name: cgf.*
   group: net/fleetingclouds/install/chef
   options:
     ChefWorkDir:
@@ -82,7 +90,7 @@
     Host:
       required: true
       description: The host we will prepare as a Chef client machine.
-      value: www.fleetingclouds.net
+      value: cgf.justtrade.net
     MirrorUrl:
       required: true
       description: URL where we are keeping keys'n things.
@@ -90,7 +98,7 @@
     NodeName:
       required: true
       description: The name of the node and client that will be created.
-      value: meta
+      value: cgf
     Validator:
       required: true
       description: Opscode's Chef public hosting access validation key file name.
