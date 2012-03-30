@@ -8,6 +8,7 @@
     - jobref:
         group: net/fleetingclouds/initial
         name: PushOverSomeInitializationScripts
+        args: -Host ${option.Host}
     - exec: echo "We will use aptitude rather than apt-get .................."
     - exec: sudo apt-get -y update
     - exec: echo "Updated  .................................................."
@@ -23,6 +24,8 @@
     - exec: sudo aptitude -y purge apache2.2-bin
     - exec: sudo aptitude -y purge apache2-utils
     - exec: sudo aptitude -y purge apache2-doc
+    - exec: echo "Set hosts file definitively to ${option.Host}"
+    - exec: sudo ./defineHosts.sh ${option.Host}
     - exec: echo "Finished  .................................................."
   description: 'Steps Three & Four: This script does the basic initial configurations
     required by all Fleeting Clouds hosts'
@@ -35,10 +38,15 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cont.*
+      name: cgf.*
   group: net/fleetingclouds/initial
   options:
+    Host:
+      required: true
+      description: the host where the file should go
+      value: cgf.justtrade.net
     sudoPwdRunDeck:
+      required: true
       description: The password the script must use for sudo steps.
       value: okmmpl,,
       secure: true
