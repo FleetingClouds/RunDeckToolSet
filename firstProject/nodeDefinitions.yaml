@@ -36,8 +36,8 @@ continuous.warehouseman.com:
   myProperty: CanWeSeeThisFromOurScripts
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
-  sudo-response-max-timeout: "15000"
-  sudo-prompt-max-timeout: "15000"
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
 
 
 test7.warehouseman.com:
@@ -52,8 +52,8 @@ test7.warehouseman.com:
   username: rundeck
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
-  sudo-response-max-timeout: "15000"
-  sudo-prompt-max-timeout: "15000"
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
 
 gateway.fleetingclouds.net:
   description: Gateway for fleetingclouds.net
@@ -68,8 +68,8 @@ gateway.fleetingclouds.net:
   myProperty: CanWeSeeThisFromOurScripts
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
-  sudo-response-max-timeout: "15000"
-  sudo-prompt-max-timeout: "15000"
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
 
 chef.www.fleetingclouds.net:
   description: Use this for accessing www.fleetingclouds in the Chef role
@@ -85,8 +85,8 @@ chef.www.fleetingclouds.net:
   myProperty: Use this for accessing www.fleetingclouds in the Chef role
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
-  sudo-response-max-timeout: "15000"
-  sudo-prompt-max-timeout: "15000"
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
 
 
 cgf.justtrade.net:
@@ -101,7 +101,7 @@ cgf.justtrade.net:
   username: rundeck
   sudo-command-enabled: "true"
   sudo-password-option: option.sudoPwdRunDeck
-  sudo-response-max-timeout: "15000"
-  sudo-prompt-max-timeout: "15000"
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
 
 
