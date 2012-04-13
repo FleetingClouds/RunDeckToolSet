@@ -16,6 +16,34 @@
         name: CreateAdminUsers
         args: -Host ${option.Host} -User ${option.User}
     - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
+    - script: |-
+        cat > ./fixSSH.sh <<-EOF
+        declare HOST=@option.Host@
+        echo \$HOST 
+        declare IP_ADDR=\`echo \$HOST | nslookup | grep Address | sed '1,1d' | sed s/Address://g\`
+        echo \$IP_ADDR
+        ssh-keygen -R \$IP_ADDR
+        ssh-keygen -R \$HOST
+
+        declare CONFIRM="Are you sure you want to continue connecting (yes/no)?"
+        declare AUTHENTICATE="(current) UNIX password:"
+        declare FIRST_PASS_PROMPT="Enter new UNIX password:"
+        declare SECOND_PROMPT="Retype new UNIX password:"
+        declare NEW_PASS="@option.NewPass@"
+
+        expect -c "spawn ssh \$HOST  ; set timeout 60 ; expect -re \\"\${CONFIRM}\\" ; sleep 20 ; send yes\n ; expect -re \\"\${AUTHENTICATE}\\"  ; sleep 20 ; send okokok\n ; expect -re \\"\${FIRST_PASS_PROMPT}\\"  ; sleep 20 ; send \${NEW_PASS}\n ; expect -re \\"\${SECOND_PROMPT}\\"  ; sleep 20 ; send \${NEW_PASS}\n ; interact "
+
+        EOF
+
+        chmod a+x fixSSH.sh
+
+        echo "*******************************************************************"  
+        echo "****"  
+        echo "**** A script to update SSH recognition AND password on the "  
+        echo "**** host $RD_OPTION_HOST has been written as "  
+        echo -n "**** " && echo -n `pwd` && echo "/fixSSH.sh "  
+        echo "****"  
+        echo "*******************************************************************"
     - script: |
         echo "*******************************************************************"
         echo "****"
@@ -33,16 +61,16 @@
   group: net/fleetingclouds/initial
   options:
     FingerPrint:
+      required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 29:94:90:f9:68:1a:e7:56:05:b5:85:23:3f:a3:e2:63
+      value: 2f:db:86:9d:20:99:9c:49:5c:e7:a5:38:13:c6:31:41
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: cgf.justtrade.net
+      value: www.fleetingclouds.net
     Password:
-      required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: uKa7Uk4UyV2pJiu2zs8p
+      value: J6ky4CySCcqS7nsief22
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
