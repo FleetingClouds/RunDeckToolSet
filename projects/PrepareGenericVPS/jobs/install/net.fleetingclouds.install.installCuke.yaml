@@ -1,0 +1,46 @@
+- id: net.fleetingclouds.install.installCuke
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Preparing Ccumber dependencies ............................................."
+    - exec: sudo aptitude -y update
+    - exec: sudo aptitude -y upgrade
+    - exec: sudo aptitude -y install libxml2 libxml2-dev libxslt-ruby libxslt-dev
+    - exec: sudo aptitude -y install ri irb build-essential wget ssl-cert curl
+    - exec: sudo aptitude -y install x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic ttf-ubuntu-title
+    - exec: sudo aptitude -y install ruby rdoc libopenssl-ruby  ruby-dev
+    - exec: sudo aptitude -y install libcanberra-gtk-module xvfb firefox
+    - exec: echo "Get Ruby Gems installer . . . . . . . . "
+    - exec: wget http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
+    - exec: tar zxf rubygems-1.8.10.tgz
+    - exec: sudo ruby ./rubygems-1.8.10/setup.rb --no-format-executable
+    - exec: echo "Done preparing Ruby engine ................................................."
+    - exec: sudo ln -s /usr/bin/gem1.8 /usr/local/bin/gem
+    - exec: sudo gem install rails
+    - exec: sudo gem install capybara
+    - exec: sudo gem install rspec
+    - exec: sudo gem install cucumber
+    - exec: sudo gem install headless
+    - exec: echo "Done preparing Cucumber ................................................."
+  description: |
+    This installs all the bits required to run Cucumber in headless mode.
+  name: PrepareCucumber
+  uuid: net.fleetingclouds.install.installCuke
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/cuke
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
