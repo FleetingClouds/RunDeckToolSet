@@ -1,0 +1,99 @@
+- id: net.fleetingclouds.manage.openerp.restore
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - script: |-
+        #
+        # Begin
+        # The first step is to drop the unwanted database if it exists.
+        #
+        declare DROP=1
+        declare CREATE=2
+        declare BOTH=3
+        #
+        if ((    $(($DROP & @option.DropAndOrCreate@)) == $DROP    )); then
+          dropdb -U @option.DatabaseUserName@  -h @option.DatabaseHost@ -p @option.DatabasePortNumber@ @option.DatabaseName@
+          echo "Database dropped."
+          #
+        fi
+        #
+        if ((    $(($CREATE & @option.DropAndOrCreate@)) == $CREATE    )); then
+          #
+          echo createdb -e -U @option.DatabaseUserName@  -h @option.DatabaseHost@ -p @option.DatabasePortNumber@ -T template0 @option.DatabaseName@
+          createdb -e -U @option.DatabaseUserName@  -h @option.DatabaseHost@ -p @option.DatabasePortNumber@ -T template0 @option.DatabaseName@
+          echo "Database created."
+        fi
+        #
+        #
+        ## The last step is to restore the database into the newly created one.
+        # We make a substitution variable for the backup file
+        #
+        export theDateCode=@option.01_YearMonth@@option.02_BackupDay@@option.03_HourMinute@
+        export theArchiveName=@option.BackupFileNamePrefix@@option.DatabaseName@_${theDateCode}.@option.BackupFileNameSuffix@
+        echo Restoring archive : ${theArchiveName}
+        #
+        # Now we can restore the old data to the empty database
+
+        # (Check that you get : 'CREATE DATABASE "Your_NEW_Database_Name" TEMPLATE template0;')
+        pg_restore -v -Fc -d @option.DatabaseName@ -U @option.DatabaseUserName@  -h @option.DatabaseHost@ -p @option.DatabasePortNumber@ ~/databaseBackups/${theArchiveName}
+        #
+        #
+        #      ¡ ¡ ¡ We now have a new copy of the previous database ! ! !
+        #
+        #
+  description: This job can be used to restore a previously recorded back up.  It will over write whatever is currently in the indicated database.
+  name: RestoreDataBase
+  uuid: net.fleetingclouds.manage.openerp.restore
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: 'net/fleetingclouds/manage/openerp '
+  options:
+    01_YearMonth:
+      required: true
+      description: The year and month component of the date of the back up file
+      value: '1204'
+    02_BackupDay:
+      required: true
+      description: The day when the backup was recorded
+      value: '07'
+    03_HourMinute:
+      required: true
+      description: The hour and minute when the backup was recorded
+      value: '1834'
+    BackupFileNamePrefix:
+      required: true
+      description: Some sort of project identifier.
+      value: OpenERP_
+    BackupFileNameSuffix:
+      required: true
+      description: Some kind of file extension (.backup, archive, temp)
+      value: backup
+    DatabaseHost:
+      required: true
+      description: The host address through which PostgreSQL listens.
+      value: 127.0.0.1
+    DatabaseName:
+      required: true
+      description: The name of the database you want to backup
+      value: esrd
+    DatabasePortNumber:
+      required: true
+      description: The port through which PostgreSQL listens
+      value: '5432'
+    DatabaseUserName:
+      required: true
+      description: The authorized user.
+      value: openerp
+    DropAndOrCreate:
+      required: true
+      description: 0 = neither, 1 = drop,  2 = create, 3 = both of the indicated database.
+      value: '3'

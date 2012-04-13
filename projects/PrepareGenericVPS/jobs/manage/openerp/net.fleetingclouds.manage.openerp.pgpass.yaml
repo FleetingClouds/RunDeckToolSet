@@ -1,0 +1,70 @@
+- id: net.fleetingclouds.manage.openerp.pgpass
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - script: |-
+        # Begin
+        # Go to our home directory
+        # (Check that you get : /home/yourUserID)
+        cd ~/
+        pwd
+        #
+        # First we need a directory in which to keep our backup files ...
+        mkdir -p ~/databaseBackups
+        #
+        # (Check that you get : drwxr-xr-x 2 yourUserID yourGroup nn yr-mt-dy hr:mn databaseBackups)
+        ls -dl da*
+        #
+        # We'll be running our commands from our home directory but the activity will be in "databaseBackups"
+        #
+        # echo @option.DatabaseHost@:@option.DatabasePortNumber@:@option.DatabaseUserName@:@option.DatabasePassword@
+        #
+        # Next we want to create a private password file
+        cat > .pgpass  <<EOF
+        @option.DatabaseHost@:@option.DatabasePortNumber@:*:@option.DatabaseUserName@:@option.DatabasePassword@
+        EOF
+        #
+        # Did that worked as expected?
+        # (Check that you get : YourDatabaseHost:YourDatabasePortNumber:*:YourDatabaseUserName:YourDatabasePassword)
+        #cat .pgpass
+        #
+        # ... but, even so, Postgres will ignore it if it isn't really private, so :
+        chmod 600 .pgpass
+        #
+        # The -rw------- means only you can read and write it.
+        # (Check that you get : -rw------- 1 yourUserID yourGroup nn yr-mt-dy hr:mn .pgpass)
+        ls -la .pgpass
+        #
+        #
+        # End 
+  description: ''
+  name: MakeDataBasePassKey
+  uuid: net.fleetingclouds.manage.openerp.pgpass
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: 'net/fleetingclouds/manage/openerp '
+  options:
+    DatabaseHost:
+      required: true
+      description: The host address through which PostgreSQL listens
+      value: 127.0.0.1
+    DatabasePassword:
+      required: true
+      description: The authorized user's password
+      value: wdsGHjd5FMrgAvmNsThD
+    DatabasePortNumber:
+      required: true
+      description: The port through which PostgreSQL listens
+      value: '5432'
+    DatabaseUserName:
+      description: The authorized user.
+      value: openerp

@@ -1,0 +1,28 @@
+- id: net.fleetingclouds.manage.openerp.stop
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: sudo /etc/init.d/openerp-web stop
+    - exec: sudo /etc/init.d/openerp-server stop
+    - exec: sudo /etc/init.d/postgresql restart
+    - exec: ps aux | grep openerp
+  description: This job can be used to restore a previously recorded back up.  It will over write whatever is currently in the indicated database.
+  name: StopServers
+  uuid: net.fleetingclouds.manage.openerp.stop
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: 'net/fleetingclouds/manage/openerp '
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true

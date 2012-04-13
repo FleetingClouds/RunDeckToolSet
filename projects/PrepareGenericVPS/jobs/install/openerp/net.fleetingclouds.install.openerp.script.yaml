@@ -1,0 +1,19 @@
+- id: net.fleetingclouds.install.openerp.script
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " ==  ==  ==  Starting  ==  ==  == "
+    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/completeTheInstallOfOpenERP.sh  ${RD_OPTION_HOST}:.
+    - exec: echo "    ==  ==  ==    Done    ==  ==  == "
+  description: This pushes over to the indicated client a final configuration script for OpenERP.
+  name: ProvideOpenERPscript
+  uuid: net.fleetingclouds.install.openerp.script
+  group: net/fleetingclouds/install/openerp
+  options:
+    Host:
+      required: true
+      description: The host requiring the script to finalize OpenERP configuration.
+      value: www.fleetingclouds.net
