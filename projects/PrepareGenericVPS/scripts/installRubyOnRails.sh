@@ -1,3 +1,11 @@
+#! /bin/bash 
+# Script that prepares a machine for developing Ruby on Rails
+#
+#
+# Reference pages :
+#  http://ruby.railstutorial.org/ruby-on-rails-tutorial-book
+#  https://rvm.io//rvm/install/
+#
 sudo aptitude -y install pkg-config
 
 mkdir -p ~/installers
