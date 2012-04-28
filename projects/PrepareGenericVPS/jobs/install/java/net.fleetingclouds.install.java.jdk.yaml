@@ -33,7 +33,7 @@
     - exec: sudo pwd
     - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
     - exec: sudo pwd
-  description: This installs Java 7
+  description: This installs Java 7.  Try this sometime wget --no-cookies --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;"  http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-linux-x64.tar.gz    
   name: InstallJava
   uuid: net.fleetingclouds.install.java.jdk
   nodefilters:
