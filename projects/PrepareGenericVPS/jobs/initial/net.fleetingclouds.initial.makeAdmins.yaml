@@ -11,7 +11,7 @@
     - exec: echo  .............................................................
     - script: |-
         # 
-        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect "$RD_OPTION_USER@$RD_OPTION_HOST:" ; sleep 10 ; send \"sudo bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 5 ; send \"exit\n\" ; interact" 
+        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 300 ; expect "$RD_OPTION_USER@$RD_OPTION_HOST:" ; sleep 10 ; send \"sudo bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 15 ; send \"exit\n\" ; interact" 
         # 
         echo Execute this == $COMMAND ==
         # 
