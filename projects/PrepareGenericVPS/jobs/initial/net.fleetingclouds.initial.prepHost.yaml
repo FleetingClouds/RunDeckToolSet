@@ -40,8 +40,8 @@
         echo "*******************************************************************"  
         echo "****"  
         echo "**** A script to update SSH recognition AND password on the "  
-        echo "**** host $RD_OPTION_HOST has been written as "  
-        echo -n "**** " && echo -n `pwd` && echo "/fixSSH.sh "  
+        echo "**** host $RD_OPTION_HOST has been written *locally* as "  
+        echo -n "****      " && echo -n `pwd` && echo "/fixSSH.sh "  
         echo "****"  
         echo "*******************************************************************"
     - script: |
@@ -63,14 +63,15 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 2f:db:86:9d:20:99:9c:49:5c:e7:a5:38:13:c6:31:41
+      value: 5c:6a:18:f3:4e:0c:e0:f2:0d:6c:a6:85:5f:02:47:a6
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
       value: www.fleetingclouds.net
     Password:
+      required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: J6ky4CySCcqS7nsief22
+      value: fd7mnA5bQUEh5onFc0o6
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
