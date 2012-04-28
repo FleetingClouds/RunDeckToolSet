@@ -1,0 +1,32 @@
+- id: net.fleetingclouds.manage.fitnesse.freeupmem
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: true
+    strategy: node-first
+    commands:
+    - exec: sudo service apache2 stop
+    - exec: sudo service mysql stop
+    - exec: sudo service vsftpd stop
+    - exec: sudo service chef-client stop
+    - exec: sudo service jenkins stop
+    - exec: sudo kill -9 $(ps -ef | grep jenkins | grep -v grep | awk '{print $2}')
+    - exec: sudo kill -9 $(ps -ef | grep java | grep -v grep | awk '{print $2}')
+  description: ''
+  name: KillUnwantedServices
+  uuid: net.fleetingclouds.manage.fitnesse.freeupmem
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/manage/fitnesse
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: Chef's password.
+      value: okmmpl,,
+      secure: true
