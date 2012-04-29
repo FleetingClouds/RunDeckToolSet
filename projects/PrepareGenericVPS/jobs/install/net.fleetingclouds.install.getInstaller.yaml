@@ -5,19 +5,35 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo "  >>    ==    ==    ==    net.fleetingclouds.install.getInstaller   ==    ==    ==    ==  "
     - exec: ls -l
     - exec: mkdir -p ${option.InstallersRepository}
-    - script: |-
+    - script: |+
         cd @option.InstallersRepository@
         pwd
-        echo " . . . . Removing prior files . . . . . "
+        echo " . . . . Removing prior files: @option.LogFileName@  ...  and ... @option.DownloadURI@ . . . . . "
         rm -f @option.LogFileName@
-        rm -f @option.InstallerFileName@
-        echo " . . Downloading to ~/installers. . . . "
-        wget -cNb --output-file=@option.LogFileName@ @option.DownloadServer@/@option.InstallerFileName@
+        rm -f @option.TheFileName@
+        if [  @option.CookieTricks@ == 1 ]; then
+          declare PARMS=' --no-cookies --header "@option.CookieTrick@" --background --continue  --output-file=@option.LogFileName@ @option.DownloadURI@'; 
+        else 
+          declare PARMS='--background --continue --output-file=@option.LogFileName@ @option.DownloadURI@/@option.TheFileName@'
+        fi;
+        echo " . . Downloading to @option.InstallersRepository@  . . . . "
+        cat > tmpWGet.sh <<EOF
+        wget ${PARMS}
+        EOF
+        chmod a+x tmpWGet.sh
+        cat tmpWGet.sh
+        ./tmpWGet.sh
+
         echo " . . . . . Download begun now . . . . . "
         ls -l 
+        echo tail -n 25 @option.LogFileName@
         tail -n 25 @option.LogFileName@
+        echo " . . . . . Continuing . . . . . "
+
+    - exec: echo "  ==    ==    ==    ==    net.fleetingclouds.install.getInstaller   ==    ==    ==    || "
   description: |
     This script gets the specified installer program from the specified server.  It downloads in the background, logging activity to the specified file.  Unless otherwise indicated, always writes to a directory called installers, under rundeck's default directory.
   name: GetInstaller
@@ -29,18 +45,30 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: test7.*
   group: net/fleetingclouds/install
   options:
-    DownloadServer:
+    CookieTrick:
       required: true
-      description: The server from which you want to get the installer
-    InstallerFileName:
+      description: Special cookie header
+      value: 'Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u4-downloads-1591156.html;'
+    CookieTricks:
       required: true
-      description: The file you want to get from the indicated server
+      description: Whether or not speicla cookie tricks are required.
+      value: '1'
+    CookieTricksx:
+      required: true
+      description: Trick the server into thinking a cookie has been set correctly.
+      value: '--header \"Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;\" '
+    DownloadURI:
+      required: true
+      description: The source from which you want to get the installer
     InstallersRepository:
       required: true
       description: Single location for all installation scripts
     LogFileName:
       required: true
       description: The name of the log file where download progress will be recorded.
+    TheFileName:
+      required: true
+      description: The file you want to get from the indicated server
