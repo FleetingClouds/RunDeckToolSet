@@ -6,16 +6,34 @@
     strategy: node-first
     commands:
     - exec: echo "Getting Java JDK . . . .   . . . .   . . . .   . . . .   . . . .  "
+    - exec: mkdir -p ${option.InstallersRepository}
     - jobref:
         group: net/fleetingclouds/install/java
         name: GetJava
-        args: -DownloadServer ${option.JdkDownloadServer} -InstallerFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile} -InstallersRepository ${option.InstallersRepository}
+        args: -JdkDownloadServer ${option.JdkDownloadServer}/${option.JdkVersion}/${option.JdkFileName} -InstallersRepository ${option.InstallersRepository} -ProgressFile ${option.ProgressFile} -JdkVersion ${option.JdkFileName}
     - exec: echo "JDK is arriving now . . . .   . . . .   . . . .   . . . .   . . . .  "
     - jobref:
         group: net/fleetingclouds/global
         name: WaitForFileEvent
         args: -Delay 3660 -FailPattern "Not found" -LogFileName  ~/installers/${option.ProgressFile}  -SuccessPattern ${option.SuccessIndicator}
     - exec: echo "It seems to have arrived.  Now install it  . . . .   . . . .   . . . .   . . . .  "
+    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
+    - exec: echo "Create JAVA_HOME directory as ${option.JAVA_HOME}"
+    - exec: sudo mkdir -p ${option.JAVA_HOME}
+    - exec: 'echo "Unpacking from installation directory :: ${option.InstallersRepository}  .
+        . . . . . . . " '
+    - exec: sudo tar zxvf ${option.InstallersRepository}/${option.JdkVersion} -C ${option.JAVA_HOME}
+    - exec: 'sudo ln -sf jdk1.7.0_03/ jdk '
+    - exec: cd $JAVA_HOME && cd .. && sudo chown -R rundeck:rundeck .
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - exec: sudo pwd
     - script: |
         cd /usr/lib/jvm
         echo "Unpacking from installation directory :: @option.InstallersRepository@  . . . .  . . . . "
@@ -29,26 +47,16 @@
         echo "export JAVA_HOME=/usr/lib/jvm/jdk" >> .bashrc 
         echo "PATH=\$PATH:\$JAVA_HOME/bin" >> .bashrc 
         echo "" >> .bashrc 
-    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
-    - exec: echo "Create JAVA_HOME directory as $RD_OPTION_JAVA_HOME
-    - exec: 'sudo mkdir -p $RD_OPTION_JAVA_HOME '
-    - exec: 'echo "Unpacking from installation directory :: @option.InstallersRepository@
-        . . . . . . . . " '
-    - exec: sudo tar zxvf @option.InstallersRepository@/@option.JdkVersion@ -C @option.JAVA_HOME@
-    - exec: 'sudo ln -sf jdk1.7.0_03/ jdk '
-    - exec: cd $JAVA_HOME && cd .. && sudo chown -R rundeck:rundeck .
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-    - exec: sudo pwd
-  description: This installs Java 7
+  description: |-
+    This installs Java 7
+    
+    http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-linux-x64.tar.gz
+    
+    	
+    -InstallersRepository <> 
+    -JdkDownloadServer <http://download.oracle.com/otn-pub/java/jdk/7u3-b04> 
+    -JdkVersion <jdk-7u3-linux-x64.tar.gz> 
+    -ProgressFile <dldJdk.log> 
   name: InstallJava
   uuid: net.fleetingclouds.install.java
   nodefilters:
@@ -58,7 +66,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: test7.*
   group: net/fleetingclouds/install
   options:
     InstallersRepository:
@@ -67,15 +75,23 @@
       value: ~/installers
     JAVA_HOME:
       required: true
-      value: /usr/lib/jvm/jdk
+      value: /usr/lib/jvm
+    JavaHomeDirName:
+      required: true
+      description: Oracl'e root directory name inside the gzipped tar file.
+      value: jdk1.7.0_04
     JdkDownloadServer:
       required: true
       description: The server from which you want to get the JDK
-      value: http://download.oracle.com/otn-pub/java/jdk/7u3-b04
+      value: http://download.oracle.com/otn-pub/java/jdk
+    JdkFileName:
+      required: true
+      description: Oracle's gzipped tar file name
+      value: jdk-7u4-linux-x64.tar.gz
     JdkVersion:
       required: true
       description: The version you want to get from the indicated server
-      value: jdk-7u3-linux-x64.tar.gz
+      value: 7u4-b20
     ProgressFile:
       required: true
       description: A file to keep download results.
@@ -83,4 +99,8 @@
     SuccessIndicator:
       required: true
       description: A Regex for the success report of a download.
-      value: jdk-7u3.*saved
+      value: jdk-7u4.*saved
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
