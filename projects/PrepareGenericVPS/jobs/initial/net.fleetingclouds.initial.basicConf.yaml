@@ -27,6 +27,7 @@
     - exec: echo "Finished  .................................................."
     - exec: sudo aptitude -y install expect
     - exec: echo "Installed expect .................................................."
+    - exec: echo "......................Finished..................................."
   description: 'Steps Three & Four: This script does the basic initial configurations
     required by all Fleeting Clouds hosts'
   name: BasicGeneralInitialConfigurations
@@ -38,7 +39,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: test7.*
   group: net/fleetingclouds/initial
   options:
     Host:
