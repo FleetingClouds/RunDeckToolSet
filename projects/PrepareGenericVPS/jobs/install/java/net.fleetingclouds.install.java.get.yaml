@@ -5,14 +5,25 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: echo "  >>    ==    ==    ==    net.fleetingclouds.install.java.get   ==    ==    ==    ==  "
     - exec: 'echo Starting Java JDK download . . . . .  . . . . .  . . . . .  . .
         . . . '
     - jobref:
         group: net/fleetingclouds/install
         name: GetInstaller
-        args: -DownloadServer ${option.JdkDownloadServer} -InstallerFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile} -InstallersRepository  ${option.InstallersRepository}
+        args: -DownloadURI ${option.JdkDownloadServer} -TheFileName ${option.JdkVersion} -LogFileName ${option.ProgressFile} -InstallersRepository  ${option.InstallersRepository}
     - exec: 'echo JDK download started . . . . .  . . . . .  . . . . .  . . . . . '
-  description: This installs Java 7
+    - exec: echo "  ==    ==    ==    ==    net.fleetingclouds.install.java.get   ==    ==    ==    || "
+  description: |-
+    This installs Java 7
+    
+    
+    -CookieTrick <Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;> 
+    -CookieTricks <1> 
+    -DownloadURI <> 
+    -InstallersRepository <> 
+    -LogFileName <> 
+    -TheFileName <> 
   name: GetJava
   uuid: net.fleetingclouds.install.java.get
   nodefilters:
@@ -22,7 +33,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: test7.*
   group: net/fleetingclouds/install/java
   options:
     InstallersRepository:
