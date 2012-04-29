@@ -5,7 +5,9 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo Will wait @option.Delay@ seconds for either "@option.SuccessPattern@" OR "@option.FailPattern@" to appear in "@option.LogFileName@"
+    - exec: echo Will wait ${option.Delay} seconds for either "${option.FailPattern}" OR "${option.SuccessPattern}" to appear in "${option.LogFileName}"
+    - exec: ls -l ${option.LogFileName}
+    - exec: echo cat ${option.LogFileName}
     - script: |-
         #!/bin/bash
         # Script to collect prepare an empty Jenkins server with an empty Fitnesse wiki.
@@ -108,7 +110,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: test7.*
   group: net/fleetingclouds/global
   options:
     Delay:
