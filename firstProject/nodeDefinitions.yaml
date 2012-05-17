@@ -40,6 +40,22 @@ continuous.warehouseman.com:
   sudo-prompt-max-timeout: "60000"
 
 
+test6.warehouseman.com:
+  description: Local test server
+  hostname: test6.warehouseman.com
+  nodename: test6
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 3.0.0-16-server
+  tags: ''
+  username: rundeck
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
+
+
 test7.warehouseman.com:
   description: Local test server
   hostname: test7.warehouseman.com
