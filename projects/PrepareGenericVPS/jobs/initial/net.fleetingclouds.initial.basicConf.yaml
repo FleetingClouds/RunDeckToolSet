@@ -39,13 +39,13 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test7.*
+      name: test6.*
   group: net/fleetingclouds/initial
   options:
     Host:
       required: true
       description: the host where the file should go
-      value: www.fleetingclouds.net
+      value: test6.warehouseman.com
     sudoPwdRunDeck:
       required: true
       description: The password the script must use for sudo steps.

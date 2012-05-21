@@ -110,7 +110,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test7.*
+      name: test6.*
   group: net/fleetingclouds/global
   options:
     Delay:
