@@ -6,6 +6,8 @@
     strategy: node-first
     commands:
     - exec: echo "  >>    ==    ==    ==    net.fleetingclouds.install.java.get   ==    ==    ==    ==  "
+    - exec: 'echo "Try to tun with :: -DownloadURI ${option.JdkDownloadServer} -TheFileName
+        ${option.JdkVersion} -LogFileName ${option.ProgressFile} -InstallersRepository  ${option.InstallersRepository}"'
     - exec: 'echo Starting Java JDK download . . . . .  . . . . .  . . . . .  . .
         . . . '
     - jobref:
@@ -33,7 +35,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test7.*
+      name: test6.*
   group: net/fleetingclouds/install/java
   options:
     InstallersRepository:
