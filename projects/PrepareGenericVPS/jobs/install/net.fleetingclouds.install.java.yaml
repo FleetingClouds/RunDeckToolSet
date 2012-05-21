@@ -94,6 +94,8 @@
   description: |-
     This installs Java 7
     
+    http://openerpns.warehouseman.com/downloads/jdk-7u4-linux-x64.tar.gz
+      OR
     http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-linux-x64.tar.gz
     
     	
@@ -110,7 +112,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test7.*
+      name: test6.*
   group: net/fleetingclouds/install
   options:
     InstallersRepository:
@@ -127,14 +129,14 @@
     JdkDownloadServer:
       required: true
       description: The server from which you want to get the JDK
-      value: http://download.oracle.com/otn-pub/java/jdk
+      value: http://openerpns.warehouseman.com/downloads
     JdkFileName:
       required: true
       description: Oracle's gzipped tar file name
       value: jdk-7u4-linux-x64.tar.gz
     JdkVersion:
       required: true
-      description: The version you want to get from the indicated server
+      description: The version you want to get from the indicated server eg; 7u4-b20
       value: 7u4-b20
     ProgressFile:
       required: true
