@@ -1,0 +1,15 @@
+- id: net.fleetingclouds.initial.getKnife
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo git clone https://github.com/opscode/chef-repo.git
+    - exec: ls -la
+    - exec: pwd
+    - exec: env
+  description: This sets up the RunDeck user with a copy of Knife.
+  name: GetChefKnife
+  uuid: net.fleetingclouds.initial.getKnife
+  group: net/fleetingclouds/initial
