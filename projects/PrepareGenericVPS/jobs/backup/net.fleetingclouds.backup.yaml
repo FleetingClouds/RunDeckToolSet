@@ -6,7 +6,8 @@
     strategy: node-first
     commands:
     - script: |
-        cd ${RUNDECK_PROJECTS}
+        echo $RD_OPTION_PROJECTSPATH
+        cd $RD_OPTION_PROJECTSPATH
         pwd
         ./backupJobs.sh ${RD_JOB_PROJECT} ${RD_OPTION_TOKEN}
   description: |
@@ -15,6 +16,10 @@
   uuid: net.fleetingclouds.backup
   group: net/fleetingclouds
   options:
+    ProjectsPath:
+      required: true
+      description: The place, serverside, to backup to.
+      value: /var/rundeck/projects
     Token:
       required: true
       description: Get your RunDeck authorization token and paste it here.
