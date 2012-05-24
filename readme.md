@@ -2,6 +2,8 @@ Fleeting Clouds is a suite of RunDeck scripts dedicated to effortless provisioni
 
 This repository contains general scripts for the basic tools used by all development integration and test environments:
 
+Be forewarned that this is still pre-alpha.  You will suffer horribly if you think you will get someting useful here.
+
 Other repositories in this collection (coming soon) are for scripts for specific development projects.  For example :
 
 1. RCredits -- Continuous integration and test environment for https://github.com/CommonGoodFinance/RCredits
