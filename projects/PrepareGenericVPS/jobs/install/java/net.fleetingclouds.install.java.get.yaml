@@ -18,8 +18,8 @@
     - exec: echo "  ==    ==    ==    ==    net.fleetingclouds.install.java.get   ==    ==    ==    || "
   description: |-
     This installs Java 7
-    
-    
+
+
     -CookieTrick <Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;> 
     -CookieTricks <1> 
     -DownloadURI <> 
