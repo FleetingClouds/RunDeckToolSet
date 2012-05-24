@@ -19,8 +19,8 @@
     ProjectsPath:
       required: true
       description: The place, serverside, to backup to.
-      value: /var/rundeck/projects
+      value: /home/yourself/dev/RunDeckToolSet/projects
     Token:
       required: true
       description: Get your RunDeck authorization token and paste it here.
-      value: 3010DE2V29u1VnOoD9U2eosUK07rVC0O
+      value: Vd48OC2S01O4P4ESvERcp5KesdOV8R3d
