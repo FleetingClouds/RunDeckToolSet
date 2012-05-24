@@ -57,7 +57,7 @@
         echo "*******************************************************************"
   description: |-
     Calls Steps One & Two
-
+    
     To determine the default Fingerprint for the remote machine, simply attempt an SSH connection to it.  It will report an unknown host, and display its fingerprint-
   name: PrepareHost
   uuid: net.fleetingclouds.initial.prepHost

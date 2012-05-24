@@ -93,11 +93,11 @@
     - exec: sudo pwd
   description: |-
     This installs Java 7
-
+    
     http://openerpns.warehouseman.com/downloads/jdk-7u4-linux-x64.tar.gz
       OR
     http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-linux-x64.tar.gz
-
+    
     	
     -InstallersRepository <> 
     -JdkDownloadServer <http://download.oracle.com/otn-pub/java/jdk/7u3-b04> 
