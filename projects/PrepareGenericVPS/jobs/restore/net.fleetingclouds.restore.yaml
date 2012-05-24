@@ -6,7 +6,7 @@
     strategy: node-first
     commands:
     - script: |
-        cd ${RUNDECK_PROJECTS}
+        cd ${RD_OPTION_PROJECTSPATH}
         ls -la
         ./restoreJobs.sh ${RD_JOB_PROJECT} ${RD_OPTION_TOKEN}
   description: |
@@ -15,6 +15,11 @@
   uuid: net.fleetingclouds.restore
   group: net/fleetingclouds
   options:
+    ProjectsPath:
+      required: true
+      description: The place, serverside, to restore from.
+      value: /var/rundeck/projects
     Token:
       required: true
       description: Get your authorization token and paste it here.
+      value: Vd48OC2S01O4P4ESvERcp5KesdOV8R3d
