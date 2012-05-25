@@ -6,9 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo "Copying  . . . .  . . . .  . . . .  "
-    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
-    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/toggleAptCache.sh  ${RD_OPTION_HOST}:.
-    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/defineHosts.sh  ${RD_OPTION_HOST}:.
+    - exec: 'echo The path that scp will use : ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}'
+    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/toggleAptCache.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/defineHosts.sh  ${RD_OPTION_HOST}:.
     - exec: echo ". . . .  . . . .  . . . .  Done . . . .  . . . .  . . . .  "
   description: 'Step Three: This script copies shell scripts over to the default directory
     of the user''s account in the indicated remote host.'
@@ -19,4 +20,8 @@
     Host:
       required: true
       description: the host where the file should go
-      value: www.fleetingclouds.net
+      value: cgf.justtrade.net
+    ProjectsPath:
+      required: true
+      description: 'The root directory of scripts and jobs '
+      value: /home/yourself/dev/RunDeckToolSet/projects
