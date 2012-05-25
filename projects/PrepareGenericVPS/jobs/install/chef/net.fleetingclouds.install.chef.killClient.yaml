@@ -23,7 +23,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: loca.*
+      name: cgf.*
   group: net/fleetingclouds/install/chef
   options:
     Environment:
@@ -31,4 +31,4 @@
       value: /home/chef/chef-repo
     NodeName:
       required: true
-      value: meta
+      value: cgf

@@ -22,7 +22,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test6.*
+      name: cgf.*
   group: net/fleetingclouds/install
   options:
     sudoPwdRunDeck:

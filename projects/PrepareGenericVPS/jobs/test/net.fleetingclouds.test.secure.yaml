@@ -5,15 +5,28 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Start ..."
+    - exec: echo "Start 1 ..."
     - exec: sudo pwd
-    - exec: echo "... End"
-  description: This tests the use of a secure option on the local machine, calling a second script that also uses a secure option.
+    - jobref:
+        group: net/fleetingclouds/test
+        name: TestSecureOption2
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "... End 1"
+  description: This tests the use, on a remote machine, of a job using a secure option and calling a second job that uses the same secure option.
   name: TestSecureOption
   uuid: net.fleetingclouds.test.secure
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
   group: net/fleetingclouds/test
   options:
     sudoPwdRunDeck:
       required: true
       value: okmmpl,,
       secure: true
+      valueExposed: true

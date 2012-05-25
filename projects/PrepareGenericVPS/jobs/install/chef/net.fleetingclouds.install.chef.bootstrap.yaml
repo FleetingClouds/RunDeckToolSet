@@ -98,7 +98,7 @@
     NodeName:
       required: true
       description: The name of the node and client that will be created.
-      value: meta
+      value: cgf
     Validator:
       required: true
       description: Opscode's Chef public hosting access validation key file name.
