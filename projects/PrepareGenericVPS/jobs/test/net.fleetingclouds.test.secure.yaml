@@ -1,0 +1,19 @@
+- id: net.fleetingclouds.test.secure
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start ..."
+    - exec: sudo pwd
+    - exec: echo "... End"
+  description: This tests the use of a secure option on the local machine, calling a second script that also uses a secure option.
+  name: TestSecureOption
+  uuid: net.fleetingclouds.test.secure
+  group: net/fleetingclouds/test
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
