@@ -1,0 +1,29 @@
+- id: net.fleetingclouds.test.secure2
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start 2 ..."
+    - exec: sudo pwd
+    - exec: echo "... End 2"
+  description: |-
+    This tests the use, on a remote machine, of a secure option on a job called from another job.
+    
+    The specified password is deliberately incorrect to confirm that the calling job can override the bad value with a correct one.
+  name: TestSecureOption2
+  uuid: net.fleetingclouds.test.secure2
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/test
+  options:
+    sudoPwdRunDeck:
+      value: badpassword
+      secure: true
