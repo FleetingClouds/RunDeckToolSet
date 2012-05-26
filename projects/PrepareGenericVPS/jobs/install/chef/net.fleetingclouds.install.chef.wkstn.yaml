@@ -6,19 +6,21 @@
     strategy: node-first
     commands:
     - exec: echo "Preparing Chef workstation ............................................."
-    - exec: pwd
+    - script: |
+        echo " * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * "
+        echo " * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * "
+        echo " * * *                                                          * * * "
+        echo " * * *              This will not work                          * * * "
+        echo " * * *   RunDeck can't yet run jobs locally as root             * * * "
+        echo " * * *    You will have to do it manually for now               * * * "
+        echo " * * *                                                          * * * "
+        echo " * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * "
+        echo " * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * "
+    - exec: cd $SCRIPS_DIR  &&  sudo ./installChefWkstn.sh
     - exec: echo "Done reparing Chef workstation ................................................."
   description: This completes the steps on the local host for creating a Chef workstation.
   name: PrepareWorkstation
   uuid: net.fleetingclouds.install.chef.wkstn
-  nodefilters:
-    dispatch:
-      threadcount: 1
-      keepgoing: false
-      excludePrecedence: true
-      rankOrder: ascending
-    include:
-      name: gate.*
   group: net/fleetingclouds/install/chef
   options:
     sudoPwdRunDeck:

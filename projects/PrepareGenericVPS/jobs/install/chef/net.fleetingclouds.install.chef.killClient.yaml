@@ -15,7 +15,7 @@
         echo $?
         echo $?
     - exec: echo "Done eliminating ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-  description: This completes the steps on the local host for creating a Chef workstation.
+  description: This job is used to eliminate the node that is about to be installed if it one already exists.
   name: KillNodeAndClient
   uuid: net.fleetingclouds.install.chef.killClient
   nodefilters:
