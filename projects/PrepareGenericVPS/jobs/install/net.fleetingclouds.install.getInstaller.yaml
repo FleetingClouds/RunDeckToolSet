@@ -11,10 +11,11 @@
     - script: |+
         cd @option.InstallersRepository@
         pwd
-        echo " . . . . Removing prior files: @option.LogFileName@  ...  and ... @option.DownloadURI@ . . . . . "
+        echo " . . . . Removing prior file : @option.LogFileName@"
         rm -f @option.LogFileName@
+        echo " . . . . Removing prior file : @option.TheFileName@"
         rm -f @option.TheFileName@
-        if [  @option.CookieTricks@ == 1 ]; then
+        if [  "XX@option.CookieTricks@" == "XX1" ]; then
           declare PARMS=' --no-cookies --header "@option.CookieTrick@" --background --continue  --output-file=@option.LogFileName@ @option.DownloadURI@'; 
         else 
           declare PARMS='--background --continue --output-file=@option.LogFileName@ @option.DownloadURI@/@option.TheFileName@'
@@ -45,7 +46,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test6.*
+      name: cgf.*
   group: net/fleetingclouds/install
   options:
     CookieTrick:
@@ -54,7 +55,7 @@
       value: 'Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u4-downloads-1591156.html;'
     CookieTricks:
       required: true
-      description: Whether or not speicla cookie tricks are required.
+      description: Whether or not special cookie tricks are required.
       value: '1'
     CookieTricksx:
       required: true

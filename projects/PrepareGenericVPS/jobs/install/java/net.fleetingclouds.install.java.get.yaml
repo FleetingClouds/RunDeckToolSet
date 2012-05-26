@@ -18,8 +18,8 @@
     - exec: echo "  ==    ==    ==    ==    net.fleetingclouds.install.java.get   ==    ==    ==    || "
   description: |-
     This installs Java 7
-
-
+    
+    
     -CookieTrick <Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;> 
     -CookieTricks <1> 
     -DownloadURI <> 
@@ -35,7 +35,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test6.*
+      name: cgf.*
   group: net/fleetingclouds/install/java
   options:
     InstallersRepository:
@@ -44,11 +44,11 @@
     JdkDownloadServer:
       required: true
       description: The server from which you want to get the JDK
-      value: http://download.oracle.com/otn-pub/java/jdk/7u3-b04
+      value: http://download.oracle.com/otn-pub/java/jdk/
     JdkVersion:
       required: true
       description: The version you want to get from the indicated server
-      value: jdk-7u3-linux-x64.tar.gz
+      value: 7u4-b20
     ProgressFile:
       required: true
       description: A file to keep download results.

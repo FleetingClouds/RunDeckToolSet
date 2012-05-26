@@ -17,7 +17,6 @@
         name: WaitForFileEvent
         args: -Delay 3660 -FailPattern "Not found" -LogFileName  ~/installers/${option.ProgressFile}  -SuccessPattern ${option.SuccessIndicator}
     - exec: echo "It seems to have arrived.  Now install it  . . . .   . . . .   . . . .   . . . .  "
-    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
     - exec: echo "Create JAVA_HOME directory as ${option.JAVA_HOME}"
     - exec: sudo mkdir -p ${option.JAVA_HOME}
     - exec: 'echo "Unpacking from installation directory :: ${option.InstallersRepository}  .
@@ -90,14 +89,15 @@
     - exec: sudo update-java-alternatives -s ${option.JavaHomeDirName}
     - exec: sudo chown -R rundeck:rundeck ${option.JAVA_HOME}/${option.JavaHomeDirName}/..
     - exec: sudo pwd
+    - exec: echo "Java JDK is now installed . . . .  . . . .  . . . .  . . . .  . . . .  . . . .  "
     - exec: sudo pwd
   description: |-
     This installs Java 7
-
+    
     http://openerpns.warehouseman.com/downloads/jdk-7u4-linux-x64.tar.gz
       OR
     http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-linux-x64.tar.gz
-
+    
     	
     -InstallersRepository <> 
     -JdkDownloadServer <http://download.oracle.com/otn-pub/java/jdk/7u3-b04> 
@@ -112,7 +112,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: test6.*
+      name: cgf.*
   group: net/fleetingclouds/install
   options:
     InstallersRepository:
@@ -129,7 +129,7 @@
     JdkDownloadServer:
       required: true
       description: The server from which you want to get the JDK
-      value: http://openerpns.warehouseman.com/downloads
+      value: http://download.oracle.com/otn-pub/java/jdk/
     JdkFileName:
       required: true
       description: Oracle's gzipped tar file name

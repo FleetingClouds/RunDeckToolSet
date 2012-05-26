@@ -5,7 +5,8 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "First try  . . . .   . . . .   . . . .   . . . .   . . . .  "
+    - exec: 'echo "First try  . . . .  STOP ::::  THIS WILL NOT WORK AT ALL  . . .
+        .   . . . .   . . . .   . . . .  "'
     - exec: sudo mkdir -p /usr/lib/xyz
     - exec: echo "Second try . . . .   . . . .   . . . .   . . . .   . . . .  "
     - exec: sudo pwd && sudo pwd
