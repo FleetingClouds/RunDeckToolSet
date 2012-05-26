@@ -1,0 +1,25 @@
+- id: net.fleetingclouds.install.openssl
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: ls -la
+    - exec: echo [ @myProperty@ ]
+    - exec: echo [ $MYPROPERTY ]
+    - exec: 'echo   [ ${myProperty} ]  '
+    - exec: sudo pwd
+    - exec: sudo pwd
+    - script: |
+        sudo pwd
+        sudo pwd
+  description: This installs OpenSSL, version 1.0.0i, or as you override
+  name: InstallOpenSSL
+  uuid: net.fleetingclouds.install.openssl
+  group: net/fleetingclouds/install
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
