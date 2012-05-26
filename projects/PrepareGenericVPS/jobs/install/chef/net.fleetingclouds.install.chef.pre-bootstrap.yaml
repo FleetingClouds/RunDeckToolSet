@@ -25,7 +25,7 @@
     Host:
       required: true
       description: The host we will prepare as a Chef client machine.
-      value: test6.warehouseman.com
+      value: cgf.justtrade.net
     MirrorUrl:
       required: true
       description: URL where we are keeping keys'n things.
