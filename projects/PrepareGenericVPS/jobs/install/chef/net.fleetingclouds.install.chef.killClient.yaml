@@ -8,9 +8,14 @@
     - exec: echo "Removing all knowledge of node and client named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
     - script: |
         command -v knife >/dev/null && cd @option.Environment@
+        pwd
+        echo "Delete node " @option.NodeName@
         command -v knife >/dev/null && knife node delete @option.NodeName@ --yes --key "@option.Environment@/.chef/hasanb.pem"  > /dev/null
+        echo "Delete client " @option.NodeName@
         command -v knife >/dev/null && knife client delete @option.NodeName@ --yes --key "@option.Environment@/.chef/hasanb.pem"  > /dev/null
+        echo "Remaining nodes are : "
         command -v knife >/dev/null && knife node list
+        echo "Remaining clients are : "
         command -v knife >/dev/null && knife client list
         echo $?
         echo $?
@@ -18,14 +23,6 @@
   description: This job is used to eliminate the node that is about to be installed if it one already exists.
   name: KillNodeAndClient
   uuid: net.fleetingclouds.install.chef.killClient
-  nodefilters:
-    dispatch:
-      threadcount: 1
-      keepgoing: false
-      excludePrecedence: true
-      rankOrder: ascending
-    include:
-      name: cgf.*
   group: net/fleetingclouds/install/chef
   options:
     Environment:
