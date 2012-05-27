@@ -7,7 +7,6 @@
     commands:
     - exec: echo "Pushing RunDeck public key to host"
     - exec: pwd
-    - exec: sudo mkdir -p ~/.ssh/known_hosts
     - exec: echo "Make sure we ARE asked to accept remote host fingerprint. Using host" $RD_OPTION_HOST
     - exec: ssh-keygen -R $RD_OPTION_HOST
     - script: |
