@@ -55,10 +55,11 @@
         echo "****   - ssh $RD_OPTION_HOST"
         echo "****"
         echo "*******************************************************************"
-  description: |-
+  description: |
     Calls Steps One & Two
     
     To determine the default Fingerprint for the remote machine, simply attempt an SSH connection to it.  It will report an unknown host, and display its fingerprint-
+    
   name: PrepareHost
   uuid: net.fleetingclouds.initial.prepHost
   group: net/fleetingclouds/initial
@@ -66,15 +67,15 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 18:4b:0a:4a:b7:9e:73:58:0b:14:e2:fd:13:5f:1e:62
+      value: c5:b2:69:89:2d:8e:e4:2e:1e:d7:a4:81:96:bb:a0:b9
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: cgf.justtrade.net
+      value: www.fleetingclouds.net
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: aUNuIi6ZoqnX14lz1wp1
+      value: 9aD8Czlv7AjgqB9Xw6ad
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
