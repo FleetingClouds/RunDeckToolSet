@@ -82,8 +82,9 @@ echo "................................................................"
 echo "Get public keys of expected clients  ..........................."
 echo "................................................................"
 mkdir -p /home/${CHEF_USER}/.ssh
-wget https://github.com/downloads/FleetingClouds/RunDeckToolSet/auth_hosts_001
-mv auth_hosts_001 /home/${CHEF_USER}/.ssh/authorized_keys
+# wget https://github.com/downloads/FleetingClouds/RunDeckToolSet/auth_hosts_001
+# mv auth_hosts_001 /home/${CHEF_USER}/.ssh/authorized_keys
+cp ${OUR_USER_HOME}/.ssh/authorized_keys /home/${CHEF_USER}/.ssh
 chown -R ${CHEF_USER}:${CHEF_USER} /home/${CHEF_USER}/.ssh
 #
 echo "................................................................"
