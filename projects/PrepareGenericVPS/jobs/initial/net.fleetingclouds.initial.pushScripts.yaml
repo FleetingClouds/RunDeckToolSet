@@ -5,7 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Copying  . . . .  . . . .  . . . .  "
+    - exec: echo "Copying  to host   . . . .  " ${RD_OPTION_HOST}
     - exec: 'echo The path that scp will use : ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}'
     - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
     - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/toggleAptCache.sh  ${RD_OPTION_HOST}:.
