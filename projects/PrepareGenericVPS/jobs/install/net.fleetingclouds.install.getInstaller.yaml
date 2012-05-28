@@ -37,6 +37,12 @@
     - exec: echo "  ==    ==    ==    ==    net.fleetingclouds.install.getInstaller   ==    ==    ==    || "
   description: |
     This script gets the specified installer program from the specified server.  It downloads in the background, logging activity to the specified file.  Unless otherwise indicated, always writes to a directory called installers, under rundeck's default directory.
+    
+    For JRE 6  the cookie is----
+    Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjre-6u32-downloads-1594646.html;
+    
+    For JDK 7  the cookie is----
+    Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u4-downloads-1591156.html;
   name: GetInstaller
   uuid: net.fleetingclouds.install.getInstaller
   nodefilters:
@@ -57,10 +63,6 @@
       required: true
       description: Whether or not special cookie tricks are required.
       value: '1'
-    CookieTricksx:
-      required: true
-      description: Trick the server into thinking a cookie has been set correctly.
-      value: '--header \"Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk-7u3-download-1501626.html;\" '
     DownloadURI:
       required: true
       description: The source from which you want to get the installer
