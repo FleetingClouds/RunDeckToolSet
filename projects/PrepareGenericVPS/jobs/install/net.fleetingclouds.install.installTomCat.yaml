@@ -1,0 +1,95 @@
+- id: net.fleetingclouds.install.installTomCat
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: sudo pwd
+    - script: |-
+        mkdir -p installers
+        cd installers
+        echo "Get it if we don't have it ..."
+        [ ! -f apache-tomcat-6.0.35.tar.gz ] && wget http://mirrors.ibiblio.org/apache/tomcat/tomcat-6/v6.0.35/bin/apache-tomcat-6.0.35.tar.gz
+        echo $?
+        echo "Should now have a copy of tomcat binary."
+    - script: |
+        mkdir -p ~/tmp
+        cd ~/tmp
+        #
+        export VERSION=apache-tomcat-6.0.35.tar
+
+        tar zxvf ~/installers/apache-tomcat-6.0.35.tar.gz
+        chmod g+x ./apache-tomcat-6.0.35/bin/*.sh
+        mkdir -p ./apache-tomcat-6.0.35/logs
+        touch ./apache-tomcat-6.0.35/logs/catalina.out
+        #
+        cat > tomcat6 <<EOF
+        #!/bin/bash
+        # chkconfig: 234 20 80
+        # description: Tomcat Server
+        # processname: tomcat
+
+        JAVA_HOME=/usr/lib/jvm/jdk
+        export JAVA_HOME
+        TOMCAT_HOME=/usr/share/tomcat6
+        START_TOMCAT=/usr/share/tomcat6/bin/startup.sh
+        STOP_TOMCAT=/usr/share/tomcat6/bin/shutdown.sh
+
+        start() {
+             echo -n "Starting tomcat: "
+             cd \$TOMCAT_HOME
+             \${START_TOMCAT}
+             echo "done."
+        }
+        stop() {
+             echo -n "Shutting down tomcat: "
+             cd \$TOMCAT_HOME
+             \${STOP_TOMCAT}
+             echo "done."
+        }
+        case "\$1" in
+             start)
+                  start
+             ;;
+             stop)
+                  stop
+             ;;
+             restart)
+                  stop
+                  sleep 10
+                  start
+             ;;
+             *)
+                  echo "Usage: \$0 {start|stop|restart}"
+        esac
+
+        exit 0
+        EOF
+    - exec: sudo rm -fr /usr/share/tomcat6
+    - exec: ' sudo mv -f ~/tmp/apache-tomcat-6.0.35 /usr/share/tomcat6'
+    - exec: sudo rm -f /etc/init.d/tomcat6
+    - exec: ' sudo mv -f ~/tmp/tomcat6 /etc/init.d/'
+    - exec: sudo rm -f /etc/rc2.d/S99tomcat
+    - exec: sudo chmod 755 /etc/init.d/tomcat6
+    - exec: sudo ln -s /etc/init.d/tomcat /etc/rc2.d/S99tomcat
+    - exec: sudo rm -f /etc/rc1.d/K99tomcat
+    - exec: sudo ln -s /etc/init.d/tomcat /etc/rc1.d/K99tomcat
+  description: ''
+  name: InstallTomCat
+  uuid: net.fleetingclouds.install.installTomCat
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install/tomcat
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
