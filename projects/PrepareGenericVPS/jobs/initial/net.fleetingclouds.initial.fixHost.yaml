@@ -1,0 +1,24 @@
+- id: net.fleetingclouds.initial.fixHost
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: 'echo Will correct : ${RD_OPTION_HOST}'
+    - exec: echo  .............................................................
+    - script: |
+        echo @option.Host@
+        IP_ADDR=`echo @option.Host@ | nslookup | grep Address | sed '1,1d' | sed s/Address://g`
+        echo $IP_ADDR
+        ssh-keygen -R $IP_ADDR
+    - exec: ssh-keygen -R ${RD_OPTION_HOST}
+  description: ''
+  name: FixKnownHost
+  uuid: net.fleetingclouds.initial.fixHost
+  group: net/fleetingclouds/initial
+  options:
+    Host:
+      required: true
+      description: This is a host that RunDeck will be accessing in the future.
+      value: www.fleetingclouds.net
