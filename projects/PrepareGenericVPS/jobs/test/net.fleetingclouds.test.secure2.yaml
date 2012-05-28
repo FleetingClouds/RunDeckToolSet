@@ -8,7 +8,7 @@
     - exec: echo "Start 2 ..."
     - exec: sudo pwd
     - exec: echo "... End 2"
-  description: |-
+  description: |
     This tests the use, on a remote machine, of a secure option on a job called from another job.
     
     The specified password is deliberately incorrect to confirm that the calling job can override the bad value with a correct one.
