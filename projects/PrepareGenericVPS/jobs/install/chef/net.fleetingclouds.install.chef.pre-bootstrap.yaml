@@ -25,7 +25,7 @@
     Host:
       required: true
       description: The host we will prepare as a Chef client machine.
-      value: cgf.justtrade.net
+      value: www.fleetingclouds.net
     MirrorUrl:
       required: true
       description: URL where we are keeping keys'n things.
