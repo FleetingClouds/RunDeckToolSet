@@ -7,6 +7,7 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install gcc
+    - exec: sudo aptitude -y remove openssl libssl-dev
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |
@@ -15,7 +16,7 @@
         tar -xf openssl-1.0.0i.tar.gz
         ln -s openssl-1.0.0i openssl
         cd openssl-1.0.0i
-        ./config -m64 shared
+        ./config -m64 shared -fPIC  --prefix=/usr
         make clean
         make
     - exec: echo " - - - End."
