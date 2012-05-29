@@ -1,0 +1,53 @@
+- id: net.fleetingclouds.install.openssl.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install gcc
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - script: |
+        cd  @option.InstallersRepository@
+        wget -nc -c http://www.openssl.org/source/openssl-1.0.0i.tar.gz
+        tar -xf openssl-1.0.0i.tar.gz
+        ln -s openssl-1.0.0i openssl
+        cd openssl-1.0.0i
+        ./config -m64 shared
+        make clean
+        make
+    - exec: echo " - - - End."
+    - script: |
+        cat > tmp.sh <<EOF
+        echo Step into @option.InstallersRepository@/openssl
+        cd @option.InstallersRepository@/openssl
+        echo We will start installing OpenSSL now: in directory ...
+        make install
+        echo Done. OpenSSL should now be part of your system.
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: ' sudo ./tmp.sh'
+  description: ''
+  name: PrepareOpenSSL
+  uuid: net.fleetingclouds.install.openssl.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install/openssl
+  options:
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
