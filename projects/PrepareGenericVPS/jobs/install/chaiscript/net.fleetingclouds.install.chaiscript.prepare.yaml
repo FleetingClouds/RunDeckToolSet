@@ -1,0 +1,59 @@
+- id: net.fleetingclouds.install.chaiscript.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install libboost-thread-dev
+    - exec: sudo aptitude -y install cmake
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - script: |
+        cd  @option.InstallersRepository@
+        #
+        rm -fr Chaiscript
+        git clone git://github.com/ChaiScript/ChaiScript
+        #
+        cd ChaiScript
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        echo Step into @option.InstallersRepository@/ChaiScript 
+        cd @option.InstallersRepository@/ChaiScript/build
+        echo We will start installing ChaiScript now: in directory ... 
+        make install
+        make clean
+        echo Done. ChaiScript should now be part of your system.
+        EOF
+
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareChaiScript
+  uuid: net.fleetingclouds.install.chaiscript.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/install/chaiscript
+  options:
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
