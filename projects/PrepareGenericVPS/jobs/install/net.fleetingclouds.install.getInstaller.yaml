@@ -16,9 +16,9 @@
         echo " . . . . Removing prior file : @option.TheFileName@"
         rm -f @option.TheFileName@
         if [  "XX@option.CookieTricks@" == "XX1" ]; then
-          declare PARMS=' --no-cookies --header "@option.CookieTrick@" --background --continue  --output-file=@option.LogFileName@ @option.DownloadURI@'; 
+          declare PARMS=' --no-cookies --header "@option.CookieTrick@" --background --no-check-certificate --continue  --output-file=@option.LogFileName@ @option.DownloadURI@'; 
         else 
-          declare PARMS='--background --continue --output-file=@option.LogFileName@ @option.DownloadURI@/@option.TheFileName@'
+          declare PARMS='--background --no-check-certificate --continue --output-file=@option.LogFileName@ @option.DownloadURI@/@option.TheFileName@'
         fi;
         echo " . . Downloading to @option.InstallersRepository@  . . . . "
         cat > tmpWGet.sh <<EOF
