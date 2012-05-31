@@ -8,4 +8,8 @@ Other repositories in this collection (coming soon) are for scripts for specific
 
 1. RCredits -- Continuous integration and test environment for https://github.com/CommonGoodFinance/RCredits
 1. OpenERP -- Continuous integration and test environment for https://github.com/martinhbramwell/SeleniumForOpenERP
+1. Open-Transactions -- Continuous integration and test environment for https://github.com/FellowTraveler/Open-Transactions
+
+  - - - - - 
+  
 
