@@ -6,31 +6,49 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo aptitude -y install git
-    - exec: '# sudo aptitude -y remove openssl libssl-dev'
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |-
         cd  @option.InstallersRepository@
         #
-        git clone git://github.com/FellowTraveler/Open-Transactions.git
+        echo "Stepping into ..."
+        pwd
         #
+        echo "Getting zipp'd source ..." 
+        wget -oc --no-check-certificate https://github.com/FellowTraveler/Open-Transactions/zipball/master
+        #
+        echo "Got zipp'd source.  Remove any earlier version. Rename it to Open-Transactions.zip" 
+        rm -fr Open-Transactions*
+        mv master Open-Transactions.zip
+        #
+        echo "Unzip the downloaded file" 
+        unzip -o Open-Transactions.zip
+        #
+        echo "Rename the resultanyt directory to Open-Transactions" 
+        mv Fellow* Open-Transactions
+        #
+        echo "Step into the Open-Transactions directory" 
         cd Open-Transactions
         #
+        echo "Allow Open-Transactions build to find OpenSSL" 
+        ln -s ../openssl openssl
+        #
         make clean
-        make
+        make DSP=1 java
     - exec: rm -f ./tmp.sh
+    - exec: rm -fr ~/.ot
     - script: |
         cat > tmp.sh <<EOF
         echo Step into @option.InstallersRepository@/Open-Transactions
         cd @option.InstallersRepository@/Open-Transactions 
         echo We will start installing Open Transactions now: in directory ... 
+        make uninstall 
         make install 
         echo Done. Open Transactions should now be part of your system.
         EOF
         # 
         chmod a+x tmp.sh
-    - exec: '# sudo ./tmp.sh'
+    - exec: sudo ./tmp.sh
     - exec: echo " - - - End."
   description: ''
   name: PrepareOpenTransactions
