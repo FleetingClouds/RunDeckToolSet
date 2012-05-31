@@ -7,7 +7,7 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install gcc
-    - exec: sudo aptitude -y remove openssl libssl-dev
+    - exec: sudo aptitude -y purge openssl libssl-dev
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |
