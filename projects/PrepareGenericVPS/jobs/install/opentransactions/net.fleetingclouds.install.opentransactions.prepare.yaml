@@ -6,6 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install g++
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |-
@@ -34,7 +35,7 @@
         ln -s ../openssl openssl
         #
         make clean
-        make DSP=1 java
+        make DSP=1
     - exec: rm -f ./tmp.sh
     - exec: rm -fr ~/.ot
     - script: |
@@ -60,7 +61,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/install/opentransactions
   options:
     InstallerVersion:
