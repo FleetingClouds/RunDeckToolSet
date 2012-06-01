@@ -8,6 +8,7 @@
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install g++
     - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.BuildDirectory}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |-
         cd  @option.InstallersRepository@
@@ -22,10 +23,13 @@
         rm -fr Open-Transactions*
         mv master Open-Transactions.zip
         #
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
         echo "Unzip the downloaded file" 
-        unzip -o Open-Transactions.zip
+        unzip -o @option.InstallersRepository@/Open-Transactions.zip
         #
-        echo "Rename the resultanyt directory to Open-Transactions" 
+        echo "Rename the resultant directory to Open-Transactions" 
         mv Fellow* Open-Transactions
         #
         echo "Step into the Open-Transactions directory" 
@@ -40,8 +44,8 @@
     - exec: rm -fr ~/.ot
     - script: |
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/Open-Transactions
-        cd @option.InstallersRepository@/Open-Transactions 
+        echo Step into @option.BuildDirectory@/Open-Transactions
+        cd @option.BuildDirectory@/Open-Transactions 
         echo We will start installing Open Transactions now: in directory ... 
         make uninstall 
         make install 
@@ -64,6 +68,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/opentransactions
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallerVersion:
       required: true
       value: 2.4.1

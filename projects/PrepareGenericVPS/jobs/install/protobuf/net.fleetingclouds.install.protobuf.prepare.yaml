@@ -10,13 +10,27 @@
     - exec: '# sudo aptitude -y remove openssl libssl-dev'
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.BuildDirectory}
     - script: |+
         cd  @option.InstallersRepository@
         #
+        echo "Stepping into ..."
+        pwd
+        #
+        echo "Getting targz'd source ..." 
         wget -nc -c http://protobuf.googlecode.com/files/protobuf-@option.InstallerVersion@.tar.gz
         #
-        tar zxvf protobuf-@option.InstallerVersion@.tar.gz
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
+        # 
+        echo "Decompress the downloaded file" 
+        tar zxvf @option.InstallersRepository@/protobuf-@option.InstallerVersion@.tar.gz
+        # 
+        echo "Link to a version free directory" 
         ln -s protobuf-@option.InstallerVersion@ protobuf
+        #
+        echo "Step into the ProtoBuf directory" 
         cd protobuf
         #
         ./configure
@@ -26,8 +40,10 @@
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/protobuf 
-        cd @option.InstallersRepository@/protobuf 
+        echo Step into @option.BuildDirectory@/protobuf 
+        cd @option.BuildDirectory@/protobuf 
+        echo Uninstall in case it is already there ... 
+        make uninstall
         echo We will start installing ProtoBuf now: in directory ... 
         make install
         make clean
@@ -51,6 +67,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/protobuf
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallerVersion:
       required: true
       value: 2.4.1

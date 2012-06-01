@@ -10,11 +10,15 @@
     - exec: '# sudo aptitude -y remove openssl libssl-dev'
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p ${option.BuildDirectory}
     - script: |
         cd  @option.InstallersRepository@
         wget -nc -c http://msgpack.org/releases/cpp/msgpack-@option.InstallerVersion@.tar.gz
         #
-        tar zxvf msgpack-@option.InstallerVersion@.tar.gz
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        #  
+        tar zxvf @option.InstallersRepository@/msgpack-@option.InstallerVersion@.tar.gz
         ln -s msgpack-@option.InstallerVersion@ msgpack
         cd msgpack
         #
@@ -23,8 +27,10 @@
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/msgpack 
-        cd @option.InstallersRepository@/msgpack 
+        echo Step into @option.BuildDirectory@/msgpack 
+        cd @option.BuildDirectory@/msgpack 
+        echo Begin by uninstalling, in case it is there already. ... 
+        make uninstall
         echo We will start installing MsgPack now: in directory ... 
         make install 
         echo Done. MsgPack should now be part of your system.
@@ -47,6 +53,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/msgpack
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallerVersion:
       required: true
       value: 0.5.5

@@ -10,15 +10,28 @@
     - exec: '# sudo aptitude -y remove openssl libssl-dev'
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.BuildDirectory}
     - script: |+
         cd  @option.InstallersRepository@
         #
+        echo "Stepping into ..."
+        pwd
+        #
+        echo "Getting targz'd source ..." 
         wget -nc -c http://download.zeromq.org/zeromq-2.2.0.tar.gz
         #
-        tar zxvf zeromq-@option.InstallerVersion@.tar.gz
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
+        echo "Unzip the downloaded file" 
+        tar zxvf @option.InstallersRepository@/zeromq-@option.InstallerVersion@.tar.gz
+        #
         ln -s zeromq-@option.InstallerVersion@ zeromq
+        #
+        echo "Step into the ZeroMQ directory" 
         cd zeromq
         #
+        echo "Building it ..."
         ./configure
         make
         make check
@@ -26,8 +39,10 @@
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/zeromq 
-        cd @option.InstallersRepository@/zeromq 
+        echo Step into @option.BuildDirectory@/zeromq 
+        cd @option.BuildDirectory@/zeromq 
+        echo Uninstall in case it is already there ... 
+        make uninstall
         echo We will start installing ZeroMQ now: in directory ... 
         make install
         make clean
@@ -51,6 +66,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/zeromq
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallerVersion:
       required: true
       value: 2.2.0

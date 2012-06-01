@@ -10,6 +10,7 @@
     - exec: sudo aptitude -y install cmake
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p ${option.BuildDirectory}
     - script: |+
         cd  @option.InstallersRepository@
         #
@@ -21,8 +22,11 @@
         rm -fr Chai*
         mv master ChaiScript.zip 
         # 
-        echo "Unzip the downloaded file"  
-        unzip -o ChaiScript.zip
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@ 
+        #
+        echo "Unzip the downloaded file" 
+        unzip -o @option.InstallersRepository@/ChaiScript.zip
         # 
         echo "Rename the resultant directory to ChaiScript"  
         rename 's/Chai.*Chai.*/ChaiScript/' *
@@ -39,8 +43,8 @@
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/ChaiScript 
-        cd @option.InstallersRepository@/ChaiScript/build
+        echo Step into @option.BuildDirectory@/ChaiScript 
+        cd @option.BuildDirectory@/ChaiScript/build
         echo We will start installing ChaiScript now: in directory ... 
         make install
         make clean
@@ -64,6 +68,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/chaiscript
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallersRepository:
       required: true
       value: ~/installers

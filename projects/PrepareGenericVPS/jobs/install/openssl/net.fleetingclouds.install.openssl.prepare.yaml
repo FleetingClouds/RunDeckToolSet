@@ -10,20 +10,37 @@
     - exec: sudo aptitude -y purge openssl libssl-dev
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p ${option.BuildDirectory}
     - script: |
         cd  @option.InstallersRepository@
+        #
+        echo "Stepped into ..."
+        pwd
+        #
+        echo "Getting targz'd source ..." 
         wget -nc -c http://www.openssl.org/source/openssl-1.0.0i.tar.gz
-        tar -xf openssl-1.0.0i.tar.gz
+        #
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
+        echo "Decompress the downloaded file" 
+        tar -xf @option.InstallersRepository@/openssl-1.0.0i.tar.gz
+        #
+        echo "Rename the resultant directory to openssl" 
         ln -s openssl-1.0.0i openssl
+        #
+        echo "Step into the openssl directory" 
         cd openssl-1.0.0i
+        #
+        echo "make openssl"
         ./config -m64 shared -fPIC  --prefix=/usr
         make clean
         make
     - exec: echo " - - - End."
     - script: |
         cat > tmp.sh <<EOF
-        echo Step into @option.InstallersRepository@/openssl
-        cd @option.InstallersRepository@/openssl
+        echo Step into @option.BuildDirectory@/openssl
+        cd @option.BuildDirectory@/openssl
         echo We will start installing OpenSSL now: in directory ...
         make install
         echo Done. OpenSSL should now be part of your system.
@@ -44,6 +61,10 @@
       name: cgf.*
   group: net/fleetingclouds/install/openssl
   options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
     InstallersRepository:
       required: true
       value: ~/installers
