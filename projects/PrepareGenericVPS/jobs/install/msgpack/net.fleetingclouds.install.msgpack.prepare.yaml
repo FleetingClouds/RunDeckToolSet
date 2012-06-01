@@ -1,0 +1,60 @@
+- id: net.fleetingclouds.install.msgpack.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install g++
+    - exec: '# sudo aptitude -y remove openssl libssl-dev'
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - script: |
+        cd  @option.InstallersRepository@
+        wget -nc -c http://msgpack.org/releases/cpp/msgpack-@option.InstallerVersion@.tar.gz
+        #
+        tar zxvf msgpack-@option.InstallerVersion@.tar.gz
+        ln -s msgpack-@option.InstallerVersion@ msgpack
+        cd msgpack
+        #
+        ./configure
+        make
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        echo Step into @option.InstallersRepository@/msgpack 
+        cd @option.InstallersRepository@/msgpack 
+        echo We will start installing MsgPack now: in directory ... 
+        make install 
+        echo Done. MsgPack should now be part of your system.
+        EOF
+
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareMsgPack
+  uuid: net.fleetingclouds.install.msgpack.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/msgpack
+  options:
+    InstallerVersion:
+      required: true
+      value: 0.5.5
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
