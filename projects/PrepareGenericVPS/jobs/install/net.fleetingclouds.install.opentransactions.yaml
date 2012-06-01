@@ -9,27 +9,27 @@
     - jobref:
         group: net/fleetingclouds/install/chaiscript
         name: PrepareChaiScript
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/zeromq
         name: PrepareZeroMQ
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/protobuf
         name: PrepareProtoBuf
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/msgpack
         name: PrepareMsgPack
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/openssl
         name: PrepareOpenSSL
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/opentransactions
         name: PrepareOpenTransactions
-        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -BuildDirectory <~/build> -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "Done installing OpenTransactions ................................................."
   description: Install Open-Transactions and all the products it depends on.
   name: InstallOpenTransactions
@@ -44,6 +44,9 @@
       name: cgf.*
   group: net/fleetingclouds/install
   options:
+    BuildDirectory:
+      description: Where programs are built.
+      value: ~/build
     InstallersRepository:
       required: true
       value: ~/installers
