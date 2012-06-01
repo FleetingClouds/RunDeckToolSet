@@ -10,17 +10,32 @@
     - exec: sudo aptitude -y install cmake
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
-    - script: |
+    - script: |+
         cd  @option.InstallersRepository@
         #
-        rm -fr Chaiscript
-        git clone git://github.com/ChaiScript/ChaiScript
-        #
+        echo "Getting zipp'd source ..."  
+        wget -oc --no-check-certificate https://github.com/ChaiScript/ChaiScript/zipball/master
+        # 
+        echo "Got zipp'd source. Remove any earlier version. Rename it to ChaiScript.zip" 
+        ls -ia 
+        rm -fr Chai*
+        mv master ChaiScript.zip 
+        # 
+        echo "Unzip the downloaded file"  
+        unzip -o ChaiScript.zip
+        # 
+        echo "Rename the resultant directory to ChaiScript"  
+        rename 's/Chai.*Chai.*/ChaiScript/' *
+        # 
+        echo "Step into the ChaiScript directory"  
+        cd ChaiScript 
+        # 
         cd ChaiScript
         mkdir -p build
         cd build
         cmake ..
         make
+
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
@@ -46,7 +61,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/install/chaiscript
   options:
     InstallersRepository:
