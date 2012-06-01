@@ -39,13 +39,13 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/initial
   options:
     Host:
       required: true
       description: the host where the file should go
-      value: www.fleetingclouds.net
+      value: cgf.justtrade.net
     sudoPwdRunDeck:
       required: true
       description: The password the script must use for sudo steps.

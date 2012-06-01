@@ -67,15 +67,15 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 83:62:e4:ba:1b:95:f0:fb:69:0b:de:9a:f1:4b:81:6c
+      value: 06:18:fc:ae:5c:d0:86:26:87:40:c5:2f:19:ec:75:66
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: www.fleetingclouds.net
+      value: cgf.justtrade.net
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: gwR509ai9BhjcqYC5Vga
+      value: mHTqoUCByq424hnpd80t
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
