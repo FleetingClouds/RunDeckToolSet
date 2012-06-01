@@ -1,0 +1,53 @@
+- id: net.fleetingclouds.install.opentransactions
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Install OpenTransactions ......................................................."
+    - jobref:
+        group: net/fleetingclouds/install/chaiscript
+        name: PrepareChaiScript
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/zeromq
+        name: PrepareZeroMQ
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/protobuf
+        name: PrepareProtoBuf
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/msgpack
+        name: PrepareMsgPack
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareOpenSSL
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/opentransactions
+        name: PrepareOpenTransactions
+        args: -InstallersRepository ${option.InstallersRepository} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "Done installing OpenTransactions ................................................."
+  description: Install Open-Transactions and all the products it depends on.
+  name: InstallOpenTransactions
+  uuid: net.fleetingclouds.install.opentransactions
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install
+  options:
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
