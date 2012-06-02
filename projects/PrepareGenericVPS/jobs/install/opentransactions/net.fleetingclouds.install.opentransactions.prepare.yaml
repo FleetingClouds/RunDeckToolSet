@@ -30,6 +30,7 @@
         unzip -o @option.InstallersRepository@/Open-Transactions.zip
         #
         echo "Rename the resultant directory to Open-Transactions" 
+        rm -fr Open-Transactions
         mv Fellow* Open-Transactions
         #
         echo "Step into the Open-Transactions directory" 
@@ -54,27 +55,26 @@
         # 
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
+    - exec: echo "You are working with Open-Transactions version :"
+    - exec: cat ~/build/Open-Transactions/VERSION
     - exec: echo " - - - End."
   description: ''
   name: PrepareOpenTransactions
   uuid: net.fleetingclouds.install.opentransactions.prepare
   nodefilters:
     dispatch:
-      threadcount: 1
+      threadcount: 2
       keepgoing: false
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: (cgf.*|gate.*)
   group: net/fleetingclouds/install/opentransactions
   options:
     BuildDirectory:
       required: true
       description: Where programs are built.
       value: ~/build
-    InstallerVersion:
-      required: true
-      value: 2.4.1
     InstallersRepository:
       required: true
       value: ~/installers
