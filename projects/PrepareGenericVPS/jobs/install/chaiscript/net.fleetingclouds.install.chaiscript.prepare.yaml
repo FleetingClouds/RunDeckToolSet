@@ -34,7 +34,6 @@
         echo "Step into the ChaiScript directory"  
         cd ChaiScript 
         # 
-        cd ChaiScript
         mkdir -p build
         cd build
         cmake ..
@@ -65,7 +64,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: gate.*
   group: net/fleetingclouds/install/chaiscript
   options:
     BuildDirectory:
