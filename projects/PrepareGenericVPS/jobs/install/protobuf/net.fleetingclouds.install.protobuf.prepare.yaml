@@ -28,6 +28,7 @@
         tar zxvf @option.InstallersRepository@/protobuf-@option.InstallerVersion@.tar.gz
         # 
         echo "Link to a version free directory" 
+        rm -fr protobuf
         ln -s protobuf-@option.InstallerVersion@ protobuf
         #
         echo "Step into the ProtoBuf directory" 
@@ -35,7 +36,7 @@
         #
         ./configure
         make
-        make check
+        # make check
 
     - exec: rm -f ./tmp.sh
     - script: |-
@@ -64,7 +65,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: gate.*
   group: net/fleetingclouds/install/protobuf
   options:
     BuildDirectory:

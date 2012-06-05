@@ -26,6 +26,7 @@
         echo "Unzip the downloaded file" 
         tar zxvf @option.InstallersRepository@/zeromq-@option.InstallerVersion@.tar.gz
         #
+        rm -fr zeromq
         ln -s zeromq-@option.InstallerVersion@ zeromq
         #
         echo "Step into the ZeroMQ directory" 
@@ -63,7 +64,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: gate.*
   group: net/fleetingclouds/install/zeromq
   options:
     BuildDirectory:
