@@ -17,25 +17,34 @@
         echo "Stepped into ..."
         pwd
         #
+        echo "Remove old installer ..."
+        rm -f openssl-@option.PriorVersion@.tar.gz
+        #
         echo "Getting targz'd source ..." 
-        wget -nc -c http://www.openssl.org/source/openssl-1.0.0i.tar.gz
+        wget -nc -c http://www.openssl.org/source/openssl-@option.InstallerVersion@.tar.gz
         #
         echo "Step into the build directory"  
         cd @option.BuildDirectory@  
         # 
+        echo "Remove old build directory ..."
+        rm -fr openssl-@option.PriorVersion@
+        rm -f openssl
+        #
         echo "Decompress the downloaded file" 
-        tar -xf @option.InstallersRepository@/openssl-1.0.0i.tar.gz
+        tar -xf @option.InstallersRepository@/openssl-@option.InstallerVersion@.tar.gz
         #
         echo "Rename the resultant directory to openssl" 
-        ln -s openssl-1.0.0i openssl
+        ln -s openssl-@option.InstallerVersion@ openssl
         #
         echo "Step into the openssl directory" 
-        cd openssl-1.0.0i
+        cd openssl-@option.InstallerVersion@
         #
         echo "make openssl"
-        ./config -m64 shared -fPIC  --prefix=/usr
+        ./Configure linux-x86_64 shared --prefix=$HOME/.local
+        ## ./config -m64 shared -fPIC  --prefix=/usr
         make clean
         make
+        ##make tests
     - exec: echo " - - - End."
     - script: |
         cat > tmp.sh <<EOF
@@ -58,16 +67,22 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: gate.*
   group: net/fleetingclouds/install/openssl
   options:
     BuildDirectory:
       required: true
       description: Where programs are built.
       value: ~/build
+    InstallerVersion:
+      required: true
+      value: 1.0.0j
     InstallersRepository:
       required: true
       value: ~/installers
+    PriorVersion:
+      required: true
+      value: 1.0.0i
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
