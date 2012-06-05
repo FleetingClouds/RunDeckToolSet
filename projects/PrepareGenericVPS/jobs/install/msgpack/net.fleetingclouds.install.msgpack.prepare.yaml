@@ -19,6 +19,7 @@
         cd @option.BuildDirectory@  
         #  
         tar zxvf @option.InstallersRepository@/msgpack-@option.InstallerVersion@.tar.gz
+        rm -fr msgpack
         ln -s msgpack-@option.InstallerVersion@ msgpack
         cd msgpack
         #
@@ -50,7 +51,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: gate.*
   group: net/fleetingclouds/install/msgpack
   options:
     BuildDirectory:
