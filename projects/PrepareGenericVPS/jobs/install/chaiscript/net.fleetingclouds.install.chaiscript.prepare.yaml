@@ -23,12 +23,14 @@
         mv master ChaiScript.zip 
         # 
         echo "Step into the build directory"  
-        cd @option.BuildDirectory@ 
+        cd @option.BuildDirectory@
+        rm -fr Chai*
         #
         echo "Unzip the downloaded file" 
         unzip -o @option.InstallersRepository@/ChaiScript.zip
         # 
         echo "Rename the resultant directory to ChaiScript"  
+        ls -l
         rename 's/Chai.*Chai.*/ChaiScript/' *
         # 
         echo "Step into the ChaiScript directory"  
@@ -64,7 +66,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: (gate.*|cgf.*)
   group: net/fleetingclouds/install/chaiscript
   options:
     BuildDirectory:
