@@ -49,7 +49,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: (gate.*|cgf.*)
+      name: gate.*
   group: net/fleetingclouds/global
   options:
     sudoPwdRunDeck:
