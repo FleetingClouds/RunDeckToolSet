@@ -1,0 +1,41 @@
+- id: net.fleetingclouds.test.opentransactions.stat
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Begin testing the wallet status script > > > "
+    - exec: expect -c "spawn ${option.ScriptsDirectory}/${option.ScriptsSubDirectory}/${option.ScriptName} ; set timeout 60 ; expect -re passphrase ; sleep 2 ; send ${option.OTTestPassphrase}\n ; interact "
+    - exec: echo "> > > Done testing the wallet status script."
+  description: ''
+  name: Show Status
+  uuid: net.fleetingclouds.test.opentransactions.stat
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: gate.*
+  group: net/fleetingclouds/test/opentransactions
+  options:
+    OTTestPassphrase:
+      required: true
+      value: test
+      secure: true
+      valueExposed: true
+    ScriptName:
+      required: true
+      value: stat.ot
+    ScriptsDirectory:
+      required: true
+      value: ~/build/Open-Transactions/scripts
+    ScriptsSubDirectory:
+      required: true
+      value: samples
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
