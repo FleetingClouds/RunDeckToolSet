@@ -7,17 +7,36 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install g++
+    - exec: echo "Set up APT repo for OpenTransactions . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "
+    - exec: sudo mkdir -p /etc/apt/sources.list.d
+    - script: |
+        rm -f tmp.sh
+        cat > tmp.sh <<EOF
+        echo "deb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+        echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list.d/backports.list
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: sudo aptitude -y install build-essential libtool automake cmake pkg-config
+    - jobref:
+        group: net/fleetingclouds/global
+        name: AptPreferences
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.BuildDirectory}
     - exec: mkdir -p  ${option.InstallersRepository}
     - script: |-
         cd  @option.InstallersRepository@
         #
-        echo "Stepping into ..."
+        echo "Stepped into ..."
         pwd
+        export PKG_CONFIG_PATH=~/.local/lib/pkgconfig:$PKG_CONFIG_PATH
+
         #
         echo "Getting zipp'd source ..." 
-        wget -oc --no-check-certificate https://github.com/FellowTraveler/Open-Transactions/zipball/master
+        wget -oc --no-check-certificate https://github.com/da2ce7/Open-Transactions/zipball/master
+        ##wget -oc --no-check-certificate https://github.com/FellowTraveler/Open-Transactions/zipball/master
         #
         echo "Got zipp'd source.  Remove any earlier version. Rename it to Open-Transactions.zip" 
         rm -fr Open-Transactions*
@@ -31,7 +50,8 @@
         #
         echo "Rename the resultant directory to Open-Transactions" 
         rm -fr Open-Transactions
-        mv Fellow* Open-Transactions
+        mv da2ce7* Open-Transactions
+        ##mv Fellow* Open-Transactions
         #
         echo "Step into the Open-Transactions directory" 
         cd Open-Transactions
@@ -39,7 +59,22 @@
         echo "Allow Open-Transactions build to find OpenSSL" 
         ln -s ../openssl openssl
         #
+        echo "Now we will prepare configuration in the directory........"
+        pwd
+        #
+        autoreconf -i -f
+        #
+        mkdir -p build
+        cd build
+        ln -s ../../openssl openssl
+        #
+        echo "Now we will make in the directory........"
+        pwd
+        #
+        ../configure --prefix=$HOME/.local
+        #
         make clean
+        #
         make DSP=1
     - exec: rm -f ./tmp.sh
     - exec: rm -fr ~/.ot
@@ -55,20 +90,22 @@
         # 
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
-    - exec: echo "You are working with Open-Transactions version :"
+    - exec: 'echo "You are working with Open-Transactions version :  . . . . . .  .
+        . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "'
     - exec: cat ~/build/Open-Transactions/VERSION
     - exec: echo " - - - End."
+    - exec: echo "Ensure we have the target directories we need . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "
   description: ''
   name: PrepareOpenTransactions
   uuid: net.fleetingclouds.install.opentransactions.prepare
   nodefilters:
     dispatch:
-      threadcount: 2
+      threadcount: 1
       keepgoing: false
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: (cgf.*|gate.*)
+      name: gate.*
   group: net/fleetingclouds/install/opentransactions
   options:
     BuildDirectory:
