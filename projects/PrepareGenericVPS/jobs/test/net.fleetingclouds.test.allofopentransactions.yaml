@@ -10,6 +10,9 @@
         group: net/fleetingclouds/test/opentransactions
         name: Test Time
         args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/test/opentransactions
+        name: Show Status
     - exec: echo "> > > Done executing all Open-Transaction tests"
   description: ''
   name: TestAllOfOpenTransactions
