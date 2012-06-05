@@ -1,0 +1,58 @@
+- id: net.fleetingclouds.global.aptprefs
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Starting ...."
+    - script: |+
+        rm -f tmp.sh
+        cat > tmp.sh <<EOF
+        echo "-- Start editing APT preferences --"
+        pwd
+        echo "-- delete existing preferences --"
+        rm -f preferences
+        echo "-- ensure there is a new one --"
+        touch /etc/apt/preferences
+        echo "-- copy to local dir --"
+        sudo cp /etc/apt/preferences .
+        echo "-- make it editable --"
+        sudo chmod a+rw preferences 
+        EOF
+        #
+        chmod a+x tmp.sh
+
+    - exec: sudo ./tmp.sh
+    - exec: echo "-- append the lines we need --"
+    - script: |
+        cat >> preferences <<EOF
+        Package: *
+        Pin: release n=squeeze-backports
+        Pin-Priority: 300
+
+        Package: *
+        Pin: release n=sid
+        Pin-Priority: 200
+
+        EOF
+    - exec: echo "-- move it back --"
+    - exec: sudo mv -f preferences /etc/apt/
+    - exec: echo "-- Done --"
+  description: Creates a preferences file for APT
+  name: AptPreferences
+  uuid: net.fleetingclouds.global.aptprefs
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: (gate.*|cgf.*)
+  group: net/fleetingclouds/global
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
