@@ -11,7 +11,7 @@
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - exec: mkdir -p ${option.BuildDirectory}
-    - script: |+
+    - script: |
         cd  @option.InstallersRepository@
         #
         echo "Getting zipp'd source ..."  
@@ -35,17 +35,14 @@
         # 
         echo "Step into the ChaiScript directory"  
         cd ChaiScript 
-        # 
-        mkdir -p build
-        cd build
-        cmake ..
+        #
+        cmake . -DCMAKE_INSTALL_PREFIX=$HOME/.local
         make
-
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
         echo Step into @option.BuildDirectory@/ChaiScript 
-        cd @option.BuildDirectory@/ChaiScript/build
+        cd @option.BuildDirectory@/ChaiScript
         echo We will start installing ChaiScript now: in directory ... 
         make install
         make clean

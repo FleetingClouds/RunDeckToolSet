@@ -6,7 +6,6 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo aptitude -y install g++
     - exec: echo "Set up APT repo for OpenTransactions . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "
     - exec: sudo mkdir -p /etc/apt/sources.list.d
     - script: |
@@ -14,24 +13,31 @@
         cat > tmp.sh <<EOF
         echo "deb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
         echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list.d/backports.list
+        aptitude -y install g++
+        aptitude -y install php5-dev
+        aptitude -y install build-essential libtool automake cmake pkg-config
+        aptitude -y install libboost-dev libboost-thread-dev libzmq-dev libmsgpack-dev libssl-dev
+        aptitude -y -t sid install libprotobuf-dev
         EOF
         #
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
-    - exec: sudo aptitude -y install build-essential libtool automake cmake pkg-config
     - jobref:
         group: net/fleetingclouds/global
         name: AptPreferences
         args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
-    - exec: echo  ${option.InstallersRepository}
+    - exec: sudo ldconfig
+    - exec: echo "Ensure we have the target directories we need . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "
     - exec: mkdir -p  ${option.BuildDirectory}
     - exec: mkdir -p  ${option.InstallersRepository}
-    - script: |-
+    - exec: echo  ${option.InstallersRepository}
+    - script: |+
         cd  @option.InstallersRepository@
         #
         echo "Stepped into ..."
         pwd
-        export PKG_CONFIG_PATH=~/.local/lib/pkgconfig:$PKG_CONFIG_PATH
+        export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+        ##export PKG_CONFIG_PATH=~/.local/lib/pkgconfig:$PKG_CONFIG_PATH
 
         #
         echo "Getting zipp'd source ..." 
@@ -71,30 +77,55 @@
         echo "Now we will make in the directory........"
         pwd
         #
-        ../configure --prefix=$HOME/.local
+        ../configure --prefix=$HOME/.local --with-php
         #
         make clean
         #
-        make DSP=1
-    - exec: rm -f ./tmp.sh
-    - exec: rm -fr ~/.ot
-    - script: |
+        make
+        #
+        rm -f ./tmp.sh
+        rm -fr ~/.ot
+        mkdir -p ~/.ot
+
+    - script: |+
+        #
         cat > tmp.sh <<EOF
-        echo Step into @option.BuildDirectory@/Open-Transactions
-        cd @option.BuildDirectory@/Open-Transactions 
-        echo We will start installing Open Transactions now: in directory ... 
+        echo Step into @option.BuildDirectory@/Open-Transactions/build
+        echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+        cd @option.BuildDirectory@/Open-Transactions/build
+        echo Uninstall old version from this machine
+        echo "= = = = = = = = = = = = = = = = = = = "
         make uninstall 
+        echo We will start installing Open Transactions now: in directory ... 
+        echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+        pwd
         make install 
+        #
+        echo Prepare sample data.
+        echo "= = = = = = = = = = "
+        cp -R @option.BuildDirectory@/Open-Transactions/sample-data/ot-sample-data/* ~/.ot
         echo Done. Open Transactions should now be part of your system.
+        echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
         EOF
         # 
         chmod a+x tmp.sh
+        #
+        cat >> ~/.profile <<EOF
+        #
+        #
+        # set PATH so it includes user's local root bin if it exists
+        if [ -d "\$HOME/.local/bin" ] ; then
+            PATH="\$HOME/.local/bin:\$PATH"
+        fi
+        EOF
+
+
+
     - exec: sudo ./tmp.sh
     - exec: 'echo "You are working with Open-Transactions version :  . . . . . .  .
         . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "'
     - exec: cat ~/build/Open-Transactions/VERSION
     - exec: echo " - - - End."
-    - exec: echo "Ensure we have the target directories we need . . . . . .  . . . . . .  . . . . . .  . . . . . .  . . . . . . "
   description: ''
   name: PrepareOpenTransactions
   uuid: net.fleetingclouds.install.opentransactions.prepare
