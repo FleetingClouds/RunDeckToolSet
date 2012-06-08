@@ -1,0 +1,42 @@
+- id: net.fleetingclouds.initial.user.make
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start > > > ."
+    - exec: echo  .............................................................
+    - exec: 'echo Will create new user ${option.User} on host : ${option.Host}'
+    - exec: sudo ~/makeNewSshUser.sh dpearson
+    - exec: echo  .............................................................
+    - exec: echo "> > >  Done."
+  description: ''
+  name: MakeNewSshUser
+  uuid: net.fleetingclouds.initial.user.make
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/initial/user
+  options:
+    Host:
+      required: true
+      description: This is a host that RunDeck will be accessing in the future.
+      value: cgf.justtrade.net
+    PathToScript:
+      required: true
+      value: '~'
+    User:
+      required: true
+      description: The user for whom we will create an account.
+      value: dpearson
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
