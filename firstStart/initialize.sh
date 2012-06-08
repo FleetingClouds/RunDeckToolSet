@@ -6,6 +6,8 @@
 #  To easily run this script, using the root password supplied by the hosting 
 #   service, log into the vacant VPS (Ubuntu server) and paste these four commands :
 #   (but NOT the if block, itself)
+#
+# To obtain this script, execute the contained three lines
 if [  0 == 1 ]; then
    rm -f ./initialize.sh*
    wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/firstStart/initialize.sh
