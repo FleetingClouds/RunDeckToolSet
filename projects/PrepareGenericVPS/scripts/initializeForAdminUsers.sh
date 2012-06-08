@@ -79,7 +79,7 @@ useradd -m -G admin,sudo -p ${PASS_HASH} ${CHEF_USER}
 passwd -e ${CHEF_USER}
 #
 echo "................................................................"
-echo "Get public keys of expected clients  ..........................."
+echo "Put the same keys in Chef user account  ........................"
 echo "................................................................"
 mkdir -p /home/${CHEF_USER}/.ssh
 # wget https://github.com/downloads/FleetingClouds/RunDeckToolSet/auth_hosts_001
