@@ -101,9 +101,17 @@
         pwd
         make install 
         #
+        #
         echo Prepare sample data.
         echo "= = = = = = = = = = "
         cp -R @option.BuildDirectory@/Open-Transactions/sample-data/ot-sample-data/* ~/.ot
+        #
+        #
+        echo Hand ownership over to the user
+        echo "= = = = = = = = = = = = = = = "
+        chown -R rundeck:rundeck ~/.ot
+        #
+        #
         echo Done. Open Transactions should now be part of your system.
         echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
         EOF
@@ -118,7 +126,8 @@
             PATH="\$HOME/.local/bin:\$PATH"
         fi
         EOF
-
+        #
+        #
 
 
     - exec: sudo ./tmp.sh
