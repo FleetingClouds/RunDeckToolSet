@@ -37,12 +37,9 @@
         echo "Stepped into ..."
         pwd
         export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-        ##export PKG_CONFIG_PATH=~/.local/lib/pkgconfig:$PKG_CONFIG_PATH
-
         #
         echo "Getting zipp'd source ..." 
-        wget -oc --no-check-certificate https://github.com/da2ce7/Open-Transactions/zipball/master
-        ##wget -oc --no-check-certificate https://github.com/FellowTraveler/Open-Transactions/zipball/master
+        wget -oc --no-check-certificate https://github.com/@option.Version@/Open-Transactions/zipball/master
         #
         echo "Got zipp'd source.  Remove any earlier version. Rename it to Open-Transactions.zip" 
         rm -fr Open-Transactions*
@@ -52,12 +49,12 @@
         cd @option.BuildDirectory@  
         # 
         echo "Unzip the downloaded file" 
+        rm -fr @option.Version@*
         unzip -o @option.InstallersRepository@/Open-Transactions.zip
         #
         echo "Rename the resultant directory to Open-Transactions" 
         rm -fr Open-Transactions
-        mv da2ce7* Open-Transactions
-        ##mv Fellow* Open-Transactions
+        mv @option.Version@* Open-Transactions
         #
         echo "Step into the Open-Transactions directory" 
         cd Open-Transactions
@@ -118,15 +115,12 @@
         # 
         chmod a+x tmp.sh
         #
-        cat >> ~/.profile <<EOF
-        #
-        #
+        cat >> ~/.bashrc <<EOF
         # set PATH so it includes user's local root bin if it exists
         if [ -d "\$HOME/.local/bin" ] ; then
             PATH="\$HOME/.local/bin:\$PATH"
         fi
         EOF
-        #
         #
 
 
@@ -145,7 +139,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/install/opentransactions
   options:
     BuildDirectory:
@@ -155,6 +149,10 @@
     InstallersRepository:
       required: true
       value: ~/installers
+    Version:
+      required: true
+      description: Which version of the project to download.
+      value: FellowTraveler
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
