@@ -1,0 +1,118 @@
+- id: net.fleetingclouds.install.mysql.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install  libaio1 chkconfig
+    - exec: echo "- - - - - - - -  installing Mysql server - - - - - - - - "
+    - script: |
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd  @option.InstallersRepository@
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting targz'd source ..." 
+        wget -nc -c ftp://mysql.mirror.iweb.ca/Downloads/MySQL-5.6/mysql-@option.InstallerVersion@.tar.gz
+        #
+        popd
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -fr tmp.sh
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+        echo " - - - - - - - - - - - Create a mysql user group."
+        groupadd mysql
+        #
+        echo " - - - - - - - - - - - Create a mysql user."
+        useradd -r -g mysql mysql
+        #
+        echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+        pushd @option.BuildDirectory@
+        pwd
+        #
+        echo ">> - - - - - - - - - - - Unzip the downloaded file" 
+        sudo tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz
+        #
+        echo ">> - - - - - - - - - - - Make a symbolic link to it."
+        ln -s mysql-@option.InstallerVersion@ mysql
+        #
+        echo ">> - - - - - - - - - - - Step into @option.BuildDirectory@/mysql  >>>>>" 
+        pushd @option.BuildDirectory@/mysql
+        pwd
+        #
+        echo ">> >> - - - - - - - - - - - Momentarily make entire mysql directory property of mysql:mysql"
+        chown -R mysql:mysql .
+        #
+        echo ">> >> - - - - - - - - - - - Prepare basic MySql database."
+        pwd
+        ./scripts/mysql_install_db --user=mysql
+        #
+        echo ">> >> - - - - - - - - - - - Permanently make entire mysql directory property of root:mysql"
+        chown -R root .
+        #
+        echo ">> >> - - - - - - - - - - - ... except for the data directory"
+        chown -R mysql data
+        #
+        echo ">> - - - - - - - - - - - Make a my.cnf available."
+        cp support-files/my-medium.cnf /etc/my.cnf
+        #
+        echo ">> - - - - - - - - - - - Boot time startup."
+        cp support-files/mysql.server /etc/init.d/mysql.server
+        chkconfig --add mysql.server
+        #
+        echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/mysql <<<<<" 
+        popd
+        #
+        echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+        popd
+        echo " = = = = = = = = = = = Done. MySQL should now be part of your system."
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo "- - - - - - - - Restart MySql service - - - - - - - - "
+    - exec: sudo /etc/init.d/mysql.server restart
+    - exec: echo "- - - - - - - -  setting MySql root password - - - - - - - - to ${option.MySqlRootPwd} in  ${option.BuildDirectory}"
+    - exec: sudo ${option.BuildDirectory}/mysql/bin/mysqladmin -u root -p${option.MySqlRootPwd} password '${option.MySqlRootPwd}'
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareMySql
+  uuid: net.fleetingclouds.install.mysql.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/mysql
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory MySql will be installed to.
+      value: /usr/local
+    InstallerVersion:
+      required: true
+      description: The version to obtain.
+      value: 5.6.5-m8-linux2.6-x86_64
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    MySqlRootPwd:
+      required: true
+      description: The root password to use for MySql
+      value: okmmpl,,
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
