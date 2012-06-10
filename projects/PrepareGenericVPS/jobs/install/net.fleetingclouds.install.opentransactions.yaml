@@ -41,7 +41,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/install
   options:
     BuildDirectory:

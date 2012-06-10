@@ -38,7 +38,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: cgf.*
   group: net/fleetingclouds/install/opentransactions/fix
   options:
     BuildDirectory:
