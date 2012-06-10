@@ -71,7 +71,7 @@
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: cgf.justtrade.net
+      value: mol.fleetingclouds.net
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
