@@ -104,6 +104,23 @@ chef.www.fleetingclouds.net:
   sudo-response-max-timeout: "60000"
   sudo-prompt-max-timeout: "60000"
 
+mol.fleetingclouds.net:
+  description: Use this for Joomla hosting for Matrix of Life
+  hostname: mol.fleetingclouds.net
+  nodename: mol
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: rundeck
+  ssh-keypath: /home/rundeck/.ssh/id_rsa
+  myProperty: Use this for accessing mol.fleetingclouds in the RunDeck role
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
+
 
 cgf.justtrade.net:
   description: Host for Common Good Finance R-Credits
