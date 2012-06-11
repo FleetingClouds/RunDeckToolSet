@@ -80,7 +80,7 @@
     - exec: echo "- - - - - - - - Restart MySql service - - - - - - - - "
     - exec: sudo /etc/init.d/mysql.server restart
     - exec: echo "- - - - - - - -  setting MySql root password - - - - - - - - to ${option.MySqlRootPwd} in  ${option.BuildDirectory}"
-    - exec: sudo ${option.BuildDirectory}/mysql/bin/mysqladmin -u root -p${option.MySqlRootPwd} password '${option.MySqlRootPwd}'
+    - exec: sudo ${option.BuildDirectory}/mysql/bin/mysqladmin -u root password '${option.MySqlRootPwd}'
     - exec: echo " - - - End."
   description: ''
   name: PrepareMySql
