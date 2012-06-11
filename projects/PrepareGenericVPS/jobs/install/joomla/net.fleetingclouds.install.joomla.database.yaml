@@ -1,0 +1,81 @@
+- id: net.fleetingclouds.install.joomla.database
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to append MySql path to /etc/environment"
+        cat > tmp.sh <<EOF
+        #! /bin/bash 
+        if [ 1 -gt \$(cat /etc/environment | grep -c mysql) ]; then
+           sudo echo "PATH=\$PATH:/usr/local/mysql/bin" > /etc/environment
+        else 
+            echo "That has been done already."
+            cat /etc/environment
+        fi
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+        echo "Ready to execute it."
+    - exec: sudo ./tmp.sh
+    - exec: source /etc/environment
+    - script: |
+        rm -f ./createDatabase.sql
+        #
+        echo "Make a temporary script to generate a database for Joomla"
+        cat > createDatabase.sql <<EOF
+        show databases;
+        create database if not exists @option.JoomlaDataBase@;
+        grant all privileges on @option.JoomlaDataBase@.* to @option.MySqlJoomlaUser@@@option.MySqlServer@ identified by '@option.MySqlJoomlaPwd@';
+        EOF
+        #
+        echo "Ready to run it."
+    - exec: mysql -u root -p${option.MySqlRootPwd} < createDatabase.sql
+    - exec: echo " - - - End."
+  description: |2-
+     - This may have been allocated by your server provider - a local MySQL installation generally has the default administrator username set as "root".
+    A MySQL password
+  name: PrepareJoomlaDatabase
+  uuid: net.fleetingclouds.install.joomla.database
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla
+  options:
+    JoomlaDataBase:
+      required: true
+      description: The name of the MySQL database for Joomla to use
+      value: joomladb
+    MySqlJoomlaPwd:
+      required: true
+      description: Joomla user password.
+      value: okmmpl,,
+    MySqlJoomlaUser:
+      required: true
+      description: A MySQL username
+      value: joomlaadmin
+    MySqlRootPwd:
+      required: true
+      description: The root password to use for MySql
+      value: okmmpl,,
+    MySqlServer:
+      required: true
+      description: The name of the MySQL host
+      value: localhost
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
