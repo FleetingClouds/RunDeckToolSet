@@ -10,11 +10,12 @@
         group: net/fleetingclouds/initial
         name: BasicGeneralInitialConfigurations
         args: -Host ${option.Host} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
-    - exec: echo "Done installing MySql ................................................."
+    - exec: echo "Completed basic general configurations."
     - jobref:
         group: net/fleetingclouds/install/mysql
         name: PrepareMySql
         args: -BuildDirectory ${option.BuildDirectory} -InstallerVersion ${option.InstallerVersion} -InstallersRepository ${option.InstallersRepository}  -MySqlRootPwd ${option.MySqlRootPwd}
+    - exec: echo "Done installing MySql ................................................."
   description: |
     Install MySql and all the products it depends on.
     
