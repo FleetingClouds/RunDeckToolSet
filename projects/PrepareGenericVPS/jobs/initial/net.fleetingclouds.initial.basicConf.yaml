@@ -10,23 +10,52 @@
         name: PushOverSomeInitializationScripts
         args: -Host ${option.Host}
     - exec: echo "We will use aptitude rather than apt-get .................."
-    - exec: sudo apt-get -y update
-    - exec: echo "Updated  .................................................."
-    - exec: sudo apt-get -y upgrade
-    - exec: echo "Upgraded  .................................................."
-    - exec: sudo apt-get -y install aptitude
-    - exec: echo "Switching to aptitude  .................................................."
-    - exec: sudo aptitude install nano
-    - exec: echo "Installed nano .................................................."
-    - exec: sudo aptitude -y purge apache2.2-common
-    - exec: echo "Purge Apache  .................................................."
-    - exec: echo "................................................................."
-    - exec: sudo aptitude -y purge apache2.2-bin
-    - exec: sudo aptitude -y purge apache2-utils
-    - exec: sudo aptitude -y purge apache2-doc
-    - exec: echo "Finished  .................................................."
-    - exec: sudo aptitude -y install expect
-    - exec: echo "Installed expect .................................................."
+    - script: |
+        rm -f apt_stuff.sh
+        #
+        cat >> apt_stuff.sh <<EOF
+        #
+        echo "Update apt ......................................."
+        sudo apt-get -y update
+        #
+        echo "Upgrade apt ......................................"
+        sudo apt-get -y upgrade
+        #
+        echo "Switching to aptitude  rather than apt-get........"
+        sudo apt-get -y install aptitude
+        #
+        echo "Install nano ................................"
+        sudo aptitude -y install nano
+        #
+        echo "Install expect .............................."
+        sudo aptitude -y install expect
+        #
+        echo "......................Finished................."
+        EOF
+        #
+        chmod a+x apt_stuff.sh
+        #
+    - exec: sudo ./apt_stuff.sh
+    - script: |
+        rm -f purge_apache.sh
+        #
+        echo Purge Apache?  @option.PurgeApache@
+        cat >> purge_apache.sh <<EOF3
+        if [ "XXyes"  =  "XX@option.PurgeApache@" ]; then
+           echo "Purging Apache .................................."
+           aptitude -y purge apache2.2-common
+           aptitude -y purge apache2.2-bin
+           aptitude -y purge apache2-utils
+           aptitude -y purge apache2-doc
+           echo "Purged Apache .................................."
+        else 
+           echo "Do not purge Apache ..........................."
+        fi
+        EOF3
+        #
+        chmod a+x purge_apache.sh
+        #
+    - exec: sudo ./purge_apache.sh
     - exec: echo "......................Finished..................................."
   description: 'Steps Three & Four: This script does the basic initial configurations
     required by all Fleeting Clouds hosts'
@@ -46,6 +75,9 @@
       required: true
       description: the host where the file should go
       value: mol.fleetingclouds.net
+    PurgeApache:
+      description: yes or no to purge Apache
+      value: 'no'
     sudoPwdRunDeck:
       required: true
       description: The password the script must use for sudo steps.
