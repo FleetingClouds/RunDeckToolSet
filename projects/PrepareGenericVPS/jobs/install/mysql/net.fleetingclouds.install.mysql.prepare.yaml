@@ -7,6 +7,8 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install  libaio1 chkconfig
+    - exec: echo "- - - - - - - - Stop MySql service if we are reinstalling - - - - - - - - "
+    - exec: sudo /etc/init.d/mysql.server stop
     - exec: echo "- - - - - - - -  installing Mysql server - - - - - - - - "
     - script: |
         mkdir -p  @option.InstallersRepository@
@@ -79,8 +81,65 @@
     - exec: sudo ./tmp.sh
     - exec: echo "- - - - - - - - Restart MySql service - - - - - - - - "
     - exec: sudo /etc/init.d/mysql.server restart
-    - exec: echo "- - - - - - - -  setting MySql root password - - - - - - - - to ${option.MySqlRootPwd} in  ${option.BuildDirectory}"
-    - exec: sudo ${option.BuildDirectory}/mysql/bin/mysqladmin -u root password '${option.MySqlRootPwd}'
+    - script: |
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to append MySql path to /etc/environment"
+        cat > tmp.sh <<EOF
+        #! /bin/bash 
+        if [ 1 -gt \$(cat /etc/environment | grep -c mysql) ]; then
+           sudo echo "PATH=\$PATH:/usr/local/mysql/bin" > /etc/environment
+        else 
+            echo "That has been done already."
+            cat /etc/environment
+        fi
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+        echo "Ready to execute it."
+    - exec: sudo ./tmp.sh
+    - script: |
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to set MySql root password"
+        ls -l @option.BuildDirectory@/mysql/bin/i*
+        #
+        cat > tmp.sh <<EOF
+        #! /bin/bash
+        #
+        pushd @option.BuildDirectory@/mysql/bin/
+        echo "Working in directory ..."
+        pwd
+        ls -l i*
+        #
+        if [ -e install ]; then 
+          echo "Found evidence of prior install."
+          MYSQLPWD=\$(cat install)
+          echo "There is already a password : \$MYSQLPWD"
+          ./mysqladmin -u root -p\$MYSQLPWD password '@option.MySqlRootPwd@'
+        else
+          echo "There is no pre-esisting password."
+          ./mysqladmin -u root             password '@option.MySqlRootPwd@'
+        fi
+        #
+        cat > install <<ENDOFINSTALL
+        @option.MySqlRootPwd@
+        ENDOFINSTALL
+        #
+        chmod 600 install
+        #
+        popd
+        #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+        echo "Ready to set MySql root password."
+    - exec: sudo ./tmp.sh
+    - exec: rm -f ./tmp.sh
     - exec: echo " - - - End."
   description: ''
   name: PrepareMySql
