@@ -26,7 +26,7 @@
         pwd
         #
         echo " - - - - - - - - - - - Getting targz'd source ..." 
-        wget -nc -c @option.InstallerURL@
+        wget -nc -c @option.InstallerURL@ 2> /dev/null
         ls -l
         #
         popd
@@ -54,7 +54,7 @@
           pwd
           #
           echo ">> - - - - - - - - - - - Decompress the downloaded file" 
-          tar jxvf @option.InstallersRepository@/httpd-@option.InstallerVersion@.tar.bz2
+          tar jxvf @option.InstallersRepository@/httpd-@option.InstallerVersion@.tar.bz2>/dev/null 2>&1 
           #
           echo ">> - - - - - - - - - - - Make a symbolic link to it."
           ln -s httpd-@option.InstallerVersion@ httpd
@@ -76,6 +76,29 @@
           popd
           #
           echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo "- - - - - - - - - - - Give some ownership back to httpd" 
+          chown -R httpd:httpd /usr/local/apache/htdocs
+          #
+          echo "- - - - - - - - - - - link to executable properly" 
+          ln -s /usr/local/apache/bin/apachectl /usr/bin
+          #
+          echo "- - - - - - - - - - - step into linux init.d directory  >>>>>" 
+          pushd /etc/init.d
+          #
+          #
+          echo ">> - - - - - - - - - - - Get rid of any prior Apache."
+          rm apache2
+          update-rc.d apache2 remove
+          #
+          echo ">> - - - - - - - - - - - Make a symbolic link to Apache executable."
+          ln -s /usr/local/apache/bin/apachectl apache
+          #
+          echo ">> - - - - - - - - - - - Establish it as part of boot time steps."
+          update-rc.d apache start 91 2 3 4 5 . stop 09 0 1 6 .
+          #
+          echo ">> - - - - - - - - - - - Step out of linux init.d directory <<<<<" 
           popd
           #
           echo " = = = = = = = = = = = Done. Apache should now be part of your system."
