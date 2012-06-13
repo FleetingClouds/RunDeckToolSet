@@ -9,7 +9,7 @@
     - jobref:
         group: net/fleetingclouds/initial
         name: BasicGeneralInitialConfigurations
-        args: -Host ${option.Host} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -Host ${option.Host} -sudoPwdRunDeck ${option.sudoPwdRunDeck} -PurgeApache ${option.PurgeApache}
     - exec: echo "Completed basic general configurations."
     - jobref:
         group: net/fleetingclouds/install/mysql
@@ -49,6 +49,9 @@
     MySqlRootPwd:
       required: true
       description: The root password to use for MySql
+    PurgeApache:
+      required: true
+      description: yes or no to purge Apache
     sudoPwdRunDeck:
       required: true
       value: okmmpl,,
