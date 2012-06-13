@@ -6,6 +6,8 @@
     strategy: node-first
     commands:
     - exec: echo "Start 1 ..."
+    - exec: export QQ="sssss"  &&  echo $QQ
+    - exec: export REMOTE_IP=$(echo $SSH_CLIENT | cut -d ' ' -f1)  &&  echo The remote IP of this connection is $REMOTE_IP
     - exec: sudo pwd
     - jobref:
         group: net/fleetingclouds/test
