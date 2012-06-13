@@ -1,0 +1,68 @@
+- id: net.fleetingclouds.install.joomla
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Install Joomla ......................................................."
+    - jobref:
+        group: net/fleetingclouds/install
+        name: InstallMySql
+        args: -MySqlRootPwd ${option.MySqlRootPwd} -PurgeApache ${option.PurgeApache}
+    - jobref:
+        group: net/fleetingclouds/install/joomla
+        name: PrepareJoomlaDatabase
+        args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser}  -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/joomla
+        name: PrepareJoomla
+    - exec: echo "Done installing MySql ................................................."
+  description: |
+    Install Joomla and all the products it depends on.
+  name: InstallJoomla
+  uuid: net.fleetingclouds.install.joomla
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    JoomlaDataBase:
+      required: true
+      description: The name of the MySQL database for Joomla to use
+      value: joomladb
+    MySqlJoomlaPwd:
+      required: true
+      description: Joomla user password.
+      value: okmmpl,,
+    MySqlJoomlaUser:
+      required: true
+      description: A MySQL username
+      value: joomlaadmin
+    MySqlRootPwd:
+      required: true
+      description: The root acces password for all of MySql
+    MySqlServer:
+      required: true
+      description: The name of the MySQL host
+      value: localhost
+    PurgeApache:
+      required: true
+      description: yes or no to purge Apache
+      value: 'yes'
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
