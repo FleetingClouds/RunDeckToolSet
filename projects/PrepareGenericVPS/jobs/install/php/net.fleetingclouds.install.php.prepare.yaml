@@ -1,0 +1,113 @@
+- id: net.fleetingclouds.install.php.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start installing PHP  - - - "
+    - exec: sudo pwd
+    - script: |-
+        #! /bin/bash  
+        # 
+        mkdir -p @option.InstallersRepository@ 
+        mkdir -p @option.BuildDirectory@ 
+        # 
+        pushd @option.InstallersRepository@ 
+        # 
+        echo " - - - - - - - - - - - Stepping into ..." 
+        pwd 
+        # 
+        echo " - - - - - - - - - - - Getting targz'd source ..."  
+        wget -nc -c @option.InstallerURL@   2> /dev/null
+        mv mirror php-@option.InstallerVersion@.tar.bz2
+        ls -l 
+        # 
+        popd 
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..." 
+        pwd 
+        # 
+        rm -fr tmp.sh 
+        cat > tmp.sh <<EOF 
+        #! /bin/bash  
+        # 
+        echo " - - - - - - - - - - - Resolve dependencies" 
+        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg62-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev
+        # 
+        echo " - - - - - - - - - - - Step into @option.BuildDirectory@ >>>>>"  
+        pushd @option.BuildDirectory@ 
+        pwd 
+        # 
+        echo ">> - - - - - - - - - - - Decompress the downloaded file"  
+        tar jxvf @option.InstallersRepository@/php-@option.InstallerVersion@.tar.bz2  >/dev/null 2>&1
+        # 
+        echo ">> - - - - - - - - - - - Make a symbolic link to it." 
+        ln -s php-@option.InstallerVersion@ php5
+        # 
+        echo ">> - - - - - - - - - - - Step into @option.BuildDirectory@/php5 >>>>>"  
+        pushd @option.BuildDirectory@/php5
+        pwd 
+        # 
+        echo ">> >> - - - - - - - - - - - Momentarily make entire PHP directory property of rundeck:rundeck" 
+        chown -R rundeck:rundeck . 
+        # 
+        echo ">> >> - - - - - - - - - - - Configure PHP make for this machine." 
+        ./configure --prefix=/usr/local/php5 --with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --disable-cgi --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-ttf --with-jpeg-dir=/usr/lib --enable-magic-quotes
+        #
+        echo ">> >> - - - - - - - - - - - Make PHP."
+        make
+        #
+        echo ">> >> - - - - - - - - - - - Install PHP."
+        make install
+        #
+        echo ">> >> - - - - - - - - - - - Provide an ini file for PHP."
+        cp php.ini-production /usr/local/php5/lib/php.ini
+
+
+        # 
+        echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/php5 <<<<<"  
+        popd 
+        # 
+        echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
+        popd 
+        #
+        echo " = = = = = = = = = = = Done. PHP should now be part of your system." 
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PreparePhp
+  uuid: net.fleetingclouds.install.php.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/php
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory MySql will be installed to.
+      value: /usr/local/src
+    InstallerURL:
+      required: true
+      description: The place to get it from
+      value: http://ro1.php.net/get/php-5.4.3.tar.bz2/from/us2.php.net/mirror
+    InstallerVersion:
+      required: true
+      description: The version to obtain.
+      value: 5.4.3
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
