@@ -76,6 +76,7 @@
       description: the host where the file should go
       value: mol.fleetingclouds.net
     PurgeApache:
+      required: true
       description: yes or no to purge Apache
       value: 'no'
     sudoPwdRunDeck:
