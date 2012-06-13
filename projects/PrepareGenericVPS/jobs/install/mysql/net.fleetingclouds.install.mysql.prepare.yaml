@@ -6,7 +6,6 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo aptitude -y install  libaio1 chkconfig
     - exec: echo "- - - - - - - -  installing Mysql server - - - - - - - - "
     - script: |
         #! /bin/bash 
@@ -20,7 +19,7 @@
         pwd
         #
         echo " - - - - - - - - - - - Getting targz'd source ..." 
-        wget -nc -c @option.InstallerURL@
+        wget -nc -c @option.InstallerURL@   2> /dev/null
         ls -l
         #
         popd
@@ -31,10 +30,14 @@
         cat > tmp.sh <<EOF
         #! /bin/bash 
         #
+        echo " - - - - - - - - - - - Resolve dependencies" 
+        aptitude -y install build-essential libncurses5-dev libaio1 chkconfig
+        #
         echo "Try to shut down MySql if it is already there ..."
         if [  -e /etc/init.d/mysql.server  ]; then /etc/init.d/mysql.server stop; fi
         #
         #!/bin/bash
+        #
         echo " - - - - - - - - - - - Create a mysql user group."
         groupadd mysql
         #
@@ -46,7 +49,7 @@
         pwd
         #
         echo ">> - - - - - - - - - - - Unzip the downloaded file" 
-        sudo tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz
+        tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz >/dev/null 2>&1
         #
         echo ">> - - - - - - - - - - - Make a symbolic link to it."
         ln -s mysql-@option.InstallerVersion@ mysql
