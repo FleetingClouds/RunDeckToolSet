@@ -7,10 +7,10 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install  libaio1 chkconfig
-    - exec: echo "- - - - - - - - Stop MySql service if we are reinstalling - - - - - - - - "
-    - exec: sudo /etc/init.d/mysql.server stop
     - exec: echo "- - - - - - - -  installing Mysql server - - - - - - - - "
     - script: |
+        #! /bin/bash 
+        #
         mkdir -p  @option.InstallersRepository@
         mkdir -p  @option.BuildDirectory@
         #
@@ -20,7 +20,8 @@
         pwd
         #
         echo " - - - - - - - - - - - Getting targz'd source ..." 
-        wget -nc -c ftp://mysql.mirror.iweb.ca/Downloads/MySQL-5.6/mysql-@option.InstallerVersion@.tar.gz
+        wget -nc -c @option.InstallerURL@
+        ls -l
         #
         popd
         echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
@@ -28,6 +29,11 @@
         #
         rm -fr tmp.sh
         cat > tmp.sh <<EOF
+        #! /bin/bash 
+        #
+        echo "Try to shut down MySql if it is already there ..."
+        if [  -e /etc/init.d/mysql.server  ]; then /etc/init.d/mysql.server stop; fi
+        #
         #!/bin/bash
         echo " - - - - - - - - - - - Create a mysql user group."
         groupadd mysql
@@ -82,6 +88,7 @@
     - exec: echo "- - - - - - - - Restart MySql service - - - - - - - - "
     - exec: sudo /etc/init.d/mysql.server restart
     - script: |
+        #! /bin/bash
         rm -f ./tmp.sh
         #
         echo "Make a temporary script to append MySql path to /etc/environment"
@@ -101,6 +108,8 @@
         echo "Ready to execute it."
     - exec: sudo ./tmp.sh
     - script: |
+        #! /bin/bash 
+        #
         rm -f ./tmp.sh
         #
         echo "Make a temporary script to set MySql root password"
@@ -158,6 +167,10 @@
       required: true
       description: The directory MySql will be installed to.
       value: /usr/local
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.5-m8-linux2.6-x86_64.tar.gz/from/ftp://mirror.anl.gov/pub/mysql/
     InstallerVersion:
       required: true
       description: The version to obtain.
