@@ -1,0 +1,129 @@
+- id: net.fleetingclouds.install.apache.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start Preparing Apache .............................................."
+    - jobref:
+        group: net/fleetingclouds/test/phpmysql
+        name: VerifyPhpMySql
+        args: -HOST ${option.Host}
+    - jobref:
+        group: net/fleetingclouds/install/apache
+        name: HttpdConf
+        args: -HOST ${option.Host}
+    - script: |
+        #!/bin/bash 
+        #
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd  @option.InstallersRepository@
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting targz'd source ..." 
+        wget -nc -c @option.InstallerURL@
+        ls -l
+        #
+        popd
+        #
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to perform Apache installation actions."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo "Prerequisites..........."
+          aptitude -y install build-essential libncurses5-dev
+          #
+          echo " - - - - - - - - - - - Create an Apache user group."
+          groupadd httpd
+          #
+          echo " - - - - - - - - - - - Create an Apache user."
+          useradd httpd -g httpd -c "Apache" -d /dev/null -s /sbin/nologin
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+          pushd @option.BuildDirectory@
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Decompress the downloaded file" 
+          tar jxvf @option.InstallersRepository@/httpd-@option.InstallerVersion@.tar.bz2
+          #
+          echo ">> - - - - - - - - - - - Make a symbolic link to it."
+          ln -s httpd-@option.InstallerVersion@ httpd
+          #
+          echo ">> - - - - - - - - - - - Step into @option.BuildDirectory@/httpd  >>>>>" 
+          pushd @option.BuildDirectory@/httpd
+          pwd
+          #
+          echo ">> >> - - - - - - - - - - - Momentarily make entire Apache httpd directory property of rundeck:rundeck"
+          chown -R rundeck:rundeck .
+          #
+          echo ">> >> - - - - - - - - - - - Configure Apache make according to this machine."
+          ./configure --prefix=/usr/local/apache --disable-cgi --disable-imap --disable-userdir --enable-rewrite=static --enable-so=static
+          #
+          make
+          make install
+          #
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/httpd <<<<<" 
+          popd
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo " = = = = = = = = = = = Done. Apache should now be part of your system."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: sudo cp httpd.conf /usr/local/apache/conf
+    - exec: sudo cp verifyPhpMySql.php  /usr/local/apache/htdocs
+    - exec: echo "Done Preparing Apache .............................................."
+  description: ''
+  name: PrepareApache
+  uuid: net.fleetingclouds.install.apache.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/apache
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory MySql will be installed to.
+      value: /usr/local/src
+    Host:
+      required: true
+      description: The host where the test script file should go
+      value: mol.fleetingclouds.net
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: http://mirrors.sonic.net/apache//httpd/httpd-2.2.22.tar.bz2
+    InstallerVersion:
+      required: true
+      description: The version to obtain.
+      value: 2.2.22
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
