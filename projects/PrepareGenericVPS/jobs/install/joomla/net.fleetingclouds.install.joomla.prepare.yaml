@@ -1,0 +1,74 @@
+- id: net.fleetingclouds.install.joomla.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |-
+        #!/bin/bash
+        #
+        mkdir -p  @option.InstallersRepository@
+        pushd  @option.InstallersRepository@
+        echo "Stepping into ..."
+        pwd
+        #
+        echo "Getting zipp'd source ..."
+        wget -nc -c http://joomlacode.org/gf/download/frsrelease/16914/73508/Joomla_@option.InstallerVersion@_Package.zip 2> /dev/null 
+        popd
+        #
+        mkdir -p  @option.BuildDirectory@/
+        #
+        #
+        rm -f tmp.sh
+        #
+        cat > tmp.sh <<EOF
+        cd @option.BuildDirectory@
+        echo "Stepping into ..."
+        pwd
+        #
+        # 
+        echo "Unzip the downloaded file" 
+        unzip -o -q @option.InstallersRepository@/Joomla_@option.InstallerVersion@_Package.zip
+        #
+        echo "Remove Apache's default index.html"
+        mv index.html apache_hello.html
+        #
+        echo "Restart Apache"
+        /etc/init.d/apache restart
+        #
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareJoomla
+  uuid: net.fleetingclouds.install.joomla.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: /usr/local/apache/htdocs/
+    InstallerVersion:
+      required: true
+      value: 2.5.4-Stable-Full
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
