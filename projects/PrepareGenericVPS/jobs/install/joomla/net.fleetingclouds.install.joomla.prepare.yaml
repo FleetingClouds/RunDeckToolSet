@@ -6,6 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - jobref:
+        group: net/fleetingclouds/install/joomla
+        name: JoomlaConf
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix}
     - script: |-
         #!/bin/bash
         #
@@ -63,10 +67,6 @@
     - exec: sudo ./tmp.sh
     - exec: 'echo " ####################  Calling [JoomlaConf] ###################
         "'
-    - jobref:
-        group: net/fleetingclouds/install/joomla
-        name: JoomlaConf
-        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix}
     - exec: echo " - - - End."
   description: ''
   name: PrepareJoomla
