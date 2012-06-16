@@ -7,37 +7,23 @@
     commands:
     - exec: echo " Start - - - "
     - script: |
-        rm -f ./tmp.sh
-        #
-        echo "Make a temporary script to append MySql path to /etc/environment"
-        cat > tmp.sh <<EOF
-        #! /bin/bash 
-        if [ 1 -gt \$(cat /etc/environment | grep -c mysql) ]; then
-           sudo echo "PATH=\$PATH:/usr/local/mysql/bin" > /etc/environment
-        else 
-            echo "That has been done already."
-            cat /etc/environment
-        fi
-        EOF
-        echo "Make it executable."
-        #
-        chmod a+x tmp.sh
-        #
-        echo "Ready to execute it."
-    - exec: sudo ./tmp.sh
-    - exec: source /etc/environment
-    - script: |
         rm -f ./createDatabase.sql
         #
         echo "Make a temporary script to generate a database for Joomla"
         cat > createDatabase.sql <<EOF
         show databases;
+        drop database if exists @option.JoomlaDataBase@;
         create database if not exists @option.JoomlaDataBase@;
         grant all privileges on @option.JoomlaDataBase@.* to @option.MySqlJoomlaUser@@@option.MySqlServer@ identified by '@option.MySqlJoomlaPwd@';
         EOF
         #
         echo "Ready to run it."
     - exec: mysql -u root -p${option.MySqlRootPwd} < createDatabase.sql
+    - exec: rm -f ./${option.DatabaseBackupFile}
+    - exec: echo "Download the backup file into the default directory"
+    - exec: 'wget -nc -c ${option.RemoteRepository}/${option.DatabaseBackupFile} 2>
+        /dev/null '
+    - exec: mysql -u ${option.MySqlJoomlaUser} -p${option.MySqlJoomlaPwd} ${option.JoomlaDataBase}  < ./${option.DatabaseBackupFile}
     - exec: echo " - - - End."
   description: |2-
      - This may have been allocated by your server provider - a local MySQL installation generally has the default administrator username set as "root".
@@ -54,13 +40,20 @@
       name: mol.*
   group: net/fleetingclouds/install/joomla
   options:
+    DatabaseBackupFile:
+      required: true
+      description: A remote file that will restore a database.
+      value: joomla_default.sql
     JoomlaDataBase:
       required: true
       description: The name of the MySQL database for Joomla to use
       value: joomladb
+    JoomlaTblPrefix:
+      required: true
+      description: The table identifier that permits muliple sites to use one database.
+      value: mol01_
     MySqlJoomlaPwd:
       required: true
-      description: Joomla user password.
       value: okmmpl,,
     MySqlJoomlaUser:
       required: true
@@ -74,6 +67,10 @@
       required: true
       description: The name of the MySQL host
       value: localhost
+    RemoteRepository:
+      required: true
+      description: Where there is a database backup stored for later restore.
+      value: https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/scripts
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
