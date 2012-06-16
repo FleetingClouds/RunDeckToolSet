@@ -1,0 +1,102 @@
+- id: net.fleetingclouds.install.joomla.conf
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start ...."
+    - script: |-
+        rm -f configuration.php
+        #
+        cat > configuration.php <<EOF
+        <?php
+        class JConfig {
+        	public \$offline = '0';
+        	public \$offline_message = 'This site is down for maintenance.<br /> Please check back again soon.';
+        	public \$display_offline_message = '1';
+        	public \$offline_image = '';
+        	public \$sitename = '@option.SiteName@';
+        	public \$editor = 'tinymce';
+        	public \$captcha = '0';
+        	public \$list_limit = '20';
+        	public \$access = '1';
+        	public \$debug = '0';
+        	public \$debug_lang = '0';
+        	public \$dbtype = 'mysql';
+        	public \$host = 'localhost';
+        	public \$user = '@option.DbUser@';
+        	public \$password = '@option.MySqlJoomlaPwd@';
+        	public \$db = '@option.JoomlaDataBase@';
+        	public \$dbprefix = '@option.JoomlaTblPrefix@';
+        	public \$live_site = '';
+        	public \$secret = 'tm0TBzAJsLIetrJD';
+        	public \$gzip = '0';
+        	public \$error_reporting = 'default';
+        	public \$helpurl = 'http://help.joomla.org/proxy/index.php?option=com_help&amp;keyref=Help{major}{minor}:{keyref}';
+        	public \$ftp_host = '127.0.0.1';
+        	public \$ftp_port = '21';
+        	public \$ftp_user = '';
+        	public \$ftp_pass = '';
+        	public \$ftp_root = '';
+        	public \$ftp_enable = '0';
+        	public \$offset = 'UTC';
+        	public \$offset_user = 'UTC';
+        	public \$mailer = 'mail';
+        	public \$mailfrom = '@option.AdminEmail@';
+        	public \$fromname = '@option.SiteName@';
+        	public \$sendmail = '/usr/sbin/sendmail';
+        	public \$smtpauth = '0';
+        	public \$smtpuser = '';
+        	public \$smtppass = '';
+        	public \$smtphost = 'localhost';
+        	public \$smtpsecure = 'none';
+        	public \$smtpport = '25';
+        	public \$caching = '0';
+        	public \$cache_handler = 'file';
+        	public \$cachetime = '15';
+        	public \$MetaDesc = '';
+        	public \$MetaKeys = '';
+        	public \$MetaTitle = '1';
+        	public \$MetaAuthor = '1';
+        	public \$MetaVersion = '0';
+        	public \$robots = '';
+        	public \$sef = '1';
+        	public \$sef_rewrite = '0';
+        	public \$sef_suffix = '0';
+        	public \$unicodeslugs = '0';
+        	public \$feed_limit = '10';
+        	public \$log_path = '/usr/local/apache/htdocs/logs';
+        	public \$tmp_path = '/usr/local/apache/htdocs/tmp';
+        	public \$lifetime = '15';
+        	public \$session_handler = 'database';
+        }
+        EOF
+    - exec: scp configuration.php  ${RD_OPTION_HOST}:.
+    - exec: echo " ....... Done"
+  description: ''
+  name: JoomlaConf
+  uuid: net.fleetingclouds.install.joomla.conf
+  group: net/fleetingclouds/install/joomla
+  options:
+    AdminEmail:
+      required: true
+      value: alicia.factorepo@gmail.com
+    DbUser:
+      required: true
+      value: joomlaadmin
+    Host:
+      required: true
+      description: the host where the file should go
+      value: mol.fleetingclouds.net
+    JoomlaDataBase:
+      required: true
+      value: joomladb
+    JoomlaTblPrefix:
+      required: true
+      description: The table identifier that permits muliple sites to use one database.
+    MySqlJoomlaPwd:
+      required: true
+    SiteName:
+      required: true
+      value: Matrix of Life
