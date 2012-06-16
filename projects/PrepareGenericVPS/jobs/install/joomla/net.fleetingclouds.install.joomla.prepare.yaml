@@ -94,7 +94,7 @@
     JoomlaTblPrefix:
       required: true
       description: The table identifier that permits muliple sites to use one database.
-      value: mol_1_
+      value: mol01_
     MySqlJoomlaPwd:
       required: true
     sudoPwdRunDeck:
