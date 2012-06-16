@@ -6,18 +6,36 @@
     strategy: node-first
     commands:
     - exec: echo "Install Joomla ......................................................."
+    - exec: 'echo " ####################  Calling [InstallMySql] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/install
         name: InstallMySql
         args: -MySqlRootPwd ${option.MySqlRootPwd} -PurgeApache ${option.PurgeApache}
+    - exec: 'echo " ####################  Calling [PrepareJoomlaDatabase] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomlaDatabase
         args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser}  -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+    - exec: 'echo " ####################  Calling [PrepareApache] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/apache
+        name: PrepareApache
+    - exec: 'echo " ####################  Calling [PreparePhp] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/php
+        name: PreparePhp
+    - exec: 'echo " ####################  Calling [PrepareJoomla] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomla
-    - exec: echo "Done installing MySql ................................................."
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}
+    - exec: sudo sudo /etc/init.d/apache restart
+    - exec: echo "Done installing Joomla ................................................."
   description: |
     Install Joomla and all the products it depends on.
   name: InstallJoomla
@@ -46,14 +64,13 @@
     MySqlJoomlaPwd:
       required: true
       description: Joomla user password.
-      value: okmmpl,,
     MySqlJoomlaUser:
       required: true
       description: A MySQL username
       value: joomlaadmin
     MySqlRootPwd:
       required: true
-      description: The root acces password for all of MySql
+      description: The root access password for all of MySql
     MySqlServer:
       required: true
       description: The name of the MySQL host
