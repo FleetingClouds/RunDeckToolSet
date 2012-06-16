@@ -24,6 +24,8 @@
         rm -f tmp.sh
         #
         cat > tmp.sh <<EOF
+        #!/bin/bash  
+        #
         cd @option.BuildDirectory@
         echo "Stepping into ..."
         pwd
@@ -33,7 +35,23 @@
         unzip -o -q @option.InstallersRepository@/Joomla_@option.InstallerVersion@_Package.zip
         #
         echo "Remove Apache's default index.html"
-        mv index.html apache_hello.html
+        if [ -e index.html ]; then sudo mv index.html apache_hello.html; fi
+        #
+        echo ". . . . . . Step into /usr/local/apache/htdocs >>>>>"
+        pushd /usr/local/apache/htdocs/
+          #
+          echo ">>  Remove Joomla's installation directory"
+          mkdir -p /usr/local/src/joomla/
+          if [ -e installation ]; then
+            rm -fr /usr/local/src/joomla/installation
+            mv installation /usr/local/src/joomla/
+          fi
+          #
+          echo "Provide Joomla with a configuration file"
+          if [ ! -e configuration.php ]; then cp $HOME/configuration.php .; fi
+          #
+        echo ". . . . . . Step out of /usr/local/apache/htdocs <<<<<"
+        popd
         #
         echo "Restart Apache"
         /etc/init.d/apache restart
@@ -43,6 +61,12 @@
         #
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
+    - exec: 'echo " ####################  Calling [JoomlaConf] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla
+        name: JoomlaConf
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix}
     - exec: echo " - - - End."
   description: ''
   name: PrepareJoomla
@@ -67,6 +91,12 @@
     InstallersRepository:
       required: true
       value: ~/installers
+    JoomlaTblPrefix:
+      required: true
+      description: The table identifier that permits muliple sites to use one database.
+      value: mol_1_
+    MySqlJoomlaPwd:
+      required: true
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
