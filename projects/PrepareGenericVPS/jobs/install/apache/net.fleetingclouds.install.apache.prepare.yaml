@@ -6,10 +6,14 @@
     strategy: node-first
     commands:
     - exec: echo "Start Preparing Apache .............................................."
+    - exec: 'echo " ####################  Calling [VerifyPhpMySql] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/test/phpmysql
         name: VerifyPhpMySql
         args: -HOST ${option.Host}
+    - exec: 'echo " ####################  Calling [HttpdConf] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/install/apache
         name: HttpdConf
