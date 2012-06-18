@@ -1,0 +1,96 @@
+- id: net.fleetingclouds.install.joomla.mode
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start ...."
+    - exec: pwd
+    - script: |-
+        rm -f change_permissions.sh
+        #
+        cat > change_permissions.sh <<EOF
+        #!/bin/bash
+        #
+        if [ `expr \$1 + 1 2> /dev/null`  ]; then
+           declare MODE=\$1
+           if [ 778 -gt "\$1" ]; then
+              echo "Set mode to be \$MODE for necessary directories in $2"
+              #
+              pushd \$2
+              #
+              mkdir -p ./administrator/backups
+              chmod \$MODE ./administrator/backups
+              chmod \$MODE ./administrator/components
+              chmod \$MODE ./administrator/language
+              chmod \$MODE ./administrator/language/en-GB
+        #      chmod \$MODE ./administrator/language/nl-NL
+              chmod \$MODE ./administrator/manifests/libraries
+              chmod \$MODE ./administrator/modules
+              chmod \$MODE ./administrator/templates
+              chmod \$MODE ./components
+              chmod \$MODE ./images
+              chmod \$MODE ./images/banners
+              mkdir -p ./images/stories
+              chmod \$MODE ./images/stories
+              chmod \$MODE ./language
+              chmod \$MODE ./language/en-GB
+        #      chmod \$MODE ./language/nl-NL
+              mkdir -p ./language/pdf_fonts
+              chmod \$MODE ./language/pdf_fonts
+              chmod \$MODE ./libraries
+              chmod \$MODE ./media
+              chmod \$MODE ./modules
+              chmod \$MODE ./plugins
+              chmod \$MODE ./plugins/content
+              chmod \$MODE ./plugins/editors
+              chmod \$MODE ./plugins/editors-xtd
+              chmod \$MODE ./plugins/search
+              chmod \$MODE ./plugins/system
+              chmod \$MODE ./plugins/user
+              mkdir -p ./plugins/xmlrpc
+              chmod \$MODE ./plugins/xmlrpc
+              chmod \$MODE ./tmp
+              chmod \$MODE ./templates
+              chmod \$MODE ./cache
+              popd
+              exit \$?
+           fi
+        fi
+        #
+        echo   " > 777 ??";
+        #
+        exit \$?
+
+        EOF
+        #
+        chmod a+x change_permissions.sh
+        #
+    - exec: echo "Calling mode changer with ${option.ModeToApply} for directory ${option.BuildDirectory}"
+    - exec: sudo ./change_permissions.sh ${option.ModeToApply} ${option.BuildDirectory}
+    - exec: echo " ....... Done"
+  description: ''
+  name: ModeChange
+  uuid: net.fleetingclouds.install.joomla.mode
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla
+  options:
+    BuildDirectory:
+      required: true
+      description: The Apache root directory
+      value: /usr/local/apache/htdocs/
+    ModeToApply:
+      required: true
+      value: '755'
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
