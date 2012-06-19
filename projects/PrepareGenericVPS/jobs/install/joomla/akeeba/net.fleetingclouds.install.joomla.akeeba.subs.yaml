@@ -1,0 +1,98 @@
+- id: net.fleetingclouds.install.joomla.akeeba.subs
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        #!/bin/bash 
+        #
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd  @option.InstallersRepository@
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting compressed source ..." 
+        wget -nc -c @option.InstallerURL@/@option.Filename@ 2> /dev/null
+        ls -l
+        #
+        popd
+        #
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to perform Akeeba installation actions."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+          pushd @option.BuildDirectory@
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Make a target directory for it" 
+          mkdir -p akeeba_subs 
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@/akeeba_subs  >>>>>" 
+          pushd @option.BuildDirectory@/akeeba_subs
+          pwd
+          #
+          echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
+          echo "unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 "
+          unzip @option.InstallersRepository@/@option.Filename@
+          #
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_backup <<<<<" 
+          popd
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo " = = = = = = = = = = = Done. Akeeba Backup should now be available for installation."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: This jobs simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+  name: GetAkeebaSubscriptions
+  uuid: net.fleetingclouds.install.joomla.akeeba.subs
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/akeeba
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory to which Akeeba backup will be decompressed.
+      value: /usr/local/apache/htdocs/tmp
+    Filename:
+      required: true
+      description: The compressed file.
+      value: /com_akeebasubs-2-2.1.zip.raw
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: https://www.akeebabackup.com/download/akeeba-subscriptions/akeeba-subscriptions-2-2-1
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true

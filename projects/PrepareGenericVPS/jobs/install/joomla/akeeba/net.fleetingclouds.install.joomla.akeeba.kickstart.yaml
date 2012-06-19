@@ -1,0 +1,100 @@
+- id: net.fleetingclouds.install.joomla.akeeba.kickstart
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        #!/bin/bash 
+        #
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd  @option.InstallersRepository@
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting compressed source ..." 
+        wget -nc -c @option.InstallerURL@/@option.Filename@ 2> /dev/null
+        ls -l
+        #
+        popd
+        #
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to perform Akeeba installation actions."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+          pushd @option.BuildDirectory@
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Make a target directory for it" 
+          mkdir -p akeeba_kickstart 
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@/akeeba_kickstart  >>>>>" 
+          pushd @option.BuildDirectory@/akeeba_kickstart
+          pwd
+          #
+          echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
+          unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 
+          #
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_kickstart <<<<<" 
+          popd
+          #
+          echo ">> - - - - - - - - - - - Deliver it all to httpd:httpd" 
+          chown -R httpd:httpd .
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo " = = = = = = = = = = = Done. Akeeba Backup should now be available for installation."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: GetAkeebaKickStart
+  uuid: net.fleetingclouds.install.joomla.akeeba.kickstart
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/akeeba
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory to which Akeeba backup will be decompressed.
+      value: /usr/local/apache/htdocs
+    Filename:
+      required: true
+      description: The compressed file.
+      value: kickstart-core-3-5-2-zip
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: https://www.akeebabackup.com/downloads/akeeba-kickstart/akeeba-kickstart-3-5-2
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
