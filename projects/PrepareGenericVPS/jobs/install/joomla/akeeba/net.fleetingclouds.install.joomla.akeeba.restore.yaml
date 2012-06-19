@@ -1,0 +1,57 @@
+- id: net.fleetingclouds.install.joomla.akeeba.restore
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo mkdir -p ${option.TargetDirectory}/tmp
+    - exec: sudo chmod a+rw ${option.TargetDirectory}/tmp
+    - script: |
+        #!/bin/bash 
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pushd  @option.TargetDirectory@/tmp
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting compressed source ..." 
+        echo wget -nc -c @option.RepositoryURL@/@option.Filename@ 2> /dev/null
+        wget -nc -c @option.RepositoryURL@/@option.Filename@
+        ls -l
+        #
+        popd
+        #
+    - exec: sudo cp ${option.TargetDirectory}/tmp/${option.Filename} ${option.TargetDirectory}
+    - exec: sudo chown -R httpd:httpd ${option.TargetDirectory}/../*
+    - exec: echo " - - - End."
+  description: This jobs simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+  name: GetBackupToRestore
+  uuid: net.fleetingclouds.install.joomla.akeeba.restore
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/akeeba
+  options:
+    Filename:
+      required: true
+      description: The compressed file.
+      value: akeeba.backend.log
+    RepositoryURL:
+      required: true
+      description: the place to get it from
+      value: https://github.com/downloads/FleetingClouds/RunDeckToolSet
+    TargetDirectory:
+      required: true
+      description: The directory to which Akeeba backup will be decompressed.
+      value: /usr/local/apache/htdocs/akeeba_kickstart
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
