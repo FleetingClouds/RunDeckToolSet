@@ -6,6 +6,8 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - exec: 'echo " ####################  Calling [JoomlaConf] ###################
+        "'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: JoomlaConf
@@ -65,8 +67,6 @@
         #
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
-    - exec: 'echo " ####################  Calling [JoomlaConf] ###################
-        "'
     - exec: echo " - - - End."
   description: ''
   name: PrepareJoomla
