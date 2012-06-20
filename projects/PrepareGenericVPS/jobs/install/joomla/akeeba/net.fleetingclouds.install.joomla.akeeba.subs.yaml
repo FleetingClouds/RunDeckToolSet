@@ -45,7 +45,7 @@
           #
           echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
           echo "unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 "
-          unzip @option.InstallersRepository@/@option.Filename@
+          unzip -uo @option.InstallersRepository@/@option.Filename@
           #
           echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_backup <<<<<" 
           popd
