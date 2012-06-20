@@ -1,0 +1,124 @@
+- id: net.fleetingclouds.install.joomla.virtuemart.get
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        #!/bin/bash 
+        #
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd  @option.InstallersRepository@
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        echo " - - - - - - - - - - - Getting compressed source ..." 
+        wget -nc -c @option.InstallerURL@/@option.Filename@ 2> /dev/null
+        unzip -o @option.Filename@
+        # rm -f @option.Filename@
+        ls -l
+        #
+        popd
+        #
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to perform VirtueMart installation actions."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+          pushd @option.BuildDirectory@
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Make a target directory for it" 
+          mkdir -p virtuemart 
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@/virtuemart  >>>>>" 
+          pushd @option.BuildDirectory@/virtuemart
+          pwd
+          #
+          echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
+          tar xvfz @option.InstallersRepository@/com_virtuemart.2.0.6.tar.gz>/dev/null 2>&1 
+          #
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/virtuemart <<<<<" 
+          popd
+          #
+          echo ">> - - - - - - - - - - - Make a target directory for it" 
+          mkdir -p virtuemart_aio 
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@/virtuemart_aio  >>>>>" 
+          pushd @option.BuildDirectory@/virtuemart_aio
+          pwd
+          #
+          echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
+          tar xvfz @option.InstallersRepository@/com_virtuemart.2.0.6_ext_aio.tar.gz>/dev/null 2>&1 
+          #
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/virtuemart_aio <<<<<" 
+          popd
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Deliver it all to httpd:httpd" 
+          chown -R httpd:httpd .
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo ">> - - - - - - - - - - - Create VirtueMart's 'SafePath' " 
+          mkdir -p @option.SafePath@
+          chown -R httpd:httpd @option.SafePath@
+          #
+          echo " = = = = = = = = = = = Done. VirtueMart should now be available for installation."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: GetVirtueMart
+  uuid: net.fleetingclouds.install.joomla.virtuemart.get
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/virtuemart
+  options:
+    BuildDirectory:
+      required: true
+      description: The directory to which VirtueMart will be decompressed.
+      value: /usr/local/apache/htdocs/tmp
+    Filename:
+      required: true
+      description: The compressed file.
+      value: com_virtuemart.2.0.6_extract_first.zip
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: http://dev.virtuemart.net/attachments/download/415
+    InstallersRepository:
+      required: true
+      description: Where we keep the original download
+      value: ~/installers
+    SafePath:
+      required: true
+      description: where virtuemart keeps invoices and such
+      value: /usr/local/apache/virtuemart_safe
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
