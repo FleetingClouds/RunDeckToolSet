@@ -6,26 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo mkdir -p ${option.TargetDirectory}/tmp
-    - exec: sudo chmod a+rw ${option.TargetDirectory}/tmp
-    - script: |
-        #!/bin/bash 
-        #
-        echo " - - - - - - - - - - - Stepping into ..."
-        pushd  @option.TargetDirectory@/tmp
-        pwd
-        #
-        echo " - - - - - - - - - - - Getting compressed source ..." 
-        echo wget -nc -c @option.RepositoryURL@/@option.Filename@ 2> /dev/null
-        wget -nc -c @option.RepositoryURL@/@option.Filename@
-        ls -l
-        #
-        popd
-        #
-    - exec: sudo cp ${option.TargetDirectory}/tmp/${option.Filename} ${option.TargetDirectory}
-    - exec: sudo chown -R httpd:httpd ${option.TargetDirectory}/../*
+    - exec: sudo wget -nc -c --user='${option.RemoteSiteFtpUser}' --password='${option.RemoteSiteFtpPassword}' -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}  2> /dev/null
+    - exec: sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}
     - exec: echo " - - - End."
-  description: This jobs simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+  description: This job simply obtains a Joomla site backup, previously created by Akeeba Backup and makes it ready for restoring by Akeeba Kickstart.
   name: GetBackupToRestore
   uuid: net.fleetingclouds.install.joomla.akeeba.restore
   nodefilters:
@@ -41,15 +25,23 @@
     Filename:
       required: true
       description: The compressed file.
-      value: akeeba.backend.log
+      value: site-matrixoflife.org-20120619-002108.jpa
+    RemoteSiteFtpPassword:
+      required: true
+      description: Since the file is obtained by ftp a user name and password are required.
+    RemoteSiteFtpUser:
+      required: true
+      description: Since the file is obtained by ftp a user name and password are required.
+      value: matrixoflife
     RepositoryURL:
       required: true
       description: the place to get it from
-      value: https://github.com/downloads/FleetingClouds/RunDeckToolSet
+      value: ftp://matrixoflife.org/administrator/components/com_akeeba/backup/
     TargetDirectory:
       required: true
-      description: The directory to which Akeeba backup will be decompressed.
-      value: /usr/local/apache/htdocs/akeeba_kickstart
+      description: 'The directory where the file should be deposited:  Root directory
+        of Joomla!'
+      value: /usr/local/apache/htdocs
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
