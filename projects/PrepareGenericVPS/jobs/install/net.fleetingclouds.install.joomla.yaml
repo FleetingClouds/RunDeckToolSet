@@ -35,6 +35,36 @@
         name: PrepareJoomla
         args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}
     - exec: sudo sudo /etc/init.d/apache restart
+    - exec: 'echo " ####################  Calling [GetAkeebaSubscriptions] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla/akeeba
+        name: GetAkeebaSubscriptions
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+    - exec: 'echo " ####################  Calling [GetAkeebaBackup] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla/akeeba
+        name: GetAkeebaBackup
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+    - exec: 'echo " ####################  Calling [GetAkeebaKickstart] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla/akeeba
+        name: GetAkeebaKickStart
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+    - exec: 'echo " ####################  Calling [GetVirtueMart] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla/virtuemart
+        name: GetVirtueMart
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+    - exec: 'echo " ####################  Calling [GetBackupToRestore] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/joomla/akeeba
+        name: GetBackupToRestore
+        args: -RemoteSiteFtpPassword ${option.RemoteSiteFtpPassword}
     - exec: echo "Done installing Joomla ................................................."
   description: |
     Install Joomla and all the products it depends on.
@@ -79,6 +109,9 @@
       required: true
       description: yes or no to purge Apache
       value: 'yes'
+    RemoteSiteFtpPassword:
+      required: true
+      description: Since the file is obtained by ftp a user name and password are required.
     sudoPwdRunDeck:
       required: true
       value: okmmpl,,
