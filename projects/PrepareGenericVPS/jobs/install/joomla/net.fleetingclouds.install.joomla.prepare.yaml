@@ -21,7 +21,9 @@
         pwd
         #
         echo "Getting zipp'd source ..."
-        wget -nc -c http://joomlacode.org/gf/download/frsrelease/16914/73508/Joomla_@option.InstallerVersion@_Package.zip 2> /dev/null 
+        wget -nc -c http://joomlacode.org/gf/download/frsrelease/17138/74603/Joomla_@option.InstallerVersion@_Package.tar.bz2 2> /dev/null 
+
+                    
         popd
         #
         mkdir -p  @option.BuildDirectory@/
@@ -38,7 +40,7 @@
         #
         # 
         echo "Unzip the downloaded file" 
-        unzip -o -q @option.InstallersRepository@/Joomla_@option.InstallerVersion@_Package.zip
+        tar xvfj @option.InstallersRepository@/Joomla_@option.InstallerVersion@_Package.tar.bz2
         #
         echo "Remove Apache's default index.html"
         if [ -e index.html ]; then sudo mv index.html apache_hello.html; fi
@@ -87,7 +89,7 @@
       value: /usr/local/apache/htdocs/
     InstallerVersion:
       required: true
-      value: 2.5.4-Stable-Full
+      value: 2.5.5-Stable-Full
     InstallersRepository:
       required: true
       value: ~/installers
