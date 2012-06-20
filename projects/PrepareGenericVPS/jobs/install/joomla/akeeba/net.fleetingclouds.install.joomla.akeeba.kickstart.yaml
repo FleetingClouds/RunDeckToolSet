@@ -36,18 +36,8 @@
           pushd @option.BuildDirectory@
           pwd
           #
-          echo ">> - - - - - - - - - - - Make a target directory for it" 
-          mkdir -p akeeba_kickstart 
-          #
-          echo " - - - - - - - - - - - Step into @option.BuildDirectory@/akeeba_kickstart  >>>>>" 
-          pushd @option.BuildDirectory@/akeeba_kickstart
-          pwd
-          #
-          echo ">> >> - - - - - - - - - - - Decompress the downloaded file" 
+          echo ">> - - - - - - - - - - - Decompress the downloaded file" 
           unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 
-          #
-          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_kickstart <<<<<" 
-          popd
           #
           echo ">> - - - - - - - - - - - Deliver it all to httpd:httpd" 
           chown -R httpd:httpd .
