@@ -47,13 +47,13 @@
           echo "unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 "
           unzip -uo @option.InstallersRepository@/@option.Filename@
           #
-          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_backup <<<<<" 
+          echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_subs <<<<<" 
           popd
           #
           echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
           popd
           #
-          echo " = = = = = = = = = = = Done. Akeeba Backup should now be available for installation."
+          echo " = = = = = = = = = = = Done. Akeeba Subscriptions should now be available for installation."
           #
         EOF
         echo "Make it executable."
@@ -62,7 +62,7 @@
         #
     - exec: sudo ./tmp.sh
     - exec: echo " - - - End."
-  description: This jobs simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+  description: This jobs simply obtains Akeeba Subscriptions and makes it ready for installation from within Joomla itself.
   name: GetAkeebaSubscriptions
   uuid: net.fleetingclouds.install.joomla.akeeba.subs
   nodefilters:
