@@ -1,0 +1,75 @@
+- id: net.fleetingclouds.install.joomla.akeeba.backup.fix
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        #!/bin/bash 
+        #
+        echo " - - - - - - - - - - - Creating temporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to fix a little bug in Akeeba Backup."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - - - - - - - - Step into @option.AkeebaBinDirectory@  >>>>>" 
+          pushd @option.AkeebaBinDirectory@
+          pwd
+          #
+          echo ">> - - - - - - - - - - - Run grep to see if sick line is present."
+          cat mysql.php | grep "OPTION SQL_BIG_SELECTS"
+          #
+          echo ">> - - - - - - - - - - - Run sed to replace faulty line"
+          sed -i "s|SET OPTION SQL_BIG_SELECTS|SET SQL_BIG_SELECTS|" mysql.php
+          #
+          echo ">> - - - - - - - - - - - Run grep AGAIN to see if the file has been repaired."
+          cat mysql.php | grep "OPTION SQL_BIG_SELECTS"
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.AkeebaBinDirectory@ <<<<<" 
+          popd
+          #
+          echo " = = = = = = = = = = = Done. Akeeba Backup should now work correctly."
+          #
+        EOF
+        echo "Make the bug fix file executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: |
+    This job corrects a simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+    
+    sudo sed -i "s|SET OPTION SQL_BIG_SELECTS|SET SQL_BIG_SELECTS|" mysql.php 
+    
+  name: FixAkeebaBackupBug
+  uuid: net.fleetingclouds.install.joomla.akeeba.backup.fix
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/akeeba/fix
+  options:
+    AkeebaBinDirectory:
+      required: true
+      description: Where the defective php program resides.
+      value: /usr/local/apache/htdocs/administrator/components/com_akeeba/akeeba/engines/dump/native
+    Filename:
+      required: true
+      description: The defective file.
+      value: mysql.php
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
