@@ -42,6 +42,10 @@ dpkg-reconfigure locales
 echo "Install nano ..................................................."
 apt-get -y install nano
 #
+echo "Fiddle setuid bits for sick VPS ................................"
+chmod 4755 /usr/bin/passwd
+chmod 4755 /usr/bin/sudo
+#
 #
 if [  "XX${OUR_USER_HOME}" == "XX"  ]; then
 	#
