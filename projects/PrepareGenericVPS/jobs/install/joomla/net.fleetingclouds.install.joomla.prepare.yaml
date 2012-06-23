@@ -20,10 +20,8 @@
         echo "Stepping into ..."
         pwd
         #
-        echo "Getting zipp'd source ..."
-        wget -nc -c http://joomlacode.org/gf/download/frsrelease/17138/74603/Joomla_@option.InstallerVersion@_Package.tar.bz2 2> /dev/null 
-
-                    
+        echo "Getting compress'd source ... @option.InstallerURL@/Joomla_@option.InstallerVersion@.tar.bz2"
+        wget -nc -c @option.InstallerURL@/Joomla_@option.InstallerVersion@.tar.bz2 2> /dev/null 
         popd
         #
         mkdir -p  @option.BuildDirectory@/
@@ -40,7 +38,7 @@
         #
         # 
         echo "Unzip the downloaded file" 
-        tar xvfj @option.InstallersRepository@/Joomla_@option.InstallerVersion@_Package.tar.bz2
+        tar xvfj @option.InstallersRepository@/Joomla_@option.InstallerVersion@.tar.bz2
         #
         echo "Remove Apache's default index.html"
         if [ -e index.html ]; then sudo mv index.html apache_hello.html; fi
@@ -57,6 +55,9 @@
           #
           echo "Provide Joomla with a configuration file"
           if [ ! -e configuration.php ]; then cp $HOME/configuration.php .; fi
+          #
+          echo "Make it all property of httpd"
+          chown -R httpd:httpd *
           #
         echo ". . . . . . Step out of /usr/local/apache/htdocs <<<<<"
         popd
@@ -87,9 +88,12 @@
       required: true
       description: Where programs are built.
       value: /usr/local/apache/htdocs/
+    InstallerURL:
+      required: true
+      value: http://joomlacode.org/gf/download/frsrelease/17173/74756
     InstallerVersion:
       required: true
-      value: 2.5.5-Stable-Full
+      value: 2.5.6-Stable-Full_Package
     InstallersRepository:
       required: true
       value: ~/installers
