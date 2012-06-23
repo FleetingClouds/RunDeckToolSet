@@ -48,6 +48,7 @@
           #
           echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/akeeba_backup <<<<<" 
           popd
+          pwd
           #
           echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
           popd
