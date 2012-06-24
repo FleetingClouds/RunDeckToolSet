@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://mol.fleetingclouds.net/" />
+<title>Set Virtuemart User Profile</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Set Virtuemart User Profile</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/administrator/index.php</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Components</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=VirtueMart</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Control Panel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='admin-ui-menu']/h3[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Shop</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=li.current &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=vendor_store_name</td>
+	<td>Fleeting Clouds Online Ordering</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=vendor_name</td>
+	<td>Fleeting Clouds (scripted)</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>vendor_currency</td>
+	<td>label=United States dollar</td>
+</tr>
+<tr>
+	<td>storeSelectedLabel</td>
+	<td>//*[@id=&quot;vendor_currency&quot;]</td>
+	<td>Currency</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${Currency}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=vendor_url</td>
+	<td>www.fleetingclouds.net</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//ul[@id='tabs']/li[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=first_name_field</td>
+	<td>Bill</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=last_name_field</td>
+	<td>Smith</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=address_1_field</td>
+	<td>500 Butternut St</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=city_field</td>
+	<td>Syracuse</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=zip_field</td>
+	<td>NY 13208</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=phone_1_field</td>
+	<td>315-308-1212</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>virtuemart_country_id</td>
+	<td>label=United States</td>
+</tr>
+<tr>
+	<td>storeSelectedLabel</td>
+	<td>//*[@id=&quot;virtuemart_country_id&quot;]</td>
+	<td>Country</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${Country}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>virtuemart_state_id</td>
+	<td>label=New York</td>
+</tr>
+<tr>
+	<td>storeSelectedLabel</td>
+	<td>//*[@id=&quot;virtuemart_state_id&quot;]</td>
+	<td>State</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${State}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-save</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
