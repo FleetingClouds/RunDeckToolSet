@@ -5,12 +5,12 @@
 echo " ==  ==  == Starting  ==  ==  ==  == "
 
 
-declare NEW_USER="openerp"
-declare PASS=$1
-declare ADM_PASS=$2
+declare NEW_USER_UID="openerp"
+declare NEW_USER_PWD=$1 # 
+declare ERP_SRV_ADM_PWD=$2
 declare ADMIN_IP=$3
 
-# echo The new password for openerp will be ${PASS}
+# echo The new password for openerp will be ${NEW_USER_PWD}
 
 if [  1 == 1 ]; then
 	echo " . . . . Install Web server . . . . . "
@@ -25,8 +25,8 @@ if [  1 == 1 ]; then
 	declare SECOND_PROMPT="Enter it again:"
 	declare CREATEUSER_COMMAND="createuser --superuser --createdb --username postgres --no-createrole --pwprompt"
 
-	sudo -Hu postgres dropuser ${NEW_USER}
-	sudo -Hu postgres expect -c "spawn ${CREATEUSER_COMMAND} ${NEW_USER} ; expect -re \"${FIRST_PASS_PROMPT}\" ; send ${PASS}\n ; expect -re \"${SECOND_PROMPT}\" ; send ${PASS}\n ; interact "
+	sudo -Hu postgres dropuser ${NEW_USER_UID}
+	sudo -Hu postgres expect -c "spawn ${CREATEUSER_COMMAND} ${NEW_USER_UID} ; expect -re \"${FIRST_PASS_PROMPT}\" ; send ${NEW_USER_PWD}\n ; expect -re \"${SECOND_PROMPT}\" ; send ${NEW_USER_PWD}\n ; interact "
 fi
 
 if [  1 == 1 ]; then
@@ -57,7 +57,7 @@ if [  1 == 1 ]; then
 
 	pushd /etc
 		mv -f ${CONF} ${CONF}.original
-		cat ${CONF}.original | sed "s|.*admin_passwd.*|admin_passwd = ${ADM_PASS}|" | sed "s|.*db_password.*|db_password=${PASS}|" > ${CONF}
+		cat ${CONF}.original | sed "s|.*admin_passwd.*|admin_passwd = ${ERP_SRV_ADM_PWD}|" | sed "s|.*db_password.*|db_password=${NEW_USER_PWD}|" > ${CONF}
 		chown openerp:openerp ${CONF}
 	popd
 
