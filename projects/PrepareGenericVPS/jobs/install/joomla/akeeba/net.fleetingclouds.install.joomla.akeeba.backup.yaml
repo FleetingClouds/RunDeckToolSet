@@ -6,6 +6,8 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - exec: sudo mkdir -p ${option.InstallersRepository}
+    - exec: sudo mkdir -p  ${option.BuildDirectory}
     - script: |
         #!/bin/bash 
         #
@@ -61,6 +63,10 @@
         chmod a+x tmp.sh
         #
     - exec: sudo ./tmp.sh
+    - jobref:
+        group: net/fleetingclouds/install/joomla/akeeba/fix
+        name: FixAkeebaBackupBug
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo " - - - End."
   description: This jobs simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
   name: GetAkeebaBackup
