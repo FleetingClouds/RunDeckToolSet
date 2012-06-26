@@ -1,0 +1,35 @@
+- id: net.fleetingclouds.install.chef.knife.runlist
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Establish a run list for a node named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    - script: |
+        command -v knife >/dev/null && cd @option.Environment@
+        pwd
+        echo "Check knife version."
+        command -v knife >/dev/null && knife --version
+        #
+        echo "Add run list @option.RunList@"
+        command -v knife >/dev/null && knife node run_list add @option.NodeName@ "@option.RunList@"
+        #
+        echo "Force return of positive result."
+        echo $?
+        echo $?
+    - exec: echo "Done preparing the run list ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+  description: This job is used to set a run list for a chef node.
+  name: SetClientRunList
+  uuid: net.fleetingclouds.install.chef.knife.runlist
+  group: net/fleetingclouds/install/chef/knife
+  options:
+    Environment:
+      required: true
+      value: /home/chef/chef-repo
+    NodeName:
+      required: true
+      value: mol.fleetingclouds.net
+    RunList:
+      required: true
+      value: role[ERP_database_srv]
