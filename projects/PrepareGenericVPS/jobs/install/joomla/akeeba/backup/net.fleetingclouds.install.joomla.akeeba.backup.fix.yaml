@@ -63,7 +63,7 @@
     AkeebaBinDirectory:
       required: true
       description: Where the defective php program resides.
-      value: /usr/local/apache/htdocs/administrator/components/com_akeeba/akeeba/engines/dump/native
+      value: /usr/local/apache/htdocs/tmp/akeeba_backup/backend/akeeba/engines/dump/native
     Filename:
       required: true
       description: The defective file.
