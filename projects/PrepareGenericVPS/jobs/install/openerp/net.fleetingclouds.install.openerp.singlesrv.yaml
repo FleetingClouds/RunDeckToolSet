@@ -1,0 +1,57 @@
+- id: net.fleetingclouds.install.openerp.singlesrv
+  project: PrepareGenericVPS
+  loglevel: INFO
+  multipleExecutions: true
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Prepare a complete OpenERP installation in a single server . . . . . "
+    - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+    - exec: echo "... get chef pushed over and ready to start ... "
+    - jobref:
+        group: net/fleetingclouds/install/chef
+        name: BootstrapClient
+        args: -Host ${option.Host} -MirrorUrl ${option.MirrorUrl} -NodeName ${option.NodeName}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "... get chef to configure run list ... "
+    - jobref:
+        group: net/fleetingclouds/install/chef/knife
+        name: SetClientRunList
+        args: -NodeName ${option.NodeName} -RunList ${option.RunList}
+    - exec: echo " ... make the chef node conform to spec... "
+    - jobref:
+        group: net/fleetingclouds/install/chef/client
+        name: SynchNodeToSpec
+        args: -NodeName ${option.NodeName} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "Finished preparing OpenERP installation in a single server . . . . . "
+    - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+  description: Calls sub-projects that prepare OpenERP for first time use.
+  name: InstallOpenERPsinglesrv
+  uuid: net.fleetingclouds.install.openerp.singlesrv
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install
+  options:
+    Host:
+      required: true
+      value: mol.fleetingclouds.net
+    MirrorUrl:
+      required: true
+      value: http://openerpns.warehouseman.com/downloads/chef
+    NodeName:
+      required: true
+      value: mol.fleetingclouds.net
+    RunList:
+      required: true
+      value: role[ERP_database_srv]
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
