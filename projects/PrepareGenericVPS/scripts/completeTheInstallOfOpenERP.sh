@@ -10,11 +10,11 @@ declare NEW_USER_PWD=$1 #
 declare ERP_SRV_ADM_PWD=$2
 declare ADMIN_IP=$3
 
-echo "The password for ${NEW_USER_UID} will be ${NEW_USER_PWD}."
+echo "The password for user ${NEW_USER_UID} will be ${NEW_USER_PWD}."
 echo "The password for openerp-server will be ${ERP_SRV_ADM_PWD}."
 echo "The listener IP address for PostgreSql ${ADMIN_IP}."
 
-if [  1 == 0 ]; then
+if [  1 == 1 ]; then
 	echo " . . . . Install Web server . . . . . "
 	pushd /opt/openerp/openerp-web-6.0.4/
 	python setup.py install
