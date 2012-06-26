@@ -10,16 +10,18 @@ declare NEW_USER_PWD=$1 #
 declare ERP_SRV_ADM_PWD=$2
 declare ADMIN_IP=$3
 
-# echo The new password for openerp will be ${NEW_USER_PWD}
+echo "The password for ${NEW_USER_UID} will be ${NEW_USER_PWD}."
+echo "The password for openerp-server will be ${ERP_SRV_ADM_PWD}."
+echo "The listener IP address for PostgreSql ${ADMIN_IP}."
 
-if [  1 == 1 ]; then
+if [  1 == 0 ]; then
 	echo " . . . . Install Web server . . . . . "
 	pushd /opt/openerp/openerp-web-6.0.4/
 	python setup.py install
 	popd
 fi
 
-if [  1 == 1 ]; then
+if [  1 == 0 ]; then
 	echo " . . . . Set database user . . . . . "
 	declare FIRST_PASS_PROMPT="Enter password for new role:"
 	declare SECOND_PROMPT="Enter it again:"
@@ -29,7 +31,7 @@ if [  1 == 1 ]; then
 	sudo -Hu postgres expect -c "spawn ${CREATEUSER_COMMAND} ${NEW_USER_UID} ; expect -re \"${FIRST_PASS_PROMPT}\" ; send ${NEW_USER_PWD}\n ; expect -re \"${SECOND_PROMPT}\" ; send ${NEW_USER_PWD}\n ; interact "
 fi
 
-if [  1 == 1 ]; then
+if [  1 == 0 ]; then
         echo " . . . . Configure Postgres . . . . . "
         declare CONF=postgresql.conf
         declare HBA_CONF=pg_hba.conf
@@ -50,7 +52,7 @@ if [  1 == 1 ]; then
         popd
 fi
 
-if [  1 == 1 ]; then
+if [  1 == 0 ]; then
 	echo " . . . . Configure Server . . . . . "
 
 	declare CONF=openerp-server.conf
