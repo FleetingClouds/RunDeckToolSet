@@ -6,11 +6,15 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: echo sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}  2> /dev/null
-    - exec: sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}   2> /dev/null
-    - exec: sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}
+    - exec: echo sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa  2> /dev/null
+    - exec: sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa   2> /dev/null
+    - exec: sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}_${option.BackupVersion}.jpa
     - exec: echo " - - - End."
-  description: This job simply obtains a Joomla site backup, previously created by Akeeba Backup and makes it ready for restoring by Akeeba Kickstart.
+  description: |-
+    This job simply obtains a Joomla site backup, previously created by Akeeba Backup and makes it ready for restoring by Akeeba Kickstart.
+    
+    ${option.BackupVersion}
+    Script Content: @option.BackupVersion@ 
   name: GetBackupToRestore
   uuid: net.fleetingclouds.install.joomla.akeeba.restore
   nodefilters:
@@ -23,10 +27,12 @@
       name: mol.*
   group: net/fleetingclouds/install/joomla/akeeba
   options:
+    BackupVersion:
+      required: true
     Filename:
       required: true
       description: The compressed file.
-      value: site-BasicJoomlaEmptySite.jpa
+      value: site-BasicJoomlaNewSite
     RepositoryURL:
       required: true
       description: the place to get it from

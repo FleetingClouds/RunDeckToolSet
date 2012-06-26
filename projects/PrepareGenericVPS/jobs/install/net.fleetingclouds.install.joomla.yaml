@@ -64,7 +64,7 @@
     - jobref:
         group: net/fleetingclouds/install/joomla/akeeba
         name: GetBackupToRestore
-        args: -RemoteSiteFtpPassword ${option.RemoteSiteFtpPassword}
+        args: -RemoteSiteFtpPassword ${option.RemoteSiteFtpPassword} -BackupVersion ${option.BackupVersion}
     - exec: echo "Done installing Joomla ................................................."
   description: |
     Install Joomla and all the products it depends on.
@@ -80,6 +80,9 @@
       name: mol.*
   group: net/fleetingclouds/install
   options:
+    BackupVersion:
+      required: true
+      description: The version of the backup file we want to restore
     BuildDirectory:
       required: true
       description: Where programs are built.
