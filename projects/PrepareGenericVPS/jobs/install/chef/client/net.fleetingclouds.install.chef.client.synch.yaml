@@ -1,0 +1,49 @@
+- id: net.fleetingclouds.install.chef.client.synch
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Establish a run list for a node named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    - script: |
+        #!/bin/bash 
+        #
+        echo "Make a temporary script to run chef-client."
+        pwd
+        rm -f ./tmp.sh
+        #
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          command -v chef-client >/dev/null && chef-client
+          echo " = = = = = = = = = = = Done. The node @option.NodeName@ should now conform to its role specifications."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo "Done preparing the run list ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+  description: This job runs chef-client from within a chef node making it conform to spec.
+  name: SynchNodeToSpec
+  uuid: net.fleetingclouds.install.chef.client.synch
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/chef/client
+  options:
+    NodeName:
+      required: true
+      value: mol.fleetingclouds.net
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
