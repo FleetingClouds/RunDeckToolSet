@@ -1,0 +1,69 @@
+- id: net.fleetingclouds.exceptional.mountPts
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |
+        #!/bin/bash 
+        #
+        echo " - - - - -- - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to correct missing ptys problem."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - -   Get the group ID of tty     - - - - -"
+          export TTY_GID=$(cat /etc/group | grep tty | cut -d':' -f3)
+          echo " ... group ID of tty " \$TTY_GID
+          #
+          echo " ... current fstab file ..."
+          cat /etc/fstab
+          #
+          echo " ... correct the fstab file ..."
+          sed -i "/devpts/  s|rw|gid=\$TTY_GID,mode=620|" /etc/fstab
+          sed -i "/devpts/ s|none|devpts|" /etc/fstab
+          #
+          echo " ... corrected fstab file ..."
+          cat /etc/fstab
+          #
+          echo " = = = = = = = = = = = Done. You should have no more problems with lack of ptys."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - - - - now we can mount devpts - - - - - - - "
+    - exec: sudo mount -v -t devpts none /dev/pts
+    - exec: echo " - - - End."
+  description: |
+    This try to will clear any problems with unmounted /dev/pts
+    
+    spawn ls
+    The system has no more ptys.  Ask your system administrator to create more.
+        while executing
+    "spawn ls"
+  name: MountDevPts
+  uuid: net.fleetingclouds.exceptional.mountPts
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/exceptional
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck password
+      value: okmmpl,,
+      secure: true
