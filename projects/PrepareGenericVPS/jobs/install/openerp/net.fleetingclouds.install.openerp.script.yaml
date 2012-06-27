@@ -6,7 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo " ==  ==  ==  Starting  ==  ==  == "
-    - exec: scp  ${RUNDECK_PROJECTS}/${RD_JOB_PROJECT}/scripts/completeTheInstallOfOpenERP.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  $RD_OPTION_RUNDECKPROJECTS/${RD_JOB_PROJECT}/scripts/completeTheInstallOfOpenERP.sh  ${RD_OPTION_HOST}:.
     - exec: echo "    ==  ==  ==    Done    ==  ==  == "
   description: This pushes over to the indicated client a final configuration script for OpenERP.
   name: ProvideOpenERPscript
@@ -16,4 +16,7 @@
     Host:
       required: true
       description: The host requiring the script to finalize OpenERP configuration.
-      value: www.fleetingclouds.net
+      value: mol.fleetingclouds.net
+    RundeckProjects:
+      required: true
+      value: /home/yourself/dev/RunDeckToolSet/projects
