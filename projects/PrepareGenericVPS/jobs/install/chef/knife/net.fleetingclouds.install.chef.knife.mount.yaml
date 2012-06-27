@@ -1,0 +1,45 @@
+- id: net.fleetingclouds.install.chef.knife.mount
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Tell chef to mount a node named ${option.NodeName}  . . . . . . . . . . . . . . . . ."
+    - script: |
+        cat > tmp.json <<EOF
+        {
+          "chef_environment": "_default",
+          "name": "@option.NodeName@",
+          "run_list": [
+
+          ],
+          "normal": {
+          }
+        }
+        EOF
+    - exec: echo " = = = = = = = = = = = = = = = = = = "
+    - script: |
+        command -v knife >/dev/null && cd @option.Environment@
+        echo "Check knife version."
+        command -v knife >/dev/null && knife --version
+        #
+        echo "Mount node @option.NodeName@"
+        command -v knife >/dev/null && knife node from file /home/rundeck/programs/org/rundeck/tmp.json
+        command -v knife >/dev/null && knife node show @option.NodeName@
+        #
+        echo "Force return of positive result."
+        echo $?
+        echo $?
+    - exec: echo "Done mounting a node named ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+  description: This job is used to mount a chef node.
+  name: MountNode
+  uuid: net.fleetingclouds.install.chef.knife.mount
+  group: net/fleetingclouds/install/chef/knife
+  options:
+    Environment:
+      required: true
+      value: /home/chef/chef-repo
+    NodeName:
+      required: true
+      value: mol.fleetingclouds.net
