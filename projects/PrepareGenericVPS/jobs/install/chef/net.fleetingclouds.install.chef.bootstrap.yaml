@@ -16,6 +16,9 @@
     - exec: echo "Done preparing Ruby engine ................................................."
     - exec: echo "Preparing Chef client ............................................."
     - exec: sudo pwd
+    - exec: hostname
+    - exec: sudo gem install chef
+    - exec: chef-client -v
     - exec: echo "Eliminate the existing - ${option.NodeName} - if one is defined already. . . . . . . . ."
     - jobref:
         group: net/fleetingclouds/install/chef
