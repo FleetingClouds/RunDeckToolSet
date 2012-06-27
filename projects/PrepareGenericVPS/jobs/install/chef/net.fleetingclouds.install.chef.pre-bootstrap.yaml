@@ -5,7 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Send across Chef client prerequisite files . . . . . . . . . . . . . . . . "
+    - exec: echo "Push Chef client prerequisite files to ${option.Host} . . . . . . . . . . . . . . . . "
     - exec: wget ${option.MirrorUrl}/${option.Validator}
     - exec: scp ${option.Validator} ${option.Host}:.
     - exec: rm -f  ${option.Validator}
