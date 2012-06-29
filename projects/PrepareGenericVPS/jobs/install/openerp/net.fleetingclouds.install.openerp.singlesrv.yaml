@@ -39,7 +39,7 @@
         name: ProvideOpenERPscript
         args: -Host ${option.Host}
     - exec: echo " ... do final configurations ... "
-    - exec: sudo ./completeTheInstallOfOpenERP.sh  erpokokok B C D
+    - exec: sudo ./completeTheInstallOfOpenERP.sh  okokok okokok
     - exec: echo "Finished preparing OpenERP installation in a single server . . . . . "
     - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
   description: Calls sub-projects that prepare OpenERP for first time use.
@@ -52,12 +52,12 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/install
   options:
     Host:
       required: true
-      value: mol.fleetingclouds.net
+      value: www.fleetingclouds.net
     MirrorUrl:
       required: true
       value: http://openerpns.warehouseman.com/downloads/chef

@@ -84,7 +84,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/install/chef
   options:
     ChefWorkDir:
@@ -94,7 +94,7 @@
     Host:
       required: true
       description: The host we will prepare as a Chef client machine.
-      value: mol.fleetingclouds.net
+      value: warehouseman.com
     MirrorUrl:
       required: true
       description: URL where we are keeping keys'n things.
@@ -102,7 +102,7 @@
     NodeName:
       required: true
       description: The name of the node and client that will be created.
-      value: mol.fleetingclouds.net
+      value: warehouseman.com
     Validator:
       required: true
       description: Opscode's Chef public hosting access validation key file name.

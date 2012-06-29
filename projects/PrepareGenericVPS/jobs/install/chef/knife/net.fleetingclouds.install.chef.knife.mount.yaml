@@ -42,4 +42,4 @@
       value: /home/chef/chef-repo
     NodeName:
       required: true
-      value: mol.fleetingclouds.net
+      value: warehouseman.com
