@@ -41,7 +41,8 @@
         #
     - exec: sudo ./tmp.sh
     - exec: echo " - - - - - - now we can mount devpts - - - - - - - "
-    - exec: sudo mount -v -t devpts none /dev/pts
+    - exec: sudo umount -lf /dev/pts
+    - exec: sudo mount -a
     - exec: echo " - - - End."
   description: |
     This try to will clear any problems with unmounted /dev/pts
@@ -59,7 +60,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/exceptional
   options:
     sudoPwdRunDeck:
