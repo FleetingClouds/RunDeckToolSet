@@ -8,7 +8,8 @@ echo " ==  ==  == Starting  ==  ==  ==  == "
 declare NEW_USER_UID="openerp"
 declare NEW_USER_PWD=$1 # 
 declare ERP_SRV_ADM_PWD=$2
-declare ADMIN_IP=$3
+declare ADMIN_IP=$(ifconfig  | grep 'inet addr:' | grep -v '127.0.0.1' | grep -v '127.0.0.2' | cut -d: -f2 | awk '{ print $1}')
+
 
 echo "The password for user ${NEW_USER_UID} will be ${NEW_USER_PWD}."
 echo "The password for openerp-server will be ${ERP_SRV_ADM_PWD}."
@@ -21,7 +22,7 @@ if [  1 == 1 ]; then
 	popd
 fi
 
-if [  1 == 0 ]; then
+if [  1 == 1 ]; then
 	echo " . . . . Set database user . . . . . "
 	declare FIRST_PASS_PROMPT="Enter password for new role:"
 	declare SECOND_PROMPT="Enter it again:"
@@ -31,7 +32,7 @@ if [  1 == 0 ]; then
 	sudo -Hu postgres expect -c "spawn ${CREATEUSER_COMMAND} ${NEW_USER_UID} ; expect -re \"${FIRST_PASS_PROMPT}\" ; send ${NEW_USER_PWD}\n ; expect -re \"${SECOND_PROMPT}\" ; send ${NEW_USER_PWD}\n ; interact "
 fi
 
-if [  1 == 0 ]; then
+if [  1 == 1 ]; then
         echo " . . . . Configure Postgres . . . . . "
         declare CONF=postgresql.conf
         declare HBA_CONF=pg_hba.conf
@@ -41,18 +42,18 @@ if [  1 == 0 ]; then
 	echo Will accept from address ${ADMIN_IP}
         pushd /etc/postgresql/8.4/main/
 
-	        mv -f ${CONF} ${CONF}.original
+	        if [   -e ${CONF}.original   ]; then echo "${CONF} was backed up previously."; else mv -f ${CONF} ${CONF}.original; echo "${CONF} has been copied to ${CONF}.orioginal"; fi
 	        cat ${CONF}.original | sed "s|.*listen_addresses.*|listen_addresses='localhost,${MY_IP}'|" > ${CONF}
 	        chown postgres:postgres ${CONF}
 
-	        mv -f ${HBA_CONF} ${HBA_CONF}.original
+	        if [   -e ${HBA_CONF}.original   ]; then echo "${HBA_CONF} was backed up previously."; else mv -f ${HBA_CONF} ${HBA_CONF}.original; echo "${HBA_CONF} has been copied to ${HBA_CONF}.orioginal"; fi
 	        cat ${HBA_CONF}.original | sed "/${ADMIN_IP}/d" | sed "s|.*# IPv6 local connections:.*|host    all         all         ${ADMIN_IP}/32      md5\n# IPv6 local connections:|" > ${HBA_CONF}
 	        chown postgres:postgres ${HBA_CONF}
 
         popd
 fi
 
-if [  1 == 0 ]; then
+if [  1 == 1 ]; then
 	echo " . . . . Configure Server . . . . . "
 
 	declare CONF=openerp-server.conf
@@ -73,4 +74,5 @@ sudo /etc/init.d/openerp-web restart
 sudo /etc/init.d/openerp-server restart
 
 echo " ==  ==  ==   Done  ==  ==  ==  == "
+
 
