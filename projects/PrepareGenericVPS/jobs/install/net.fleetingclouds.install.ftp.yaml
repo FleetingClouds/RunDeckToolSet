@@ -1,0 +1,41 @@
+- id: net.fleetingclouds.install.ftp
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start > > > ."
+    - exec: echo  .............................................................
+    - exec: echo ". . . . . . . . . . . . . . Will install vsftpd now . . . . . . . . . . . . . ."
+    - exec: sudo aptitude -y install vsftpd
+    - exec: echo ". . . . . . . . . . . . . . Will restrict ftp users to their home directory . . . . . . . . . . . . . ."
+    - exec: sudo cat /etc/vsftpd.conf | grep chroot_local_user
+    - exec: sudo sed -i "0,/#chroot_local_user=YES/! {0,/#chroot_local_user=YES/ s|#chroot_local_user=YES|#chroot_local_user=NO|}" /etc/vsftpd.conf
+    - exec: sudo sed -i "s/#write_enable=YES/write_enable=YES/" /etc/vsftpd.conf
+    - exec: sudo sed -i "s/#chroot_local_user=YES/chroot_local_user=YES/" /etc/vsftpd.conf
+    - exec: sudo sed -i "s/#chown_uploads=YES/chown_uploads=YES/" /etc/vsftpd.conf
+    - exec: sudo sed -i "s/#chown_username=httpd/chown_username=httpd/" /etc/vsftpd.conf
+    - exec: sudo sed -i "s/local_umask=022/local_umask=012/" /etc/vsftpd.conf
+    - exec: cat /etc/vsftpd.conf | grep chroot_local_user
+    - exec: echo  .............................................................
+    - exec: echo "> > >  Done."
+  description: |
+    
+  name: PrepareFtp
+  uuid: net.fleetingclouds.install.ftp
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/ftp
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
