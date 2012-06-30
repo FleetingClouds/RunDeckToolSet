@@ -44,7 +44,7 @@
     - exec: sudo ./tmp.sh
     - exec: echo " - - - End."
   description: |
-    This job corrects a simply obtains Akeeba backup and makes it ready for installation from within Joomla itself.
+    This job corrects a defect in Akeeba backup where incorrect text appears in a MySql command.
     
     sudo sed -i "s|SET OPTION SQL_BIG_SELECTS|SET SQL_BIG_SELECTS|" mysql.php 
     
