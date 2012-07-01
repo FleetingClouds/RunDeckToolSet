@@ -8,9 +8,12 @@ echo " ==  ==  == Starting  ==  ==  ==  == "
 declare NEW_USER_UID="openerp"
 declare NEW_USER_PWD=$1 # 
 declare ERP_SRV_ADM_PWD=$2
-declare ADMIN_IP=$3
+declare ADMIN_IP=$(ifconfig  | grep 'inet addr:' | grep -v '127.0.0.1' | grep -v '127.0.0.2' | cut -d: -f2 | awk '{ print $1}')
 
-# echo The new password for openerp will be ${NEW_USER_PWD}
+
+echo "The password for user ${NEW_USER_UID} will be ${NEW_USER_PWD}."
+echo "The password for openerp-server will be ${ERP_SRV_ADM_PWD}."
+echo "The listener IP address for PostgreSql ${ADMIN_IP}."
 
 if [  1 == 1 ]; then
 	echo " . . . . Install Web server . . . . . "
@@ -39,11 +42,11 @@ if [  1 == 1 ]; then
 	echo Will accept from address ${ADMIN_IP}
         pushd /etc/postgresql/8.4/main/
 
-	        mv -f ${CONF} ${CONF}.original
+	        if [   -e ${CONF}.original   ]; then echo "${CONF} was backed up previously."; else mv -f ${CONF} ${CONF}.original; echo "${CONF} has been copied to ${CONF}.orioginal"; fi
 	        cat ${CONF}.original | sed "s|.*listen_addresses.*|listen_addresses='localhost,${MY_IP}'|" > ${CONF}
 	        chown postgres:postgres ${CONF}
 
-	        mv -f ${HBA_CONF} ${HBA_CONF}.original
+	        if [   -e ${HBA_CONF}.original   ]; then echo "${HBA_CONF} was backed up previously."; else mv -f ${HBA_CONF} ${HBA_CONF}.original; echo "${HBA_CONF} has been copied to ${HBA_CONF}.orioginal"; fi
 	        cat ${HBA_CONF}.original | sed "/${ADMIN_IP}/d" | sed "s|.*# IPv6 local connections:.*|host    all         all         ${ADMIN_IP}/32      md5\n# IPv6 local connections:|" > ${HBA_CONF}
 	        chown postgres:postgres ${HBA_CONF}
 
@@ -71,4 +74,5 @@ sudo /etc/init.d/openerp-web restart
 sudo /etc/init.d/openerp-server restart
 
 echo " ==  ==  ==   Done  ==  ==  ==  == "
+
 

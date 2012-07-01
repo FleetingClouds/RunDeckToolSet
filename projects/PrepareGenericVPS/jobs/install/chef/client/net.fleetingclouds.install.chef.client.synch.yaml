@@ -5,7 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Establish a run list for a node named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    - exec: echo "Process run list for a node named ${option.NodeName}  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
     - script: |
         #!/bin/bash 
         #
@@ -25,7 +25,7 @@
         chmod a+x tmp.sh
         #
     - exec: sudo ./tmp.sh
-    - exec: echo "Done preparing the run list ${option.NodeName} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    - exec: echo "Done processing run list for a node named ${option.NodeName}. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  ."
   description: This job runs chef-client from within a chef node making it conform to spec.
   name: SynchNodeToSpec
   uuid: net.fleetingclouds.install.chef.client.synch
@@ -36,7 +36,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/install/chef/client
   options:
     NodeName:

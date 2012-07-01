@@ -9,11 +9,14 @@
     - script: |
         command -v knife >/dev/null && cd @option.Environment@
         pwd
+        hostname
+        ls -la
         echo "Check knife version."
         command -v knife >/dev/null && knife --version
         #
-        echo "Add run list @option.RunList@"
+        echo "Add run list @option.RunList@ to node @option.NodeName@"
         command -v knife >/dev/null && knife node run_list add @option.NodeName@ "@option.RunList@"
+        command -v knife >/dev/null && knife node show @option.NodeName@
         #
         echo "Force return of positive result."
         echo $?

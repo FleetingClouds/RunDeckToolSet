@@ -9,6 +9,11 @@
         group: net/fleetingclouds/initial
         name: PushOverSomeInitializationScripts
         args: -Host ${option.Host}
+    - exec: echo "- - - - - - - -  fix the devpts bug - - - - - - - - "
+    - jobref:
+        group: net/fleetingclouds/exceptional
+        name: MountDevPts
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "We will use aptitude rather than apt-get .................."
     - script: |
         rm -f apt_stuff.sh
@@ -68,7 +73,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/initial
   options:
     Host:

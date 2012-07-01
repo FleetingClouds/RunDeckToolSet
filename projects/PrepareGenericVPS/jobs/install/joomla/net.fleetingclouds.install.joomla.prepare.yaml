@@ -56,8 +56,9 @@
           echo "Provide Joomla with a configuration file"
           if [ ! -e configuration.php ]; then cp $HOME/configuration.php .; fi
           #
-          echo "Make it all property of httpd"
+          echo "Make it all property of httpd and allow group writes"
           chown -R httpd:httpd *
+          chmod -R g+w *
           #
         echo ". . . . . . Step out of /usr/local/apache/htdocs <<<<<"
         popd

@@ -8,11 +8,21 @@
     commands:
     - exec: echo "Prepare a complete OpenERP installation in a single server . . . . . "
     - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+    - exec: echo "... Install some prerequisites ... "
+    - jobref:
+        group: net/fleetingclouds/initial
+        name: BasicGeneralInitialConfigurations
+        args: -Host ${option.Host} -PurgeApache yes -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "... get chef pushed over and ready to start ... "
     - jobref:
         group: net/fleetingclouds/install/chef
         name: BootstrapClient
         args: -Host ${option.Host} -MirrorUrl ${option.MirrorUrl} -NodeName ${option.NodeName}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "... mount the target node ... "
+    - jobref:
+        group: net/fleetingclouds/install/chef/knife
+        name: MountNode
+        args: -NodeName ${option.NodeName}
     - exec: echo "... get chef to configure run list ... "
     - jobref:
         group: net/fleetingclouds/install/chef/knife
@@ -23,6 +33,13 @@
         group: net/fleetingclouds/install/chef/client
         name: SynchNodeToSpec
         args: -NodeName ${option.NodeName} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo " ... push over the final configuration script ... "
+    - jobref:
+        group: net/fleetingclouds/install/openerp
+        name: ProvideOpenERPscript
+        args: -Host ${option.Host}
+    - exec: echo " ... do final configurations ... "
+    - exec: sudo ./completeTheInstallOfOpenERP.sh  okokok okokok
     - exec: echo "Finished preparing OpenERP installation in a single server . . . . . "
     - exec: echo "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
   description: Calls sub-projects that prepare OpenERP for first time use.
@@ -35,12 +52,12 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: gate.*
   group: net/fleetingclouds/install
   options:
     Host:
       required: true
-      value: mol.fleetingclouds.net
+      value: www.fleetingclouds.net
     MirrorUrl:
       required: true
       value: http://openerpns.warehouseman.com/downloads/chef

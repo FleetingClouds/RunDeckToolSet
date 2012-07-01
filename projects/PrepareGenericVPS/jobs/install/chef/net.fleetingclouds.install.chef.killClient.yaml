@@ -30,4 +30,4 @@
       value: /home/chef/chef-repo
     NodeName:
       required: true
-      value: meta
+      value: warehouseman.com

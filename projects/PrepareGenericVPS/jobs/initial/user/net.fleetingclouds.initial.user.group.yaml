@@ -1,0 +1,104 @@
+- id: net.fleetingclouds.initial.user.group
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Starting > > > ."
+    - exec: echo Will create a new user ${option.User} in ${option.Groups}.
+    - script: |-
+        #!/bin/bash  
+        # 
+        rm -f ./makeNewGroupMember.sh 
+        # 
+        echo "Make a script to create or modify group membership of a user." 
+        cat > makeNewGroupMember.sh <<EOF
+        #!/bin/bash
+        #
+        export THE_GROUP_LIST=\$(echo \"\$1\" | sed 's| ||')
+        export A_NEW_USER=\$2
+        export NEW_USER_FULL_NAME=\$3
+        echo "Will create for \${NEW_USER_FULL_NAME} (\${A_NEW_USER}) in groups \${THE_GROUP_LIST}"
+        export COMMENT=" -c "
+        export GECOS="\${COMMENT}'\${NEW_USER_FULL_NAME}'"
+        if [  "\${GECOS}" == "\${COMMENT}''"  ]; then
+        	echo "#### >No COMMENT<"
+        	GECOS=
+        else
+        	echo "#### >\${GECOS}<"
+        fi
+        #
+        echo "Show what we have before ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        echo "Get \${A_NEW_USER} home directory .. . . . . . . . "
+        export A_NEW_USER_HOME=\$(  grep "\${A_NEW_USER}" /etc/passwd | awk -F: '{print \$6}'  )
+        echo "New user's home directory is \${A_NEW_USER_HOME}"
+        #
+        if [  "XX\${A_NEW_USER_HOME}" == "XX"  ]; then
+        	#
+        	echo "Create a user \${A_NEW_USER} for groups \${THE_GROUP_LIST} ..................."
+        	export PASS_HASH=\$(perl -e 'print crypt(\$ARGV[0], "password")' "ok\${A_NEW_USER}ok")
+        	echo \${PASS_HASH} for "ok\${A_NEW_USER}ok"
+        	# addgroup sudo
+        	useradd -Ds /bin/bash
+        	declare CMD="useradd -m -G \${THE_GROUP_LIST} \${GECOS} -p \${PASS_HASH} \${A_NEW_USER}"
+        	echo \${CMD}
+        	eval \${CMD}
+        	#	passwd -e \${A_NEW_USER}
+        	#
+        	A_NEW_USER_HOME=/home/\${A_NEW_USER}
+        else
+        	echo "Add existing user \${A_NEW_USER} to groups \${THE_GROUP_LIST} ..................."
+        	declare CMD="sudo usermod -a -G \${THE_GROUP_LIST} \${GECOS} \${A_NEW_USER}"
+        	echo \${CMD}
+        	eval \${CMD}
+        fi
+        #
+        echo "Show what we have after ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        EOF
+        #
+        echo "Make it executable." 
+        # 
+        chmod a+x makeNewGroupMember.sh 
+        #
+    - exec: sudo ~/makeNewGroupMember.sh ${option.Groups} ${option.User} ${option.UserFullName}
+    - exec: echo  .............................................................
+    - exec: echo "> > >  Done."
+  description: |-
+    This script either creates or modifies a user.
+    One or more groups MUST be specified.
+  name: MakeNewGroupMember
+  uuid: net.fleetingclouds.initial.user.group
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/initial/user
+  options:
+    Groups:
+      required: true
+      description: The group or groups for this user.
+      value: ftp, httpd
+    User:
+      required: true
+      description: The user for whom we will create an account.
+      value: tdickens
+    UserFullName:
+      value: Tim Dickens
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
