@@ -1,0 +1,84 @@
+- id: net.fleetingclouds.install.webalizer.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo aptitude -y install libgd2-xpm-dev libdb-dev
+    - exec: '# sudo aptitude -y remove openssl libssl-dev'
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.BuildDirectory}
+    - script: |+
+        cd  @option.InstallersRepository@
+        #
+        echo "Stepping into ..."
+        pwd
+        #
+        echo "Getting targz'd source ..." 
+        wget -nc -c http://download.zeromq.org/zeromq-2.2.0.tar.gz
+        #
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
+        echo "Unzip the downloaded file" 
+        tar zxvf @option.InstallersRepository@/zeromq-@option.InstallerVersion@.tar.gz
+        #
+        rm -fr zeromq
+        ln -s zeromq-@option.InstallerVersion@ zeromq
+        #
+        echo "Step into the ZeroMQ directory" 
+        cd zeromq
+        #
+        echo "Building it ..."
+        ./configure
+        make
+        make check
+
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        echo Step into @option.BuildDirectory@/zeromq 
+        cd @option.BuildDirectory@/zeromq 
+        echo Uninstall in case it is already there ... 
+        make uninstall
+        echo We will start installing ZeroMQ now: in directory ... 
+        make install
+        make clean
+        echo Done. ZeroMQ should now be part of your system.
+        EOF
+
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareWebalizer
+  uuid: net.fleetingclouds.install.webalizer.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/webalizer
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
+    InstallerVersion:
+      required: true
+      value: 2.2.0
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
