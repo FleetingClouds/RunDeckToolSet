@@ -8,20 +8,39 @@
     - exec: echo "Start > > > ."
     - exec: echo  .............................................................
     - exec: echo ". . . . . . . . . . . . . . Will install vsftpd now . . . . . . . . . . . . . ."
-    - exec: sudo aptitude -y install vsftpd
+    - exec: echo sudo aptitude -y install vsftpd
     - exec: echo ". . . . . . . . . . . . . . Will restrict ftp users to their home directory . . . . . . . . . . . . . ."
-    - exec: sudo cat /etc/vsftpd.conf | grep chroot_local_user
-    - exec: sudo sed -i "0,/#chroot_local_user=YES/! {0,/#chroot_local_user=YES/ s|#chroot_local_user=YES|#chroot_local_user=NO|}" /etc/vsftpd.conf
-    - exec: sudo sed -i "s/#write_enable=YES/write_enable=YES/" /etc/vsftpd.conf
-    - exec: sudo sed -i "s/#chroot_local_user=YES/chroot_local_user=YES/" /etc/vsftpd.conf
-    - exec: sudo sed -i "s/#chown_uploads=YES/chown_uploads=YES/" /etc/vsftpd.conf
-    - exec: sudo sed -i "s/#chown_username=httpd/chown_username=httpd/" /etc/vsftpd.conf
-    - exec: sudo sed -i "s/local_umask=022/local_umask=012/" /etc/vsftpd.conf
-    - exec: cat /etc/vsftpd.conf | grep chroot_local_user
+    - script: |
+        rm -f ./fiddleConfig.sh  
+        #  
+        echo "Make a script to modify FTP server settings."  
+        cat > fiddleConfig.sh <<EOF
+        #!/bin/bash 
+        #
+        sed -i "0,/#chroot_local_user=YES/! {0,/#chroot_local_user=YES/ s|#chroot_local_user=YES|#chroot_local_user=NO|}" /etc/vsftpd.conf
+        sed -i "s/#write_enable=YES/write_enable=YES/" /etc/vsftpd.conf
+        sed -i "s/#chown_uploads=YES/chown_uploads=YES/" /etc/vsftpd.conf
+        sed -i "s/#chown_username=whoever/chown_username=httpd/" /etc/vsftpd.conf
+        sed -i "s/#chroot_local_user=YES/chroot_local_user=YES/" /etc/vsftpd.conf
+        sed -i "s/#local_umask=022/local_umask=012/" /etc/vsftpd.conf
+        #
+        declare LOCAL_ROOT="local_root=/usr/local/apache/htdoc" 
+        if [ \$( grep -c \$LOCAL_ROOT /etc/vsftpd.conf ) -lt 1 ]; then echo \$LOCAL_ROOT >> /etc/vsftpd.conf; fi 
+        declare TILDE="tilde_user_enable=YES" 
+        if [ \$( grep -c \$TILDE /etc/vsftpd.conf ) -lt 1 ]; then echo \$TILDE >> /etc/vsftpd.conf; fi 
+        declare CHROOT_WRITE="allow_writeable_chroot=YES" 
+        if [ \$( grep -c \$CHROOT_WRITE /etc/vsftpd.conf ) -lt 1 ]; then echo \$CHROOT_WRITE >> /etc/vsftpd.conf; fi 
+        #
+        EOF
+        # 
+        echo "Make it executable."  
+        #  
+        chmod a+x fiddleConfig.sh  
+        #
+    - exec: 'sudo  ./fiddleConfig.sh '
     - exec: echo  .............................................................
     - exec: echo "> > >  Done."
-  description: |
-    
+  description: ''
   name: PrepareFtp
   uuid: net.fleetingclouds.install.ftp
   nodefilters:
