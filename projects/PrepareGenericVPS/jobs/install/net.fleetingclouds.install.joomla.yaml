@@ -34,7 +34,7 @@
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomla
         args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}
-    - exec: sudo sudo /etc/init.d/apache restart
+    - exec: sudo /etc/init.d/apache restart
     - exec: 'echo " ####################  Calling [GetAkeebaSubscriptions] ###################
         "'
     - jobref:
