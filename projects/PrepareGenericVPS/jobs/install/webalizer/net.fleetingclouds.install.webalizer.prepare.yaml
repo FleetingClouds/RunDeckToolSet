@@ -7,47 +7,47 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo aptitude -y install libgd2-xpm-dev libdb-dev
-    - exec: '# sudo aptitude -y remove openssl libssl-dev'
     - exec: echo  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.InstallersRepository}
     - exec: mkdir -p  ${option.BuildDirectory}
-    - script: |+
+    - script: |
         cd  @option.InstallersRepository@
         #
         echo "Stepping into ..."
         pwd
         #
-        echo "Getting targz'd source ..." 
-        wget -nc -c http://download.zeromq.org/zeromq-2.2.0.tar.gz
+        echo "Getting targz'd source ..." #   webalizer-2.23-05-src.tgz
+        wget -nc -c ftp://ftp.mrunix.net/pub/webalizer/webalizer-@option.InstallerVersion@-src.tgz
         #
         echo "Step into the build directory"  
         cd @option.BuildDirectory@  
         # 
         echo "Unzip the downloaded file" 
-        tar zxvf @option.InstallersRepository@/zeromq-@option.InstallerVersion@.tar.gz
+        tar zxvf @option.InstallersRepository@/webalizer-@option.InstallerVersion@-src.tgz
         #
-        rm -fr zeromq
-        ln -s zeromq-@option.InstallerVersion@ zeromq
+        rm -fr webalizer
+        ln -s webalizer-@option.InstallerVersion@ webalizer
         #
-        echo "Step into the ZeroMQ directory" 
-        cd zeromq
+        echo "Step into the Webalizer directory" 
+        cd webalizer
         #
         echo "Building it ..."
-        ./configure
+        ./configure --enable-dns --with-dblib=/lib
         make
-        make check
-
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
-        echo Step into @option.BuildDirectory@/zeromq 
-        cd @option.BuildDirectory@/zeromq 
+        echo Step into @option.BuildDirectory@/webalizer 
+        cd @option.BuildDirectory@/webalizer
+        #
         echo Uninstall in case it is already there ... 
         make uninstall
-        echo We will start installing ZeroMQ now: in directory ... 
+        #
+        echo We will start installing Webalizer now: in directory ... 
         make install
         make clean
-        echo Done. ZeroMQ should now be part of your system.
+        #
+        echo Done. Webalizer should now be part of your system.
         EOF
 
         # 
@@ -64,7 +64,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: mol.*
   group: net/fleetingclouds/install/webalizer
   options:
     BuildDirectory:
@@ -73,7 +73,7 @@
       value: ~/build
     InstallerVersion:
       required: true
-      value: 2.2.0
+      value: 2.23-05
     InstallersRepository:
       required: true
       value: ~/installers
