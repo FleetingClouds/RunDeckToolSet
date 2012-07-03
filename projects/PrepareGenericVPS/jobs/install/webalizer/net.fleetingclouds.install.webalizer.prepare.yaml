@@ -47,9 +47,12 @@
         make install
         make clean
         #
+        cd /usr/local/etc/
+        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/webalizer/webalizer.conf
+        #
         echo Done. Webalizer should now be part of your system.
         EOF
-
+        #
         # 
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh

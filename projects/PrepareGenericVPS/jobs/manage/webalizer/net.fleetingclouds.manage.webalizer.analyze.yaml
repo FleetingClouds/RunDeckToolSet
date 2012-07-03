@@ -1,0 +1,28 @@
+- id: net.fleetingclouds.manage.webalizer.analyze
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: true
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo webalizer -D dns_cache.db
+    - exec: echo " - - - End."
+  description: ''
+  name: AnalyzeLogs
+  uuid: net.fleetingclouds.manage.webalizer.analyze
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/manage/webalizer
+  options:
+    sudoPwdRunDeck:
+      required: true
+      description: Chef's password.
+      value: okmmpl,,
+      secure: true
