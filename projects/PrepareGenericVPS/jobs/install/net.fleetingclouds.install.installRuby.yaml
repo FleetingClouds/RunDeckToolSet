@@ -8,7 +8,7 @@
     - exec: echo "Preparing Ruby engine ............................................."
     - exec: sudo pwd
     - exec: sudo dpkg --configure -a
-    - exec: sudo apt-get -y install ruby ruby-dev libopenssl-ruby rdoc ri irb build-essential wget ssl-cert curl
+    - exec: sudo apt-get -y install ruby ruby-dev libxml2-dev libxslt1-dev libopenssl-ruby rdoc ri irb build-essential wget ssl-cert curl
     - exec: echo "Get Ruby Gems installer . . . . . . . . "
     - exec: wget http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
     - exec: tar zxf rubygems-1.8.10.tgz
