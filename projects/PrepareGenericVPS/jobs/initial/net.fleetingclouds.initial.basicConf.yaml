@@ -21,19 +21,27 @@
         cat >> apt_stuff.sh <<EOF
         #
         echo "Update apt ......................................."
-        sudo apt-get -y update
+        apt-get -y update
         #
         echo "Upgrade apt ......................................"
-        sudo apt-get -y upgrade
+        apt-get -y upgrade
         #
         echo "Switching to aptitude  rather than apt-get........"
-        sudo apt-get -y install aptitude
+        apt-get -y install aptitude
         #
         echo "Install nano ................................"
-        sudo aptitude -y install nano
+        aptitude -y install nano
         #
         echo "Install expect .............................."
-        sudo aptitude -y install expect
+        aptitude -y install expect
+        #
+        echo "Install ntp .............................."
+        aptitude -y install ntp
+        #
+        echo "Set timezone to UTC .............................."
+        rm -f /etc/timezone
+        echo "Etc/UTC # Internet server" > /etc/timezone
+        dpkg-reconfigure --frontend noninteractive tzdata
         #
         echo "......................Finished................."
         EOF
@@ -73,7 +81,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: gate.*
+      name: mol.*
   group: net/fleetingclouds/initial
   options:
     Host:
