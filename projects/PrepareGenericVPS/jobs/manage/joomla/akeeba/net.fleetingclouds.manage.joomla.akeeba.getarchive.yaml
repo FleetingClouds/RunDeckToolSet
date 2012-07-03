@@ -1,0 +1,26 @@
+- id: net.fleetingclouds.manage.joomla.akeeba.getarchive
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "Retrieve archive from remote server."
+    - exec: scp  ${RD_OPTION_HOST}:${RD_OPTION_BACKUPFILENAME}  ~
+    - exec: echo " - - - End."
+  description: This job collects a Joomla site backup from RunDeck's home directory on the remote server.
+  name: GetBackupToArchive
+  uuid: net.fleetingclouds.manage.joomla.akeeba.getarchive
+  group: net/fleetingclouds/manage/joomla/akeeba
+  options:
+    BackupFilename:
+      required: true
+    Host:
+      required: true
+      description: the host from where the file will be recovered
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true

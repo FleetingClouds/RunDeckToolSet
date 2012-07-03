@@ -1,0 +1,36 @@
+- id: net.fleetingclouds.manage.joomla.akeeba.archive
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "Move file to RunDeck home directory to be picked up later via scp."
+    - exec: sudo mv ${option.SourceDirectory}/${option.BackupFilename} ~
+    - exec: echo " - - - End."
+  description: This job moves a Joomla site backup to the home directory of RunDeck.
+  name: MoveBackupToArchive
+  uuid: net.fleetingclouds.manage.joomla.akeeba.archive
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/manage/joomla/akeeba
+  options:
+    BackupFilename:
+      required: true
+    SourceDirectory:
+      required: true
+      description: 'The directory where the file should be deposited:  Root directory
+        of Joomla!'
+      value: /usr/local/apache/htdocs/administrator/components/com_akeeba/backup
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true

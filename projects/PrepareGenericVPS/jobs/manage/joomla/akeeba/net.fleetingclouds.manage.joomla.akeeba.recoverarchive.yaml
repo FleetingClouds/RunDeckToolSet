@@ -1,0 +1,38 @@
+- id: net.fleetingclouds.manage.joomla.akeeba.recoverarchive
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "First move the file."
+    - jobref:
+        group: net/fleetingclouds/manage/joomla/akeeba
+        name: MoveBackupToArchive
+        args: -BackupFilename ${option.BackupFilename}
+    - exec: echo "Second, pull it over to RunDeck server."
+    - jobref:
+        group: net/fleetingclouds/manage/joomla/akeeba
+        name: GetBackupToArchive
+        args: -Host ${option.Host} -BackupFilename ${option.BackupFilename}
+    - exec: echo " - - - End."
+  description: |
+    This job moves a backup file out of the Joomla directory and into RunDeck's home directory on the remote server, it then collects it into the local server.
+    
+  name: RecoverBackupToArchive
+  uuid: net.fleetingclouds.manage.joomla.akeeba.recoverarchive
+  group: net/fleetingclouds/manage/joomla/akeeba
+  options:
+    BackupFilename:
+      required: true
+      value: site-mol.fleetingclouds.net-20120703-103948.jpa
+    Host:
+      required: true
+      description: the host from where the file will be recovered
+      value: mol.fleetingclouds.net
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
