@@ -1,0 +1,135 @@
+- id: net.fleetingclouds.install.joomla.magento.get
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo " Get dependencies ................. "
+    - exec: sudo aptitude -y install subversion
+    - script: |
+        #!/bin/bash 
+        #
+        mkdir -p  @option.BuildDirectory@
+        #
+        echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
+        pwd
+        #
+        rm -f ./tmp.sh
+        #
+        echo "Make a temporary script to perform Magento installation actions."
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+          #
+          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
+          pushd @option.BuildDirectory@
+          pwd
+          #
+          echo " - - - - - - - - - - - Getting version controlled source ..." 
+          svn checkout @option.InstallerURL@/@option.Branch@
+          #
+          echo ">> >> - - - - - - - - - - - Make a symbolic link for it" 
+          rm -f magento
+          ln -s @option.Branch@ magento
+          #
+          echo ">> - - - - - - - - - - - Deliver it all to httpd:httpd" 
+          chown -R httpd:httpd ./@option.Branch@
+          chown -R httpd:httpd ./magento
+          chmod -R g+w ./@option.Branch@
+          chmod -R g+w ./magento
+          #
+          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          popd
+          #
+          echo " = = = = = = = = = = = Done. magento should now be available for installation."
+          #
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - exec: echo "Prepare to create a database for Magento"
+    - script: |
+        rm -f ./createDatabase.sql
+        #
+        echo "Make a temporary script to generate a database for Magento"
+        cat > createDatabase.sql <<EOF
+        show databases;
+        drop database if exists @option.MagentoDataBase@;
+        create database if not exists @option.MagentoDataBase@;
+        grant all privileges on @option.MagentoDataBase@.* to @option.MySqlMagentoUser@@@option.MySqlServer@ identified by '@option.MySqlMagentoPwd@';
+        EOF
+        #
+        echo "Ready to run it."
+    - exec: mysql -u root -p${option.MySqlRootPwd} < createDatabase.sql
+    - exec: echo "Download the sample data file into the default directory"
+    - exec: 'wget -nc -c ${option.RemoteRepository} 2> /dev/null '
+    - exec: echo "Decompress sample data"
+    - exec: unzip master
+    - exec: rm -f master
+    - exec: mv FleetingClouds-MagentoSampleData* magento_sd
+    - exec: mv magento_sd/v1.6.1.0 ./magento-sample-data
+    - exec: rm -fr magento_sd
+    - exec: echo "Run it into the sample database"
+    - exec: mysql -u ${option.MySqlMagentoUser} -p${option.MySqlMagentoPwd} ${option.MagentoDataBase}  < ./magento-sample-data/${option.DatabaseSamplesFile}
+    - exec: echo " - - - End."
+  description: |
+    Install Subversion if necessary and then check out Magento into the Apache htdocs directory.
+  name: GetMagento
+  uuid: net.fleetingclouds.install.joomla.magento.get
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install/joomla/magento
+  options:
+    Branch:
+      required: true
+      description: The compressed file.
+      value: '1.7'
+    BuildDirectory:
+      required: true
+      description: The directory to which Magento will be decompressed.
+      value: /usr/local/apache/htdocs/
+    DatabaseSamplesFile:
+      required: true
+      description: A remote file that will restore a database.
+      value: magento_sample_data_for_1.6.1.0.sql
+    InstallerURL:
+      required: true
+      description: the place to get it from
+      value: http://svn.magentocommerce.com/source/branches
+    MagentoDataBase:
+      required: true
+      description: The name of the MySQL database for Magento to use
+      value: magentodb
+    MySqlMagentoPwd:
+      required: true
+      value: okmmpl,,
+    MySqlMagentoUser:
+      required: true
+      description: A MySQL username
+      value: magentoadmin
+    MySqlRootPwd:
+      required: true
+      description: The root password to use for MySql
+      value: okmmpl,,
+    MySqlServer:
+      required: true
+      description: The name of the MySQL host
+      value: localhost
+    RemoteRepository:
+      required: true
+      description: Where there is a database backup stored for later restore.
+      value: https://github.com/FleetingClouds/MagentoSampleData/zipball/master
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
