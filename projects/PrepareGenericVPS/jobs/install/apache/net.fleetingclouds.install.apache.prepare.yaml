@@ -115,6 +115,11 @@
     - exec: sudo ./tmp.sh
     - exec: sudo cp httpd.conf /usr/local/apache/conf
     - exec: sudo cp verifyPhpMySql.php  /usr/local/apache/htdocs
+    - exec: 'echo " ####################  Calling [PrepareWebalizer] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/webalizer
+        name: PrepareWebalizer
     - exec: echo "Done Preparing Apache .............................................."
   description: ''
   name: PrepareApache
@@ -140,7 +145,7 @@
     InstallerURL:
       required: true
       description: the place to get it from
-      value: http://mirrors.sonic.net/apache//httpd/httpd-2.2.22.tar.bz2
+      value: http://mirrors.sonic.net/apache/httpd/httpd-2.2.22.tar.bz2
     InstallerVersion:
       required: true
       description: The version to obtain.
