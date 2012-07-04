@@ -26,7 +26,7 @@
   options:
     BackupFilename:
       required: true
-      value: site-mol.fleetingclouds.net-20120703-103948.jpa
+      value: site-mol.fleetingclouds.net-20120703-231643.jpa
     Host:
       required: true
       description: the host from where the file will be recovered
