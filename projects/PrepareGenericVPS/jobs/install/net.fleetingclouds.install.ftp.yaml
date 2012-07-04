@@ -8,7 +8,7 @@
     - exec: echo "Start > > > ."
     - exec: echo  .............................................................
     - exec: echo ". . . . . . . . . . . . . . Will install vsftpd now . . . . . . . . . . . . . ."
-    - exec: echo sudo aptitude -y install vsftpd
+    - exec: sudo aptitude -y install vsftpd
     - exec: echo ". . . . . . . . . . . . . . Will restrict ftp users to their home directory . . . . . . . . . . . . . ."
     - script: |
         rm -f ./fiddleConfig.sh  
