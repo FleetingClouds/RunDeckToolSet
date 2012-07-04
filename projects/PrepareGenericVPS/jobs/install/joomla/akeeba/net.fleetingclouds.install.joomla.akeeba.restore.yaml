@@ -8,6 +8,7 @@
     - exec: echo " Start - - - "
     - exec: echo sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa  2> /dev/null
     - exec: sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa   2> /dev/null
+    - exec: echo "Executing ... sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}_${option.BackupVersion}.jpa"
     - exec: sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}_${option.BackupVersion}.jpa
     - exec: echo " - - - End."
   description: |-
