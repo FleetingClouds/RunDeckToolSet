@@ -26,10 +26,13 @@
           pushd @option.BuildDirectory@
           pwd
           #
+          rm -fr ./@option.Branch@
+          rm -fr ./magento
+          #
           echo " - - - - - - - - - - - Getting version controlled source ..." 
           svn checkout @option.InstallerURL@/@option.Branch@
           #
-          echo ">> >> - - - - - - - - - - - Make a symbolic link for it" 
+          echo ">> - - - - - - - - - - - Make a symbolic link for it" 
           rm -f magento
           ln -s @option.Branch@ magento
           #
@@ -39,10 +42,18 @@
           chmod -R g+w ./@option.Branch@
           chmod -R g+w ./magento
           #
+          echo " - - - - - - - - - - - Step into Installer PHP  >>>>>" 
+          pushd magento/app/code/core/Mage/Install/Model/Installer
+          echo ">> >> - - - - - - - - - - - Patch problem lines in Db.php" 
+          if [  -e Db.php.bk   ]; then cp Db.php.bk Db.php; else cp Db.php Db.php.bk; fi
+          sed -i -e '/check InnoDB support/,+6d' Db.php
+          echo ">> >> - - - - - - - - - - - Step out of Installer PHP <<<<<" 
+          popd
+          #
           echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
           popd
           #
-          echo " = = = = = = = = = = = Done. magento should now be available for installation."
+          echo " - - - - - - - - - - - Magento should now be available for installation."
           #
         EOF
         echo "Make it executable."
@@ -60,23 +71,46 @@
         drop database if exists @option.MagentoDataBase@;
         create database if not exists @option.MagentoDataBase@;
         grant all privileges on @option.MagentoDataBase@.* to @option.MySqlMagentoUser@@@option.MySqlServer@ identified by '@option.MySqlMagentoPwd@';
+        flush privileges;
         EOF
         #
         echo "Ready to run it."
     - exec: mysql -u root -p${option.MySqlRootPwd} < createDatabase.sql
-    - exec: echo "Download the sample data file into the default directory"
-    - exec: 'wget -nc -c ${option.RemoteRepository} 2> /dev/null '
-    - exec: echo "Decompress sample data"
-    - exec: unzip master
-    - exec: rm -f master
-    - exec: mv FleetingClouds-MagentoSampleData* magento_sd
-    - exec: mv magento_sd/v1.6.1.0 ./magento-sample-data
-    - exec: rm -fr magento_sd
+    - script: |
+        rm -f ./getSampleData.sh
+        #
+        echo "Make a temporary script to generate a sample database for Magento"
+        cat > getSampleData.sh <<EOF
+        #!/bin/bash
+          #
+          rm -f master
+          echo "Download the sample data file into the default directory"
+          wget -nc -c @option.RemoteRepository@ 2> /dev/null
+          #
+          echo "Decompress sample data"
+          unzip master
+          rm -f master
+          rm -fr magento_sd
+          mv FleetingClouds-MagentoSampleData* magento_sd
+          rm -fr magento-sample-data
+          mv magento_sd/v1.6.1.0 ./magento-sample-data
+          rm -fr magento_sd
+          cp -Rf ./magento-sample-data/media/* @option.BuildDirectory@/magento/media
+          chown -R httpd:httpd @option.BuildDirectory@/magento/media
+          #
+          echo "Sample data is ready for loading"
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x getSampleData.sh
+        #
+    - exec: sudo ./getSampleData.sh
     - exec: echo "Run it into the sample database"
     - exec: mysql -u ${option.MySqlMagentoUser} -p${option.MySqlMagentoPwd} ${option.MagentoDataBase}  < ./magento-sample-data/${option.DatabaseSamplesFile}
-    - exec: echo " - - - End."
+    - exec: echo " - - - Magento sample data has been loaded."
+    - exec: echo " = = = = = = = = = = = Done. Magento should now be available for installation."
   description: |
-    Install Subversion if necessary and then check out Magento into the Apache htdocs directory.
+    Install Subversion if necessary, check out Magento into the Apache htdocs directory and then create its sample database.
   name: GetMagento
   uuid: net.fleetingclouds.install.joomla.magento.get
   nodefilters:
@@ -96,7 +130,7 @@
     BuildDirectory:
       required: true
       description: The directory to which Magento will be decompressed.
-      value: /usr/local/apache/htdocs/
+      value: /usr/local/apache/htdocs
     DatabaseSamplesFile:
       required: true
       description: A remote file that will restore a database.
