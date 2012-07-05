@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Install Magento</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Install Magento</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/magento</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Welcome to Magento</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=agree</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=submitButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=agree</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=submitButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=h3</td>
+	<td>Localization</td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=h4.legend</td>
+	<td>Locale settings</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=host</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=dbname</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=password</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=dbname</td>
+	<td>magentodb</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=user</td>
+	<td>magentoadmin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>okmmpl,,</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=firstname</td>
+	<td>Mol</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=lastname</td>
+	<td>Administrator</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=email_address</td>
+	<td>alicia.factorepo@gmail.com</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=username</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=confirmation</td>
+	<td>okmmpl,,</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>MatrixOfLife2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=confirmation</td>
+	<td>MatrixOfLife2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=encryption_key</td>
+	<td>MatrixOfLife</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
