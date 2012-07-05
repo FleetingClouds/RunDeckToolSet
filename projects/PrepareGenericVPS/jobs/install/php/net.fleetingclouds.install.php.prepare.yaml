@@ -52,7 +52,7 @@
         chown -R rundeck:rundeck . 
         # 
         echo ">> >> - - - - - - - - - - - Configure PHP make for this machine." 
-        ./configure --prefix=/usr/local/php5 --with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --disable-cgi --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-ttf --with-jpeg-dir=/usr/lib --enable-magic-quotes
+        ./configure --prefix=/usr/local/php5 --with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --disable-cgi --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-ttf --with-jpeg-dir=/usr/lib --enable-magic-quotes --with-pdo-mysql
         #
         echo ">> >> - - - - - - - - - - - Make PHP."
         make
