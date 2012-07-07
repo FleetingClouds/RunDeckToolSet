@@ -22,6 +22,41 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
+	<td>link=Options</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Options</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=jform_currency</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=jform_currencysymbol</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=jform_currency</td>
+	<td>USD</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=jform_currencysymbol</td>
+	<td>$</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='button'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
 	<td>link=Dashboard</td>
 	<td></td>
 </tr>
@@ -176,11 +211,6 @@
 	<td>${durationField}</td>
 </tr>
 <tr>
-	<td>label</td>
-	<td>.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>${priceField}</td>
 	<td></td>
@@ -196,6 +226,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>label</td>
+	<td>.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForVisible</td>
 	<td>id=ordertext_ifr</td>
 	<td></td>
@@ -206,8 +241,58 @@
 	<td></td>
 </tr>
 <tr>
+	<td>label</td>
+	<td>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeElementPresent</td>
+	<td>css=fieldset.akeebasubs-float-left &gt; div.toggle-editor &gt; div.button2-left &gt; div.blank &gt; a[title=&quot;Toggle editor&quot;]</td>
+	<td>isToggleButton</td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>${isToggleButton}</td>
+	<td>lblToggleButtonOn</td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>id=wf_editor_ordertext_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_description_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>goto</td>
+	<td>lblNowUsingSimpleEditors</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblToggleButtonOn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=fieldset.akeebasubs-float-left &gt; div.toggle-editor &gt; div.button2-left &gt; div.blank &gt; a[title=&quot;Toggle editor&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Toggle editor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblNowUsingSimpleEditors</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-</td>
 	<td></td>
 </tr>
 <tr>
@@ -221,18 +306,8 @@
 	<td>${orderText}</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=wf_editor_ordertext_toggle</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>${descField}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=wf_editor_description_toggle</td>
 	<td></td>
 </tr>
 <tr>
@@ -246,8 +321,8 @@
 	<td>${descField}</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=wf_editor_description_toggle</td>
+	<td>label</td>
+	<td>.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	<td></td>
 </tr>
 <tr>
@@ -269,6 +344,51 @@
 	<td>type</td>
 	<td>id=notify2_field</td>
 	<td>${notify2Field}</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>${isToggleButton}</td>
+	<td>lblToggleButtonOff</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_ordertext_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_description_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>goto</td>
+	<td>lblNowUsingFullEditors</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblToggleButtonOff</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=fieldset.akeebasubs-float-left &gt; div.toggle-editor &gt; div.button2-left &gt; div.blank &gt; a[title=&quot;Toggle editor&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Toggle editor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblNowUsingFullEditors</td>
+	<td></td>
 </tr>
 <tr>
 	<td>label</td>
