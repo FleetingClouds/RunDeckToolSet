@@ -1,0 +1,17 @@
+<json>
+{"titleField" : "Registered",   "slugField" : "registered",   "imgField" : "dawn.png",   "durationField" : "3650",   "priceField" : "10.00",   "orderText" : "Welcome!&nbsp;&nbsp;You can now learn further details about Matrix of Life and begin to participate in our distribution centers.",   "descField" : "This level is intended for those who wish to become initial members of our association.",   "notify1Field" : "20",   "notify2Field" : "1"}					
+{"titleField" : "Associate",   "slugField" : "associate",   "imgField" : "logo_icon_113.png",   "durationField" : "3650",   "priceField" : "100.00",   "orderText" : "Welcome!&nbsp;&nbsp;You are now party to some deeper materials, products and services we have prepared.",   "descField" : "This level is intended for those who have gotten all they can out of registered level and wish to go further.",   "notify1Field" : "20",   "notify2Field" : "1"}					
+{"titleField" : "Savvy",   "slugField" : "savvy",   "imgField" : "logo2.png",   "durationField" : "3650",   "priceField" : "1000.00",   "orderText" : "Welcome!&nbsp;&nbsp;You are now a full participant.",   "descField" : "This level is intended for those who willshare in creating materials and products.",   "notify1Field" : "20",   "notify2Field" : "1"}					
+</json>
+
+	<td>id=title_field</td>
+	<td></td>
+	<td></td>
+	
+	<td>id=slug_field</td>
+	<td></td>
+	<td></td>
+	
+	<td>id=image</td>
+	<td>label=</td>
+	<td>label=</td>

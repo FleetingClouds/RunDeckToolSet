@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Prepare Subscription Levels</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Prepare Subscription Levels</td></tr>
+</thead><tbody>
+<tr>
+	<td>click</td>
+	<td>link=Components</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Akeeba Subscriptions</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Subscription Levels</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=div.pagetitle.icon-48-akeebasubs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Subscription Levels</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=a.saveorder</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>name=toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeElementPresent</td>
+	<td>id=cb0</td>
+	<td>LinesToDelete</td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>! ${LinesToDelete}</td>
+	<td>noLinesToDelete</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>There are lines to delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>com_akeebasubs_CONFIRM_DELETE</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>com_akeebasubs_CONFIRM_DELETE</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>noLinesToDelete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-new</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=fieldset.akeebasubs-float-left &gt; legend</td>
+	<td>Message to show after successful sign-up</td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='element-box']/div/form/fieldset[2]/legend</td>
+	<td>Short Description</td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='element-box']/div/form/fieldset[4]/legend</td>
+	<td>Message to show after sign-up cancellation</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=image</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>* ! * ! * ! * ! * ! * ! * ! * ! * ! * ! * !</td>
+	<td></td>
+</tr>
+<tr>
+	<td>forJson</td>
+	<td>LevelsData.json</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${titleField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=title_field</td>
+	<td>${titleField}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${slugField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=slug_field</td>
+	<td>${slugField}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=enabled1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${imgField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=image</td>
+	<td>label=${imgField}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${durationField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=duration_field</td>
+	<td>${durationField}</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${priceField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=price_field</td>
+	<td>${priceField}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${orderText}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=ordertext_ifr</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=tinymce</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_ordertext_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=ordertext</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ordertext</td>
+	<td>${orderText}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_ordertext_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${descField}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_description_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=description</td>
+	<td>${descField}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>${descField}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=wf_editor_description_toggle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${notify1Field}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=notify1_field</td>
+	<td>${notify1Field}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${notify2Field}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=notify2_field</td>
+	<td>${notify2Field}</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;-</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Save &amp; New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>endForJson</td>
+	<td>--- End For JSON ---</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>* ! * ! * ! * ! * ! * ! * ! * ! * ! * ! * !</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-cancel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Site</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Control Panel</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
