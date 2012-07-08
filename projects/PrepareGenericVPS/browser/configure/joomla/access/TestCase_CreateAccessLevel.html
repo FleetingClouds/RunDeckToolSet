@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://mol.fleetingclouds.net/%20" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>store</td>
+	<td>RestrictedTo</td>
+	<td>Prefix</td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>XYZMembers</td>
+	<td>AuthorizedGroup</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'${Prefix}'.concat('${AuthorizedGroup}')</td>
+	<td>NewAccessLevel</td>
+</tr>
+<tr>
+	<td>goto</td>
+	<td>lblStartHere</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblStartHere</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Start</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=limit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=filter_search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button[type=&quot;button&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=filter_search</td>
+	<td>${AuthorizedGroup}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeElementPresent</td>
+	<td>id=cb0</td>
+	<td>GroupExists</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${GroupExists}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>${GroupExists}</td>
+	<td>lblSkipGroupCreation</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-new</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=jform_title</td>
+	<td>${AuthorizedGroup}</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=jform_parent_id</td>
+	<td>label=- Registered</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblSkipGroupCreation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Access Levels</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=filter_search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=limit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=filter_search</td>
+	<td>${NewAccessLevel}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeElementPresent</td>
+	<td>id=cb0</td>
+	<td>AccessLevelExists</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${AccessLevelExists}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>${AccessLevelExists}</td>
+	<td>lblSkipAccessLevelCreation</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-new</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=jform_title</td>
+	<td>${NewAccessLevel}</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>* ! * ! *&nbsp;&nbsp;Loop through all access levels.&nbsp;&nbsp;* ! * ! * ! * !</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>1</td>
+	<td>idx</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>20</td>
+	<td>lim</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>- - - - - - - - - - - - - - - - - - - - - - - - - -</td>
+	<td></td>
+</tr>
+<tr>
+	<td>while</td>
+	<td>idx &lt;= lim</td>
+	<td></td>
+</tr>
+<tr>
+	<td>getEval</td>
+	<td>LOG.info(${idx});</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeElementPresent</td>
+	<td>//form[@id='level-form']/div[2]/fieldset/ul/li[${idx}]/label</td>
+	<td>ListElementExists</td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>! ${ListElementExists}</td>
+	<td>lblBeyondTheEndOfTheList</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>List element does exist.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='level-form']/div[2]/fieldset/ul/li[${idx}]/label</td>
+	<td>AccessLevelName</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>('${AccessLevelName}'.indexOf('${AuthorizedGroup}') &lt; 0) &amp;&amp; '${AccessLevelName}'.indexOf('${SuperGroup}') &lt; 0</td>
+	<td>ThatIsNotTheOne</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${ThatIsNotTheOne}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>uncheck</td>
+	<td>//form[@id='level-form']/div[2]/fieldset/ul/li[${idx}]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>${ThatIsNotTheOne}</td>
+	<td>lblDoneWithListItem</td>
+</tr>
+<tr>
+	<td>check</td>
+	<td>//form[@id='level-form']/div[2]/fieldset/ul/li[${idx}]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>goto</td>
+	<td>lblDoneWithListItem</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblBeyondTheEndOfTheList</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>List element does NOT exist.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${idx} + ${lim}</td>
+	<td>idx</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblDoneWithListItem</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${idx} + 1</td>
+	<td>idx</td>
+</tr>
+<tr>
+	<td>endWhile</td>
+	<td>--- End While ---</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>* ! * ! *&nbsp;&nbsp;Done Looping access levels&nbsp;&nbsp;&nbsp;* ! * ! * ! * !</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon-32-save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=button[type=&quot;button&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button[type=&quot;button&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblSkipAccessLevelCreation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Done</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>lblEOF</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
