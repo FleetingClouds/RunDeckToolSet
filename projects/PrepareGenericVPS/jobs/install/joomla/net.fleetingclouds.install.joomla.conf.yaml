@@ -21,15 +21,12 @@
         	public \$captcha = '0';
         	public \$list_limit = '20';
         	public \$access = '1';
-        	public \$debug = '0';
-        	public \$debug_lang = '0';
         	public \$dbtype = 'mysql';
         	public \$host = 'localhost';
         	public \$user = '@option.DbUser@';
         	public \$password = '@option.MySqlJoomlaPwd@';
         	public \$db = '@option.JoomlaDataBase@';
         	public \$dbprefix = '@option.JoomlaTblPrefix@';
-        	public \$live_site = '';
         	public \$secret = 'tm0TBzAJsLIetrJD';
         	public \$gzip = '0';
         	public \$error_reporting = 'default';
@@ -40,8 +37,14 @@
         	public \$ftp_pass = '';
         	public \$ftp_root = '';
         	public \$ftp_enable = '0';
+        	public \$tmp_path = '/usr/local/apache/htdocs/tmp';
+        	public \$log_path = '/usr/local/apache/htdocs/logs';
+        	public \$live_site = '';
+        	public $force_ssl = '0';
         	public \$offset = 'UTC';
         	public \$offset_user = 'UTC';
+        	public \$lifetime = '15';
+        	public \$session_handler = 'database';
         	public \$mailer = 'mail';
         	public \$mailfrom = '@option.AdminEmail@';
         	public \$fromname = '@option.SiteName@';
@@ -50,26 +53,28 @@
         	public \$smtpuser = '';
         	public \$smtppass = '';
         	public \$smtphost = 'localhost';
-        	public \$smtpsecure = 'none';
-        	public \$smtpport = '25';
         	public \$caching = '0';
-        	public \$cache_handler = 'file';
         	public \$cachetime = '15';
+        	public \$cache_handler = 'file';
+        	public \$debug = '0';
+        	public \$debug_lang = '0';
         	public \$MetaDesc = '';
         	public \$MetaKeys = '';
         	public \$MetaTitle = '1';
         	public \$MetaAuthor = '1';
-        	public \$MetaVersion = '0';
         	public \$robots = '';
         	public \$sef = '1';
         	public \$sef_rewrite = '0';
         	public \$sef_suffix = '0';
         	public \$unicodeslugs = '0';
         	public \$feed_limit = '10';
-        	public \$log_path = '/usr/local/apache/htdocs/logs';
-        	public \$tmp_path = '/usr/local/apache/htdocs/tmp';
-        	public \$lifetime = '15';
-        	public \$session_handler = 'database';
+        	public \$smtpsecure = 'none';
+        	public \$smtpport = '25';
+        	public \$MetaRights = '';
+        	public \$sitename_pagetitles = '0';
+        	public \$cookie_domain = '';
+        	public \$cookie_path = '';
+        	public \$MetaVersion = '0';
         }
         EOF
     - exec: scp configuration.php  ${RD_OPTION_HOST}:.
