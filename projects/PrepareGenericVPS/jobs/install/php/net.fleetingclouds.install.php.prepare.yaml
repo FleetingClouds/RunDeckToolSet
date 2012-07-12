@@ -54,7 +54,7 @@
         # 
         echo ">> >> - - - - - - - - - - - Configure PHP make for this machine." 
         echo "Will configure for Joomla &/or Drupal : @option.BuildForCMS@"
-        declare GENERAL_SWITCHES="--prefix=/usr/local/php5 --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-libdir=lib64 --with-jpeg-dir=/usr/lib"
+        declare GENERAL_SWITCHES="--prefix=/usr/local/php5 --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-libdir=lib64 --with-jpeg-dir=/usr/lib --enable-fpm --with-openssl"
         declare CMS_SWITCHES=""
         if [  "XX@option.BuildForCMS@" == "XXtrue"   ]; then
           CMS_SWITCHES="--with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --disable-cgi --with-ttf  --enable-magic-quotes --with-pdo-mysql"
@@ -78,6 +78,19 @@
         # 
         echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
         popd 
+        #
+        echo " - - - - - - - - - - - Step into /etc/init.d >>>>>"  
+        pushd /etc/init.d
+        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/php/php-fastcgi.init
+        mv php-fastcgi.init php-fastcgi
+        chmod a+x php-fastcgi
+        #
+        update-rc.d php-fastcgi defaults
+        #
+        ./php-fastcgi restart
+        #
+        echo ">> - - - - - - - - - - - Step out of /etc/init.d <<<<<"  
+        popd
         #
         echo " = = = = = = = = = = = Done. PHP should now be part of your system." 
         EOF
@@ -105,6 +118,7 @@
     BuildForCMS:
       required: true
       description: If set to false this will NOT append configure switches needed by Joomla &/or Drupal
+      value: false true
     InstallerURL:
       required: true
       description: The place to get it from
