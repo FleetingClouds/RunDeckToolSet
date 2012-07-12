@@ -1,0 +1,70 @@
+- id: net.fleetingclouds.install.nginx.ssl
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - script: |-
+        #! /bin/bash  
+        #
+        rm -fr tmp.sh
+        cat > tmp.sh <<EOF
+        #! /bin/bash
+        declare CERT_SUBJECT="/C=@option.CountryCode@/ST=@option.StateProvCode@/O=@option.Organization@/localityName=@option.Town@/commonName=@option.ServerName@/organizationalUnitName=@option.OrganizationUnit@/emailAddress=@option.Email@"
+        echo \${CERT_SUBJECT}
+        #
+        openssl req -new -x509 -days 4312 -nodes -keyout /etc/nginx/web.key -out /etc/nginx/web.pem -subj "\${CERT_SUBJECT}"
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareSSL_Certificate
+  uuid: net.fleetingclouds.install.nginx.ssl
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/nginx
+  options:
+    CountryCode:
+      required: true
+      description: Certificate country code
+      value: us
+    Email:
+      required: true
+      description: Certificate Email
+      value: trudy_cool@yahoo.com
+    Organization:
+      required: true
+      description: Certificate organization
+      value: Just Trade
+    OrganizationUnit:
+      required: true
+      description: Certificate Organization Unit
+      value: rCredits
+    ServerName:
+      required: true
+      description: Certificate Server Name
+      value: cgf.justtrade.net
+    StateProvCode:
+      required: true
+      description: Certificate regional code
+      value: MA
+    Town:
+      required: true
+      description: Certificate Town Name
+      value: Andover
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
