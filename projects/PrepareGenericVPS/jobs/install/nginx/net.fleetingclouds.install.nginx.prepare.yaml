@@ -55,6 +55,8 @@
         #
         chmod a+x /etc/init.d/nginx
         #
+        update-rc.d nginx defaults
+        #
         /etc/init.d/nginx restart
         #
         echo Done. NGinx should now be part of your system.
