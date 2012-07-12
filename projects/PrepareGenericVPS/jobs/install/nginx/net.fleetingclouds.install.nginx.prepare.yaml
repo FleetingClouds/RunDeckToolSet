@@ -1,0 +1,94 @@
+- id: net.fleetingclouds.install.nginx.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: sudo apt-get -y install libpcre3  libpcre3-dev
+    - exec: '# sudo aptitude -y remove openssl libssl-dev'
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.BuildDirectory}
+    - script: |-
+        cd  @option.InstallersRepository@
+        #
+        echo "Stepping into ..."
+        pwd
+        #
+        echo "Getting targz'd source ..." 
+        wget -nc -c http://nginx.org/download/nginx-@option.InstallerVersion@.tar.gz
+        #
+        echo "Step into the build directory"  
+        cd @option.BuildDirectory@  
+        # 
+        echo "Unzip the downloaded file" 
+        tar zxvf @option.InstallersRepository@/nginx-@option.InstallerVersion@.tar.gz
+        #
+        rm -fr nginx
+        ln -s nginx-@option.InstallerVersion@ nginx
+        #
+        echo "Step into the NGinx directory" 
+        cd nginx
+        #
+        echo "Building it ..."
+        ./configure --with-http_ssl_module --sbin-path=/usr/local/sbin
+        make
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        #
+        echo Step into @option.BuildDirectory@/nginx 
+        cd @option.BuildDirectory@/nginx 
+        #
+        echo Uninstall in case it is already there ... 
+        make uninstall
+        #
+        echo We will start installing nginx now: in directory ... 
+        make install
+        make clean
+        #
+        echo Obtain an init.d file for stopping/starting nginx
+        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.init
+        mv nginx.init /etc/init.d/nginx
+        #
+        chmod a+x /etc/init.d/nginx
+        #
+        /etc/init.d/nginx restart
+        #
+        echo Done. NGinx should now be part of your system.
+        EOF
+
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareNGinx
+  uuid: net.fleetingclouds.install.nginx.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/nginx
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
+    InstallerVersion:
+      required: true
+      value: 1.2.2
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
