@@ -9,7 +9,8 @@
     - exec: sudo pwd
     - script: |-
         #! /bin/bash  
-        # 
+        #
+        #
         mkdir -p @option.InstallersRepository@ 
         mkdir -p @option.BuildDirectory@ 
         # 
@@ -32,7 +33,7 @@
         #! /bin/bash  
         # 
         echo " - - - - - - - - - - - Resolve dependencies" 
-        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg62-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev
+        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg62-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev bison re2c
         # 
         echo " - - - - - - - - - - - Step into @option.BuildDirectory@ >>>>>"  
         pushd @option.BuildDirectory@ 
@@ -52,7 +53,14 @@
         chown -R rundeck:rundeck . 
         # 
         echo ">> >> - - - - - - - - - - - Configure PHP make for this machine." 
-        ./configure --prefix=/usr/local/php5 --with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --disable-cgi --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-ttf --with-jpeg-dir=/usr/lib --enable-magic-quotes --with-pdo-mysql
+        echo "Will configure for Joomla &/or Drupal : @option.BuildForCMS@"
+        declare GENERAL_SWITCHES="--prefix=/usr/local/php5 --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-libdir=lib64 --with-jpeg-dir=/usr/lib"
+        declare CMS_SWITCHES=""
+        if [  "XX@option.BuildForCMS@" == "XXtrue"   ]; then
+          CMS_SWITCHES="--with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --disable-cgi --with-ttf  --enable-magic-quotes --with-pdo-mysql"
+        fi
+        #
+        ./configure \$GENERAL_SWITCHES \$CMS_SWITCHES;
         #
         echo ">> >> - - - - - - - - - - - Make PHP."
         make
@@ -87,13 +95,16 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: cgf.*
   group: net/fleetingclouds/install/php
   options:
     BuildDirectory:
       required: true
       description: The directory MySql will be installed to.
       value: /usr/local/src
+    BuildForCMS:
+      required: true
+      description: If set to false this will NOT append configure switches needed by Joomla &/or Drupal
     InstallerURL:
       required: true
       description: The place to get it from
