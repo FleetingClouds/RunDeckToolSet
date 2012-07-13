@@ -7,11 +7,10 @@
     commands:
     - exec: echo " Start - - - "
     - exec: sudo apt-get -y install libpcre3  libpcre3-dev
-    - exec: '# sudo aptitude -y remove openssl libssl-dev'
-    - exec: echo  ${option.InstallersRepository}
-    - exec: mkdir -p  ${option.InstallersRepository}
-    - exec: mkdir -p  ${option.BuildDirectory}
     - script: |-
+        echo  @option.InstallersRepository@
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
         cd  @option.InstallersRepository@
         #
         echo "Stepping into ..."
@@ -48,6 +47,15 @@
         echo We will start installing nginx now: in directory ... 
         make install
         make clean
+        #
+        echo Obtain a main configuration file for nginx
+        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.conf
+        mv nginx.conf /usr/local/nginx/conf/
+        #
+        echo Prepare directories as indicated on the config file
+        mkdir -p /srv/www/vhosts/cgf.justtrade.net/www
+        mkdir -p /srv/www/vhosts/cgf.justtrade.net/logs/
+        mkdir -p /etc/nginx/sites-available
         #
         echo Obtain an init.d file for stopping/starting nginx
         wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.init
