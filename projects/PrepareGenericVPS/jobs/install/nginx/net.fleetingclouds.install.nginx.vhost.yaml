@@ -1,0 +1,145 @@
+- id: net.fleetingclouds.install.nginx.vhost
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: rm -f ./tmp.sh
+    - script: |
+        echo Create a temporary file for executing sudo steps.
+        cat > ./tmp.sh <<EOFTMP
+        #
+        echo Prepare directories as indicated for the config file
+        mkdir -p /srv/www/vhosts/@option.VirtualHostDomainName@/www
+        mkdir -p /srv/www/vhosts/@option.VirtualHostDomainName@/logs/
+        touch /srv/www/vhosts/@option.VirtualHostDomainName@/logs/access.log
+        touch /srv/www/vhosts/@option.VirtualHostDomainName@/logs/error.log
+        mkdir -p /etc/nginx/@option.VirtualHostDomainName@/
+        mkdir -p /etc/nginx/sites-available
+        #
+        echo ". . . Create the configuration file .  .  .  " 
+        rm -f @option.VirtualHostDomainName@.conf
+        cat > @option.VirtualHostDomainName@.conf <<EOFCONF
+           server {
+              listen 80;
+              listen 443 ssl;
+              server_name @option.VirtualHostDomainName@;
+
+              ssl_certificate /etc/nginx/@option.VirtualHostDomainName@/web.pem;
+              ssl_certificate_key /etc/nginx/@option.VirtualHostDomainName@/web.key;
+
+              access_log /srv/www/vhosts/@option.VirtualHostDomainName@/logs/access.log combined;
+              error_log /srv/www/vhosts/@option.VirtualHostDomainName@/logs/error.log;
+
+              root /srv/www/vhosts/@option.VirtualHostDomainName@/www;
+
+              index index.php index.html index.htm;
+
+              location / {
+                 try_files \\\$uri \\\$uri/ /index.php;
+              }
+
+              location ~ \.php {
+                 try_files \\\$uri = 404;
+                 include /usr/local/nginx/conf/fastcgi_params;
+                 fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name;
+                 fastcgi_pass 127.0.0.1:9000;
+              }
+
+              if (\\\$ssl_protocol = "") {
+                 rewrite ^ https://\\\$server_name\\\$request_uri? permanent;
+              }
+           }
+        EOFCONF
+        #
+        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        rm -f /etc/nginx/sites-available/@option.VirtualHostDomainName@.conf
+        mv @option.VirtualHostDomainName@.conf /etc/nginx/sites-available
+        #
+        echo ". . . Create a placeholder index.html .  .  .  " 
+        rm -f index.html.tmp
+        cat > index.html.tmp <<EOFINDEX
+         <html>
+            <head><title>@option.VirtualHostDomainName@</title></head>
+            <body bgcolor="white">
+               <center><h1>@option.VirtualHostDomainName@</h1></center>
+               <hr><center>nginx/1.2.2</center>
+            </body>
+         </html>
+        EOFINDEX
+        #
+        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        rm -f /srv/www/vhosts/@option.VirtualHostDomainName@/www/index.html
+        mv index.html.tmp /srv/www/vhosts/@option.VirtualHostDomainName@/www/index.html
+        #
+        #
+        echo ". . . Create a PHP configuration reporter .  .  .  " 
+        rm -f echo.php.tmp
+        cat > echo.php.tmp <<EOFINDEX
+         <?php
+            date_default_timezone_set('America/New York');
+            phpinfo();
+        EOFINDEX
+        #
+        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        rm -f /srv/www/vhosts/@option.VirtualHostDomainName@/www/echo.php
+        mv echo.php.tmp /srv/www/vhosts/@option.VirtualHostDomainName@/www/echo.php
+        #
+        EOFTMP
+        #
+        chmod a+x tmp.sh
+        #
+    - exec: sudo ./tmp.sh
+    - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareSSL_Certificate
+        args: -TargetDirectory /etc/nginx/${option.VirtualHostDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.VirtualHostDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareNGinxVirtualHost
+  uuid: net.fleetingclouds.install.nginx.vhost
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/nginx
+  options:
+    CountryCode:
+      required: true
+      description: Certificate country code
+      value: us
+    Email:
+      required: true
+      description: Certificate Email
+      value: trudy_cool@yahoo.com
+    Organization:
+      required: true
+      description: Certificate organization
+      value: Just Trade
+    OrganizationUnit:
+      required: true
+      description: Certificate Organization Unit
+      value: rCredits
+    StateProvCode:
+      required: true
+      description: Certificate regional code
+      value: MA
+    Town:
+      required: true
+      description: Certificate Town Name
+      value: Andover
+    VirtualHostDomainName:
+      required: true
+      description: This is the name for the virtual host
+      value: cgf.justtrade.net
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
