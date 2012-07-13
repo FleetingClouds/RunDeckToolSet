@@ -1,0 +1,57 @@
+- id: net.fleetingclouds.install.frapi
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: 'echo "   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   ="  '
+    - jobref:
+        group: net/fleetingclouds/initial
+        name: BasicGeneralInitialConfigurations
+        args: '-Host ${option.Host}  -PurgeApache ${option.PurgeApache}  -sudoPwdRunDeck
+          ${option.sudoPwdRunDeck}  '
+    - jobref:
+        group: net/fleetingclouds/install/nginx
+        name: PrepareNGinx
+        args: '-BuildDirectory ${option.BuildDirectory}  -InstallerVersion ${option.InstallerVersion}  -InstallersRepository
+          ${option.InstallersRepository}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}  '
+    - exec: 'echo "   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   ="  '
+  description: |-
+    This installs frapi.
+    http://getfrapi.com/
+  name: InstallFrapi
+  uuid: net.fleetingclouds.install.frapi
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
+    Host:
+      required: true
+      description: the host we are installing to
+      value: cgf.justtrade.net
+    InstallerVersion:
+      required: true
+      value: 1.2.2
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    PurgeApache:
+      required: true
+      description: yes or no to purge Apache
+      value: 'yes'
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
