@@ -1,0 +1,70 @@
+- id: net.fleetingclouds.install.nginx
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Install Nginx ......................................................."
+    - jobref:
+        group: net/fleetingclouds/install/nginx
+        name: PrepareNGinx
+        args: -InstallerVersion ${option.InstallerVersion}  -BuildDirectory ${option.BuildDirectory} -InstallersRepository ${option.InstallersRepository}
+    - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareSSL_Certificate
+        args: ${option.CountryCodeCountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
+    - exec: echo "Done installing Nginx ................................................."
+  description: |
+    Install Nginx and all the products it depends on.
+  name: InstallNginx
+  uuid: net.fleetingclouds.install.nginx
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/install
+  options:
+    BuildDirectory:
+      required: true
+      description: Where programs are built.
+      value: ~/build
+    CountryCode:
+      required: true
+      description: Certificate country code
+      value: us
+    Email:
+      required: true
+      description: Certificate Email
+      value: trudy_cool@yahoo.com
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    Organization:
+      required: true
+      description: Certificate organization
+      value: Just Trade
+    OrganizationUnit:
+      required: true
+      description: Certificate Organization Unit
+      value: rCredits
+    ServerName:
+      required: true
+      description: Certificate Server Name
+      value: cgf.justtrade.net
+    StateProvCode:
+      required: true
+      description: Certificate regional code
+      value: MA
+    Town:
+      required: true
+      description: Certificate Town Name
+      value: Andover
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
