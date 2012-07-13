@@ -6,6 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - exec: 'echo "Will write keys to directory : " $RD_OPTION_TARGETDIRECTORY'
     - script: |-
         #! /bin/bash  
         #
@@ -15,7 +16,7 @@
         declare CERT_SUBJECT="/C=@option.CountryCode@/ST=@option.StateProvCode@/O=@option.Organization@/localityName=@option.Town@/commonName=@option.ServerName@/organizationalUnitName=@option.OrganizationUnit@/emailAddress=@option.Email@"
         echo \${CERT_SUBJECT}
         #
-        openssl req -new -x509 -days 4312 -nodes -keyout /etc/nginx/web.key -out /etc/nginx/web.pem -subj "\${CERT_SUBJECT}"
+        openssl req -new -x509 -days 4312 -nodes -keyout @option.TargetDirectory@/web.key -out @option.TargetDirectory@/web.pem -subj "\${CERT_SUBJECT}"
         #
         EOF
         #
@@ -59,6 +60,10 @@
       required: true
       description: Certificate regional code
       value: MA
+    TargetDirectory:
+      required: true
+      description: The directory in which to store the resulting keys
+      value: /etc/nginx
     Town:
       required: true
       description: Certificate Town Name
