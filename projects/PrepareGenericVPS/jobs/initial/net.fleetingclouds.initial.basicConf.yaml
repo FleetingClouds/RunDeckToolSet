@@ -31,6 +31,8 @@
         #
         echo "Install nano ................................"
         aptitude -y install nano
+        touch ~/.nano_history
+        chown rundeck:rundeck ~/.nano_history
         #
         echo "Install expect .............................."
         aptitude -y install expect
@@ -81,13 +83,13 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: cgf.*
   group: net/fleetingclouds/initial
   options:
     Host:
       required: true
       description: the host where the file should go
-      value: mol.fleetingclouds.net
+      value: cgf.justtrade.net
     PurgeApache:
       required: true
       description: yes or no to purge Apache
