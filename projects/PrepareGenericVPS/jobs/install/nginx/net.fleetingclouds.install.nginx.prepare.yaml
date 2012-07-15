@@ -6,8 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo apt-get -y install libpcre3  libpcre3-dev
+    - exec: sudo apt-get -y install libpcre3  libpcre3-dev libssl-dev
     - script: |-
+        #!/bin/bash
+        #
         echo  @option.InstallersRepository@
         mkdir -p  @option.InstallersRepository@
         mkdir -p  @option.BuildDirectory@
@@ -37,28 +39,40 @@
     - exec: rm -f ./tmp.sh
     - script: |-
         cat > tmp.sh <<EOF
+        #!/bin/bash
+        #
+        mkdir -p /etc/nginx/sites-available
+        mkdir -p /etc/nginx/sites-enabled
         #
         echo Step into @option.BuildDirectory@/nginx 
         cd @option.BuildDirectory@/nginx 
         #
-        echo Uninstall in case it is already there ... 
-        make uninstall
+        #echo Uninstall in case it is already there ... 
+        #make uninstall
+        #
+        echo If an init.d script exists ... stop nginx from running ... 
+        if [  -x /etc/init.d/nginx   ]; then /etc/init.d/nginx stop; fi
         #
         echo We will start installing nginx now: in directory ... 
         make install
         make clean
         #
         echo Obtain a main configuration file for nginx
-        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.conf
+        wget --no-check-certificate https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.conf
         mv nginx.conf /usr/local/nginx/conf/
         #
-        echo Prepare directories as indicated on the config file
-        mkdir -p /srv/www/vhosts/cgf.justtrade.net/www
-        mkdir -p /srv/www/vhosts/cgf.justtrade.net/logs/
-        mkdir -p /etc/nginx/sites-available
+        echo Obtain a default virtual host configuration file
+        wget --no-check-certificate https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/default_host.conf
+        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        rm -f /etc/nginx/sites-available/default_host.conf
+        mv default_host.conf /etc/nginx/sites-available
+        pushd /etc/nginx/sites-enabled
+        rm -f default_host
+        ln -s ../sites-available/default_host.conf default_host
+        popd
         #
         echo Obtain an init.d file for stopping/starting nginx
-        wget https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.init
+        wget --no-check-certificate https://raw.github.com/FleetingClouds/RunDeckToolSet/master/projects/PrepareGenericVPS/jobs/install/nginx/nginx.init
         mv nginx.init /etc/init.d/nginx
         #
         chmod a+x /etc/init.d/nginx
@@ -67,6 +81,14 @@
         #
         /etc/init.d/nginx restart
         #
+        if [  \$(ps aux | grep nginx  | grep -v grep | grep -c nginx) -le 0   ]; then 
+            echo "Failed. NGinx could not start.";
+            exit -1
+        else 
+            echo "Done. NGinx should now be part of your system.";
+            exit 0
+        fi
+
         echo Done. NGinx should now be part of your system.
         EOF
 
