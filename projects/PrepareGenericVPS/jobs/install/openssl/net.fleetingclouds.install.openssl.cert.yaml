@@ -6,7 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: 'echo "Will write keys to directory : " $RD_OPTION_TARGETDIRECTORY'
+    - exec: 'echo "Will write keys to directory : " ${option.TargetDirectory}'
     - script: |-
         #! /bin/bash  
         #
