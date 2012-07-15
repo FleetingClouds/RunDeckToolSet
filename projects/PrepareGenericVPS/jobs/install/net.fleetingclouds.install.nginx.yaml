@@ -7,16 +7,29 @@
     commands:
     - exec: echo "Install Nginx ......................................................."
     - jobref:
+        group: net/fleetingclouds/initial
+        name: BasicGeneralInitialConfigurations
+        args: -Host ${option.ServerName} -PurgeApache yes -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/php
+        name: PreparePhp
+        args: -BuildForCMS  ${option.BuildForCMS} -BuildDirectory ${option.PHP_BuildDirectory} -InstallerURL  ${option.PHP_InstallerURL} -InstallerVersion  ${option.PHP_InstallerVersion} -InstallersRepository  ${option.InstallersRepository}
+    - jobref:
         group: net/fleetingclouds/install/nginx
         name: PrepareNGinx
         args: -InstallerVersion ${option.InstallerVersion}  -BuildDirectory ${option.BuildDirectory} -InstallersRepository ${option.InstallersRepository}
     - jobref:
-        group: net/fleetingclouds/install/openssl
-        name: PrepareSSL_Certificate
-        args: ${option.CountryCodeCountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
+        group: net/fleetingclouds/install/nginx
+        name: PrepareNGinxVirtualHost
+        args: -CountryCode ${option.CountryCode} -Email ${option.Email} -Organization ${option.Organization} -OrganizationUnit ${option.OrganizationUnit} -StateProvCode ${option.StateProvCode} -Town ${option.Town} -VirtualHostDomainName ${option.ServerName} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "Done installing Nginx ................................................."
   description: |
     Install Nginx and all the products it depends on.
+        - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareSSL_Certificate
+        args: ${option.CountryCodeCountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
+        . . . . . . . .
   name: InstallNginx
   uuid: net.fleetingclouds.install.nginx
   nodefilters:
@@ -26,13 +39,16 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: cgf.*
   group: net/fleetingclouds/install
   options:
     BuildDirectory:
       required: true
-      description: Where programs are built.
+      description: The directory in which NGinx will be installed.
       value: ~/build
+    BuildForCMS:
+      required: true
+      description: If set to false this will NOT append configure switches needed by Joomla &/or Drupal
     CountryCode:
       required: true
       description: Certificate country code
@@ -41,6 +57,10 @@
       required: true
       description: Certificate Email
       value: trudy_cool@yahoo.com
+    InstallerVersion:
+      required: true
+      description: The version to obtain.
+      value: 1.1.2
     InstallersRepository:
       required: true
       value: ~/installers
@@ -52,6 +72,18 @@
       required: true
       description: Certificate Organization Unit
       value: rCredits
+    PHP_BuildDirectory:
+      required: true
+      description: The directory in which PHP will be installed.
+      value: /usr/local/src
+    PHP_InstallerURL:
+      required: true
+      description: The place to get it from
+      value: http://ro1.php.net/get/php-5.4.3.tar.bz2/from/us2.php.net/mirror
+    PHP_InstallerVersion:
+      required: true
+      description: The version to obtain.
+      value: 5.4.3
     ServerName:
       required: true
       description: Certificate Server Name
