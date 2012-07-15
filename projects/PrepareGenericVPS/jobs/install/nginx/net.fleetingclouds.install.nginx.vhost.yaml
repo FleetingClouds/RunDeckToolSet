@@ -8,8 +8,11 @@
     - exec: echo " Start - - - "
     - exec: rm -f ./tmp.sh
     - script: |
+        #!/bin/bash
+        #
         echo Create a temporary file for executing sudo steps.
         cat > ./tmp.sh <<EOFTMP
+        #!/bin/bash
         #
         echo Prepare directories as indicated for the config file
         mkdir -p /srv/www/vhosts/@option.VirtualHostDomainName@/www
@@ -18,6 +21,7 @@
         touch /srv/www/vhosts/@option.VirtualHostDomainName@/logs/error.log
         mkdir -p /etc/nginx/@option.VirtualHostDomainName@/
         mkdir -p /etc/nginx/sites-available
+        mkdir -p /etc/nginx/sites-enabled
         #
         echo ". . . Create the configuration file .  .  .  " 
         rm -f @option.VirtualHostDomainName@.conf
@@ -57,6 +61,10 @@
         echo ". . . . . . Move it to /etc/nginx/sites-available"
         rm -f /etc/nginx/sites-available/@option.VirtualHostDomainName@.conf
         mv @option.VirtualHostDomainName@.conf /etc/nginx/sites-available
+        pushd /etc/nginx/sites-enabled
+        rm -f @option.VirtualHostDomainName@
+        ln -s ../sites-available/@option.VirtualHostDomainName@.conf @option.VirtualHostDomainName@
+        popd
         #
         echo ". . . Create a placeholder index.html .  .  .  " 
         rm -f index.html.tmp
@@ -70,7 +78,7 @@
          </html>
         EOFINDEX
         #
-        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        echo ". . . . . . Move it to /srv/www/vhosts/@option.VirtualHostDomainName@/www/  . . . "
         rm -f /srv/www/vhosts/@option.VirtualHostDomainName@/www/index.html
         mv index.html.tmp /srv/www/vhosts/@option.VirtualHostDomainName@/www/index.html
         #
@@ -83,7 +91,7 @@
             phpinfo();
         EOFINDEX
         #
-        echo ". . . . . . Move it to /etc/nginx/sites-available"
+        echo ". . . . . . Move it to /srv/www/vhosts/@option.VirtualHostDomainName@/www/  . . . "
         rm -f /srv/www/vhosts/@option.VirtualHostDomainName@/www/echo.php
         mv echo.php.tmp /srv/www/vhosts/@option.VirtualHostDomainName@/www/echo.php
         #
@@ -95,7 +103,9 @@
     - jobref:
         group: net/fleetingclouds/install/openssl
         name: PrepareSSL_Certificate
-        args: -TargetDirectory /etc/nginx/${option.VirtualHostDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.VirtualHostDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
+        args: -TargetDirectory /etc/nginx/${option.VirtualHostDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.VirtualHostDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: sudo /etc/init.d/php-fastcgi restart
+    - exec: sudo /etc/init.d/nginx restart
     - exec: echo " - - - End."
   description: ''
   name: PrepareNGinxVirtualHost
