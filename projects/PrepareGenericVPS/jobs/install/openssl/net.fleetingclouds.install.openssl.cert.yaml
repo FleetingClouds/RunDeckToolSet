@@ -16,6 +16,8 @@
         declare CERT_SUBJECT="/C=@option.CountryCode@/ST=@option.StateProvCode@/O=@option.Organization@/localityName=@option.Town@/commonName=@option.ServerName@/organizationalUnitName=@option.OrganizationUnit@/emailAddress=@option.Email@"
         echo \${CERT_SUBJECT}
         #
+        mkdir -p @option.TargetDirectory@
+        #
         openssl req -new -x509 -days 4312 -nodes -keyout @option.TargetDirectory@/web.key -out @option.TargetDirectory@/web.pem -subj "\${CERT_SUBJECT}"
         #
         EOF
