@@ -21,8 +21,14 @@
         # 
         echo " - - - - - - - - - - - Getting targz'd source ..."  
         wget -nc -c @option.InstallerURL@   2> /dev/null
-        mv mirror php-@option.InstallerVersion@.tar.bz2
+        # mv mirror php-@option.InstallerVersion@.tar.bz2
         ls -l 
+        # 
+        echo " - - - - - - - - - - - Getting Memory Caching sources ..."
+        wget https://launchpad.net/libmemcached/1.0/1.0.9/+download/libmemcached-1.0.9.tar.gz    2> /dev/null
+        wget http://pecl.php.net/get/memcached    2> /dev/null
+        mv memcached memcached-2.0.1.tgz
+        wget http://pecl.php.net/get/APC-3.1.9.tgz    2> /dev/null
         # 
         popd 
         echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..." 
@@ -33,7 +39,7 @@
         #! /bin/bash  
         # 
         echo " - - - - - - - - - - - Resolve dependencies" 
-        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg62-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev bison re2c
+        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg8-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev bison re2c automake libtool libevent-dev
         # 
         echo " - - - - - - - - - - - Step into @option.BuildDirectory@ >>>>>"  
         pushd @option.BuildDirectory@ 
@@ -54,12 +60,15 @@
         # 
         echo ">> >> - - - - - - - - - - - Configure PHP make for this machine." 
         echo "Will configure for Joomla &/or Drupal : @option.BuildForCMS@"
+        #  for PHP 5.2.17 ----> declare GENERAL_SWITCHES="--prefix=/usr/local/php5 --enable-fpm --enable-gd-native-ttf --enable-inline-optimization --enable-mbstring=all --enable-mbregex --enable-pcntl --enable-pdo --enable-sockets --enable-sysvsem --enable-sysvshm --enable-xml --enable-zip --with-bz2 --with-curl --with-curlwrappers --with-freetype-dir=/usr/lib --with-gd --with-jpeg-dir=/usr/lib --with-libdir=lib64 --with-mcrypt --with-mhash --with-openssl --with-pcre-regex --with-pic --with-png-dir=/usr/lib --with-xsl --with-zlib"
+
         declare GENERAL_SWITCHES="--prefix=/usr/local/php5 --with-mcrypt --with-mhash --with-zlib --with-curl --with-curlwrappers --enable-mbstring=all --with-gd --enable-gd-native-ttf --with-libdir=lib64 --with-jpeg-dir=/usr/lib --enable-fpm --with-openssl"
         declare CMS_SWITCHES=""
         if [  "XX@option.BuildForCMS@" == "XXtrue"   ]; then
           CMS_SWITCHES="--with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --disable-cgi --with-ttf  --enable-magic-quotes --with-pdo-mysql"
         fi
         #
+        autoconf
         ./configure \$GENERAL_SWITCHES \$CMS_SWITCHES;
         #
         echo ">> >> - - - - - - - - - - - Make PHP."
@@ -70,11 +79,38 @@
         #
         echo ">> >> - - - - - - - - - - - Provide an ini file for PHP."
         cp php.ini-production /usr/local/php5/lib/php.ini
-
-
         # 
         echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/php5 <<<<<"  
         popd 
+        # 
+        echo ">>  - - - - - - - - - - - Expanding Memory Caching sources ..."
+        tar xvfz @option.InstallersRepository@/libmemcached-1.0.9.tar.gz  >/dev/null 2>&1
+        tar xvfz @option.InstallersRepository@/memcached-2.0.1.tgz  >/dev/null 2>&1
+        tar xvfz @option.InstallersRepository@/APC-3.1.9.tgz  >/dev/null 2>&1
+        # 
+        echo ">>  - - - - - - - - - - - Build libmemcached ..."
+        pushd libmemcached-1.0.9
+        ./config/autorun.sh
+        ./configure
+        make
+        make install
+        popd
+        # 
+        echo ">>  - - - - - - - - - - - Build Memcached ..."
+        pushd memcached-2.0.1
+        /usr/local/php5/bin/phpize
+        ./configure --with-php-config=/usr/local/php5/bin/php-config
+        make
+        make install
+        popd
+        # 
+        echo ">>  - - - - - - - - - - - Build APC ..."
+        pushd APC-3.1.9
+        /usr/local/php5/bin/phpize
+        ./configure  --enable-apc --enable-apc-mmap  --with-php-config=/usr/local/php5/bin/php-config
+        make
+        make install
+        popd
         # 
         echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
         popd 
@@ -91,6 +127,37 @@
         #
         echo ">> - - - - - - - - - - - Step out of /etc/init.d <<<<<"  
         popd
+
+
+        # 
+        echo ">>  - - - - - - - - - - - Patch the php.ini file ..."
+        pushd /usr/local/php5/lib
+        #
+        cat > php.ini-production.patch <<EOPF
+        --- php.ini      2012-07-18 00:26:19.000000000 +0400
+        +++ php.ini.new  2012-07-18 00:45:22.000000000 +0400
+        @@ -839,6 +840,11 @@
+         ; Dynamic Extensions ;
+         ;;;;;;;;;;;;;;;;;;;;;;
+         
+        +
+        +extension=apc.so
+        +extension=memcached.so
+        +
+        +
+         ; If you wish to have an extension loaded automatically, use the following
+         ; syntax:
+         ;
+        EOPF
+        #
+        mv php.ini php.ini.orig
+        cp ../../src/php-5.4.4/php.ini-production php.ini
+        patch < php.ini-production.patch
+        # 
+        echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
+        popd 
+
+
         #
         echo " = = = = = = = = = = = Done. PHP should now be part of your system." 
         EOF
@@ -122,11 +189,11 @@
     InstallerURL:
       required: true
       description: The place to get it from
-      value: http://ro1.php.net/get/php-5.4.3.tar.bz2/from/us2.php.net/mirror
+      value: http://us.php.net/distributions/php-5.4.4.tar.bz2
     InstallerVersion:
       required: true
       description: The version to obtain.
-      value: 5.4.3
+      value: 5.4.4
     InstallersRepository:
       required: true
       description: Where we keep the original download
