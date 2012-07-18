@@ -5,21 +5,18 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: 'echo "   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   ="  '
-    - jobref:
-        group: net/fleetingclouds/initial
-        name: BasicGeneralInitialConfigurations
-        args: '-Host ${option.Host}  -PurgeApache ${option.PurgeApache}  -sudoPwdRunDeck
-          ${option.sudoPwdRunDeck}  '
+    - exec: 'echo "   =   =   =   =   =   =   =   =  !!  =   =   =   =   =   =   =   =   =   =   =   ="  '
     - jobref:
         group: net/fleetingclouds/install/nginx
-        name: PrepareNGinx
-        args: '-BuildDirectory ${option.BuildDirectory}  -InstallerVersion ${option.InstallerVersion}  -InstallersRepository
-          ${option.InstallersRepository}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}  '
+        name: PrepareNGinxVirtualHost
+        args: -TargetDirectory /etc/nginx/${option.VirtualHostDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.VirtualHostDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}
     - exec: 'echo "   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   =   ="  '
+    - jobref:
+        group: net/fleetingclouds/install
+        name: InstallNginx
   description: |-
-    This installs frapi.
-    http://getfrapi.com/
+    This installs FRAPI!
+    Obtained from : http://getfrapi.com/
   name: InstallFrapi
   uuid: net.fleetingclouds.install.frapi
   nodefilters:
@@ -36,6 +33,14 @@
       required: true
       description: Where programs are built.
       value: ~/build
+    CountryCode:
+      required: true
+      description: Certificate country code
+      value: ec
+    Email:
+      required: true
+      description: Certificate Email
+      value: martin
     Host:
       required: true
       description: the host we are installing to
@@ -46,10 +51,30 @@
     InstallersRepository:
       required: true
       value: ~/installers
+    Organization:
+      required: true
+      description: Certificate organization
+      value: Just Trade
+    OrganizationUnit:
+      required: true
+      description: Certificate Organization Unit
+      value: rCredits
     PurgeApache:
       required: true
       description: yes or no to purge Apache
       value: 'yes'
+    StateProvCode:
+      required: true
+      description: Certificate regional code
+      value: MA
+    Town:
+      required: true
+      description: Certificate Town Name
+      value: Andover
+    VirtualHostDomainName:
+      required: true
+      description: This is the name for the virtual host
+      value: cgf.justtrade.net
     sudoPwdRunDeck:
       required: true
       description: The password the script must use for sudo steps.
