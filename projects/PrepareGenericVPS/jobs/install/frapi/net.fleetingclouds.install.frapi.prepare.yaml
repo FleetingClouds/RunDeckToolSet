@@ -1,0 +1,201 @@
+- id: net.fleetingclouds.install.frapi.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+        #
+        echo  @option.InstallersRepository@
+        mkdir -p  @option.InstallersRepository@
+        mkdir -p  @option.BuildDirectory@
+        #
+        pushd @option.InstallersRepository@
+        echo "Stepped into ..."
+        pwd
+        #
+        echo "Getting zipp'd source ..." 
+        rm -fr master*
+        wget https://github.com/frapi/frapi/zipball/master
+        popd
+        #
+        echo "Step into the build directory"  
+        pushd @option.BuildDirectory@  
+        # 
+        echo "Remove any prior installation"
+        rm -fr frapi*
+        # 
+        echo "Unzip the downloaded file" 
+        unzip  @option.InstallersRepository@/master
+        mv frapi* frapi
+        #
+        popd
+        #
+        usermod -a -G www-data rundeck
+        chown -R rundeck.www-data @option.BuildDirectory@
+        #
+        echo "Step into the frapi directory"  
+        pushd @option.BuildDirectory@/frapi
+        pwd
+        #
+        chmod 775 ./src/frapi/custom/Action
+        chmod 775 ./src/frapi/custom/Config
+        chmod 664 ./src/frapi/custom/Config/*.xml
+        mkdir -p logs/@option.ServerName@
+        #
+        popd
+        #
+        echo "Done."
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: rm -f ./mkConf.sh
+    - script: |-
+        cat > mkConf.sh <<EOF
+        #!/bin/bash
+        #
+         declare SERVER_NAME=\$1 
+         declare ADMIN_PATH=\$2
+         # 
+         cat > \${SERVER_NAME}.conf <<EOFCONF
+         server {
+            listen   80;
+            listen 443 ssl;
+
+            server_name  \${SERVER_NAME};
+
+            ssl_certificate /etc/nginx/\${SERVER_NAME}/web.pem;
+            ssl_certificate_key /etc/nginx/\${SERVER_NAME}/web.key;
+
+            access_log  @option.BuildDirectory@/frapi/logs/\${SERVER_NAME}/access.log;
+            error_log  @option.BuildDirectory@/frapi/logs/\${SERVER_NAME}/error.log;
+
+            root   @option.BuildDirectory@/frapi/src/frapi/\${ADMIN_PATH}public;
+            index index.php;
+
+            location / {
+               try_files \\\$uri \\\$uri/ @api;
+            }
+
+            location @api {
+               rewrite ^/(.*)$ /index.php?\\\$1 last;
+            }
+
+            location ~ \.php$ {
+               fastcgi_pass   127.0.0.1:9000;
+               fastcgi_index  index.php;
+               fastcgi_param  SCRIPT_FILENAME  @option.BuildDirectory@/frapi/src/frapi/\${ADMIN_PATH}public/\\\$fastcgi_script_name;
+               include fastcgi_params;
+            }
+         }
+        EOFCONF
+        #
+        echo "Done."
+        EOF
+        # 
+        chmod a+x mkConf.sh
+    - exec: sudo ./mkConf.sh
+    - exec: rm -f ./tmp.sh
+    - script: |-
+        cat > tmp.sh <<EOF
+        #!/bin/bash
+        #
+        echo ". . . . . . Create a Virtual Host for the administrator."
+        ./mkConf.sh @option.AdminServerName@ admin/
+        mkdir -p @option.BuildDirectory@/frapi/logs/@option.AdminServerName@;
+        #
+        echo ". . . . . . Create a Virtual Host for the users."
+        ./mkConf.sh @option.ApiServerName@
+        mkdir -p @option.BuildDirectory@/frapi/logs/@option.ApiServerName@;
+        #
+        echo ". . . . . . Move them to /etc/nginx/sites-available"
+        rm -f /etc/nginx/sites-available/@option.AdminServerName@.conf
+        rm -f /etc/nginx/sites-available/@option.ApiServerName@.conf
+        mv @option.AdminServerName@.conf /etc/nginx/sites-available
+        mv @option.ApiServerName@.conf /etc/nginx/sites-available
+        pushd /etc/nginx/sites-enabled
+        rm -f @option.AdminServerName@
+        rm -f @option.ApiServerName@
+        ln -s ../sites-available/@option.AdminServerName@.conf @option.AdminServerName@
+        ln -s ../sites-available/@option.ApiServerName@.conf @option.ApiServerName@
+        popd
+        #
+        echo "Done."
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareSSL_Certificate
+        args: -TargetDirectory /etc/nginx/${option.AdminServerName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.AdminServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - jobref:
+        group: net/fleetingclouds/install/openssl
+        name: PrepareSSL_Certificate
+        args: -TargetDirectory /etc/nginx/${option.ApiServerName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ApiServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: sudo /etc/init.d/php-fastcgi restart
+    - exec: sudo /etc/init.d/nginx restart
+    - exec: echo " - - - End."
+  description: '    - exec: # sudo apt-get -y update '
+  name: PrepareFrapi
+  uuid: net.fleetingclouds.install.frapi.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/install/frapi
+  options:
+    AdminServerName:
+      required: true
+      description: Certificate Server Name
+      value: fradm.cgf.justtrade.net
+    ApiServerName:
+      required: true
+      description: Certificate Server Name
+      value: frapi.cgf.justtrade.net
+    BuildDirectory:
+      required: true
+      description: The directory MySql will be installed to.
+      value: /var/www
+    CountryCode:
+      required: true
+      description: Certificate country code
+      value: us
+    Email:
+      required: true
+      description: Certificate Email
+      value: trudy_cool@yahoo.com
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    Organization:
+      required: true
+      description: Certificate organization
+      value: Just Trade
+    OrganizationUnit:
+      required: true
+      description: Certificate Organization Unit
+      value: rCredits
+    StateProvCode:
+      required: true
+      description: Certificate regional code
+      value: MA
+    Town:
+      required: true
+      description: Certificate Town Name
+      value: Andover
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
