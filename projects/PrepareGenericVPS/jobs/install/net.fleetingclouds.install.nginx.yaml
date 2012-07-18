@@ -79,11 +79,11 @@
     PHP_InstallerURL:
       required: true
       description: The place to get it from
-      value: http://ro1.php.net/get/php-5.4.3.tar.bz2/from/us2.php.net/mirror
+      value: http://us.php.net/distributions/php-5.4.4.tar.bz2
     PHP_InstallerVersion:
       required: true
       description: The version to obtain.
-      value: 5.4.3
+      value: 5.4.4
     ServerName:
       required: true
       description: Certificate Server Name
