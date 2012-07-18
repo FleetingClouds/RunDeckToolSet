@@ -6,7 +6,7 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: sudo apt-get -y install libpcre3  libpcre3-dev libssl-dev
+    - exec: sudo apt-get -y install libpcre3  libpcre3-dev libssl-dev libxslt1-dev libxml2
     - script: |-
         #!/bin/bash
         #
@@ -34,7 +34,9 @@
         cd nginx
         #
         echo "Building it ..."
-        ./configure --with-http_ssl_module --sbin-path=/usr/local/sbin
+        # ./configure --with-http_ssl_module --sbin-path=/usr/local/sbin 
+        ./configure --with-http_ssl_module --sbin-path=/usr/local/sbin --with-ipv6 --with-pcre --with-md5-asm --with-sha1-asm --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module
+        # --with-http_image_filter_module 
         make
     - exec: rm -f ./tmp.sh
     - script: |-
