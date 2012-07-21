@@ -90,7 +90,12 @@
             echo "Done. NGinx should now be part of your system.";
             exit 0
         fi
-
+        #
+        echo Fiddle permissions and things.
+        usermod -a -G www-data rundeck
+        chown -R www-data:www-data /srv/www/vhosts/cgf.justtrade.net/www
+        chmod -R ug+rw /srv/www/vhosts/cgf.justtrade.net/www
+        #
         echo Done. NGinx should now be part of your system.
         EOF
 
