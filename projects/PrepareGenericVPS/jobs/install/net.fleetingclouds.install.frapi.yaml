@@ -40,7 +40,7 @@
     Email:
       required: true
       description: Certificate Email
-      value: martin
+      value: alicia.factorepo@gmail.com
     Host:
       required: true
       description: the host we are installing to
