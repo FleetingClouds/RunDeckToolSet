@@ -20,8 +20,8 @@
         pwd
         #
         echo "Getting zipp'd source ..." 
-        rm -fr master*
-        wget https://github.com/frapi/frapi/zipball/master
+        rm -fr frapi*
+        wget http://cloud.github.com/downloads/frapi/frapi/frapi-@option.InstallerVersion@.zip
         popd
         #
         echo "Step into the build directory"  
@@ -31,8 +31,7 @@
         rm -fr frapi*
         # 
         echo "Unzip the downloaded file" 
-        unzip  @option.InstallersRepository@/master
-        mv frapi* frapi
+        unzip  @option.InstallersRepository@/frapi-@option.InstallerVersion@.zip
         #
         popd
         #
@@ -46,6 +45,7 @@
         chmod 775 ./src/frapi/custom/Action
         chmod 775 ./src/frapi/custom/Config
         chmod 664 ./src/frapi/custom/Config/*.xml
+        # */
         mkdir -p logs/@option.ServerName@
         #
         popd
@@ -175,6 +175,9 @@
       required: true
       description: Certificate Email
       value: trudy_cool@yahoo.com
+    InstallerVersion:
+      required: true
+      value: 0.1.1
     InstallersRepository:
       required: true
       value: ~/installers
