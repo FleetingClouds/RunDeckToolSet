@@ -1,0 +1,64 @@
+- id: net.fleetingclouds.install.rstudio.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: rm -f ./tmp.sh
+    - script: |
+        #! /bin/bash  
+        cat > tmp.sh <<EOF
+        #! /bin/bash  
+        #
+        echo "Get RStudio apt repository from a mirror"
+        pushd /etc/apt/sources.list.d/
+        rm -f rstudio.list
+        cat > rstudio.list << EOFRSTD
+        deb http://cran.stat.ucla.edu/bin/linux/ubuntu natty/
+        EOFRSTD
+        popd
+        #
+        apt-get update
+        apt-get -f -y install
+        apt-get --force-yes -y install r-base
+        #
+        cd  @option.InstallersRepository@
+        #
+        echo "Getting debian package ..."  
+        wget http://download2.rstudio.org/rstudio-server-0.96.316-amd64.deb
+        # 
+        echo "Got package installer. Now run it." 
+        dpkg -i rstudio-server-0.96.316-amd64.deb
+        #
+        echo "Done."
+        #
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: ''
+  name: PrepareRStudio
+  uuid: net.fleetingclouds.install.rstudio.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/install/rstudio
+  options:
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
