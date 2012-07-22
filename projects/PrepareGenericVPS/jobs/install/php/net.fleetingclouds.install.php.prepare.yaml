@@ -28,7 +28,7 @@
         wget https://launchpad.net/libmemcached/1.0/1.0.9/+download/libmemcached-1.0.9.tar.gz    2> /dev/null
         wget http://pecl.php.net/get/memcached    2> /dev/null
         mv memcached memcached-2.0.1.tgz
-        wget http://pecl.php.net/get/APC-3.1.9.tgz    2> /dev/null
+        wget http://pecl.php.net/get/APC-3.1.11.tgz    2> /dev/null
         # 
         popd 
         echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..." 
@@ -87,7 +87,7 @@
         echo ">>  - - - - - - - - - - - Expanding Memory Caching sources ..."
         tar xvfz @option.InstallersRepository@/libmemcached-1.0.9.tar.gz  >/dev/null 2>&1
         tar xvfz @option.InstallersRepository@/memcached-2.0.1.tgz  >/dev/null 2>&1
-        tar xvfz @option.InstallersRepository@/APC-3.1.9.tgz  >/dev/null 2>&1
+        tar xvfz @option.InstallersRepository@/APC-3.1.11.tgz  >/dev/null 2>&1
         # 
         echo ">>  - - - - - - - - - - - Build libmemcached ..."
         pushd libmemcached-1.0.9
@@ -106,7 +106,7 @@
         popd
         # 
         echo ">>  - - - - - - - - - - - Build APC ..."
-        pushd APC-3.1.9
+        pushd APC-3.1.11
         /usr/local/php5/bin/phpize
         ./configure  --enable-apc --enable-apc-mmap  --with-php-config=/usr/local/php5/bin/php-config
         make
