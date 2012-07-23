@@ -152,7 +152,7 @@
         EOPF
         #
         mv php.ini php.ini.orig
-        cp ../../src/php-5.4.4/php.ini-production php.ini
+        cp ../../src/php-@option.InstallerVersion@/php.ini-production php.ini
         patch < php.ini-production.patch
         # 
         echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
@@ -196,7 +196,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/install/php
   options:
     BuildDirectory:
@@ -210,11 +210,10 @@
     InstallerURL:
       required: true
       description: The place to get it from
-      value: http://us.php.net/distributions/php-5.4.4.tar.bz2
+      value: http://us.php.net/distributions/php-XXXXX.tar.bz2
     InstallerVersion:
       required: true
       description: The version to obtain.
-      value: 5.4.4
     InstallersRepository:
       required: true
       description: Where we keep the original download
@@ -222,5 +221,4 @@
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true
