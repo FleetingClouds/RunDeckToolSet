@@ -83,13 +83,12 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/initial
   options:
     Host:
       required: true
       description: the host where the file should go
-      value: cgf.justtrade.net
     PurgeApache:
       required: true
       description: yes or no to purge Apache

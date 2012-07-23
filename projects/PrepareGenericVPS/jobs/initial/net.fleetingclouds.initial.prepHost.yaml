@@ -9,16 +9,16 @@
     - jobref:
         group: net/fleetingclouds/initial
         name: Push RunDeck public key to host
-        args: -FingerPrint ${option.FingerPrint} -Host ${option.Host} -Password ${option.Password} -User ${option.User}
+        args: -FingerPrint ${option.FingerPrint} -Host ${option.RemoteHost} -Password ${option.Password} -User ${option.User}
     - exec: echo " . . . .  . . . .  . . . . Run Second Step  . . . .  . . . .  . . . .  . . . . "
     - jobref:
         group: net/fleetingclouds/initial
         name: CreateAdminUsers
-        args: -Host ${option.Host} -User ${option.User}
+        args: -Host ${option.RemoteHost} -User ${option.User}
     - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
     - script: |-
         cat > ./fixSSH.sh <<-EOF
-        declare HOST=@option.Host@
+        declare HOST=@option.RemoteHost@
         echo \$HOST 
         declare IP_ADDR=\`echo \$HOST | nslookup | grep Address | sed '1,1d' | sed s/Address://g\`
         echo \$IP_ADDR
@@ -68,13 +68,15 @@
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
       value: 20:2b:2c:93:b6:06:cd:28:00:42:2b:d5:fe:b4:9b:b2
-    Host:
-      required: true
-      description: This is a host that RunDeck will be accessing in the future.
-      value: cgf.justtrade.net
     Password:
+      required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
       value: rFqTV50n5pbOjs0vM8py
+    RemoteHost:
+      enforced: true
+      required: true
+      description: This is a host that RunDeck will be accessing in the future.
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta/nodeNames.json
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'

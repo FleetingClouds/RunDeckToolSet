@@ -21,7 +21,6 @@
     Host:
       required: true
       description: the host where the file should go
-      value: mol.fleetingclouds.net
     ProjectsPath:
       required: true
       description: 'The root directory of scripts and jobs '

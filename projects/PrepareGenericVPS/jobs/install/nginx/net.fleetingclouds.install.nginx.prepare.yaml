@@ -113,7 +113,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/install/nginx
   options:
     BuildDirectory:
@@ -129,5 +129,4 @@
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true
