@@ -49,7 +49,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/global
   options:
     sudoPwdRunDeck:

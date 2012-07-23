@@ -38,7 +38,6 @@
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: mol.fleetingclouds.net
     ProjectsPath:
       required: true
       value: /home/yourself/dev/RunDeckToolSet/projects
