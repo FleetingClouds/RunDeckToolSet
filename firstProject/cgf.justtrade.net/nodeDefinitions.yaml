@@ -1,0 +1,45 @@
+localhost:
+  description: Gateway for fleetingclouds.net
+  hostname: localhost
+  nodename: localhost
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: rundeck
+  myProperty: CanWeSeeThisFromOurScripts
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+
+currentFocus:
+  description: Host for Common Good Finance R-Credits
+  hostname: cgf.justtrade.net
+  nodename: cgf.justtrade.net
+  osArch: x86_64
+  osFamily: unix
+  osName: GNU/Linux
+  osVersion: 2.6.32-042stab039.10
+  tags: ''
+  username: rundeck
+  sudo-command-enabled: "true"
+  sudo-password-option: option.sudoPwdRunDeck
+  sudo-response-max-timeout: "60000"
+  sudo-prompt-max-timeout: "60000"
+  myProperty: The current focus is on www.fleetingclouds.net
+  BuildDirectory: ~/build
+  BuildForCMS: 'no'
+  Town: Andover
+  CountryCode: us
+  StateProvCode: MA
+  Email: trudy_cool@yahoo.com
+  InstallerVersion: 1.1.2
+  InstallersRepository: ~/installers
+  Organization: Fleeting Clouds
+  OrganizationUnit: Dev Ops
+  PHP_BuildDirectory: /usr/local/src
+  PHP_InstallerURL: http://us.php.net/distributions/php-5.3.15.tar.bz2
+  PHP_InstallerVersion: 5.3.15
+  ServerName: cgf.justtrade.net
+
+
