@@ -1,0 +1,27 @@
+- id: net.fleetingclouds.manage.joomla.akeeba.order
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "Order a new backup with HTTP command."
+    - exec: wget -O result --max-redirect=10000 "http://${option.Host}/index.php?option=com_akeeba\&view=backup\&key=${option.Secret}"
+    - exec: echo " - - - End."
+  description: This job collects a Joomla site backup from RunDeck's home directory on the remote server.
+  name: OrderBackup
+  uuid: net.fleetingclouds.manage.joomla.akeeba.order
+  group: net/fleetingclouds/manage/joomla/akeeba
+  options:
+    Host:
+      required: true
+      value: mol.fleetingclouds.net
+    Secret:
+      required: true
+      value: chooseapill
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
