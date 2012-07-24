@@ -76,7 +76,7 @@
       enforced: true
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta/nodeNames.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
