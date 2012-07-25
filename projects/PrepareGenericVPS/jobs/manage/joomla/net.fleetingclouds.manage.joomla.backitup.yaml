@@ -1,0 +1,68 @@
+- id: net.fleetingclouds.manage.joomla.backitup
+  project: PrepareGenericVPS
+  schedule:
+    time:
+      hour: '04'
+      minute: '00'
+      seconds: '0'
+    month: '*'
+    year: '*'
+    weekday:
+      day: '*'
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "Order the backup to happen."
+    - jobref:
+        group: net/fleetingclouds/manage/joomla/akeeba
+        name: OrderBackup
+        args: -Secret ${node.AkeebaSecret} -Host ${option.JoomlaHost}
+    - exec: echo "Move the backup file out of the Joomla directories."
+    - jobref:
+        group: net/fleetingclouds/manage/joomla/akeeba
+        name: MoveBackupToArchive
+        args: -BackupFilename ${option.BackupFilename} -BackupsRepository ${option.BackupsRepository} -SourceDirectory ${option.SourceDirectory}
+    - exec: echo "Transfer the file over to the alternate server."
+    - jobref:
+        group: net/fleetingclouds/manage/joomla/akeeba
+        name: MoveBackupOffSite
+        args: -DestinationHost ${option.DestinationHost} -SourceDirectory ${option.BackupsRepository}
+    - exec: echo " - - - End."
+  description: This job calls Akeeba Backups sub-tasks, to completely secure a backup copy of a Joomla site.
+  name: PerformBackupSequence
+  uuid: net.fleetingclouds.manage.joomla.backitup
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/manage/joomla
+  options:
+    BackupFilename:
+      required: true
+      value: site-*.jpa
+    BackupsRepository:
+      required: true
+      value: ~/backups_repository
+    DestinationHost:
+      required: true
+      value: matrixoflife.org
+    JoomlaHost:
+      required: true
+      value: mol.fleetingclouds.net
+    SourceDirectory:
+      required: true
+      description: 'The directory where the file should be deposited:  Root directory
+        of Joomla!'
+      value: /usr/local/apache/htdocs/administrator/components/com_akeeba/backup
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true

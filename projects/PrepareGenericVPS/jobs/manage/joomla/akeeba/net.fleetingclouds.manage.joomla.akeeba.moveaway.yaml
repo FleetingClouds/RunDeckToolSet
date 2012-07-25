@@ -7,27 +7,47 @@
     commands:
     - exec: echo " Start - - - "
     - exec: echo "Will copy the latest backup file over to " ${option.DestinationHost}
-    - exec: ls -l ${option.SourceDirectory}
+    - exec: ls -lr ${option.SourceDirectory}
     - script: |+
         #! /bin/bash
         #
-        echo " - - - - - - Preparing temporary script file tmp.sh in directory ..."
-        [  ! -f .netrc  ] || [ 1 -gt `grep -c 453 .netrc` ] && cat >> .netrc <<EOF
+        echo " - - - - - - Make sure ftp has a credentials file ..."
+        [  ! -f .netrc  ] || [ 1 -gt `grep -c @option.DestinationHost@ .netrc` ] && cat >> .netrc <<EOF
         machine matrixoflife.org login matrixoflife password Water454
         EOF
         #
+        echo " - - - - - - Make sure ftp's credentials file is secured ..."
         chmod 600 .netrc
         #
+        echo " - - - - - - Step into back ups directory >>>>"
         pushd @option.SourceDirectory@
-        declare LATEST_FILE=`find . -type f -iname $(ls -r site* | head -1)`
-        echo "Will move the file [ " ${LATEST_FILE} " ] to @option.DestinationHost@ using key @option.Secret@"
+        echo ">> Discover file to be moved ... "
         #
+        declare NUMBER_OF_BACKUP_FILES=`ls ./site-*.jpa | wc -l`
+        echo "Number of files to choose from " ${NUMBER_OF_BACKUP_FILES}
+        if [  1 -gt ${NUMBER_OF_BACKUP_FILES}  ]; then
+           echo ">> Found no file to move."
+        else
+           declare LATEST_FILE=`find . -type f -iname $(ls -r site* | head -1)`
+           #
+           echo ">> Will move the file [ " ${LATEST_FILE} " ] " to @option.DestinationHost@
         ftp @option.DestinationHost@ <<EOF
         put ${LATEST_FILE}
         exit
         EOF
+           #
+           echo ">> FTP seems to have succeeded"
+           #
+           echo ">> Move it to directory of files that have already been processed."
+           mkdir -p ./already_processed
+           mv ${LATEST_FILE} ./already_processed
         #
+        fi
+        #
+        echo " - - - - - - Step back out of back ups directory <<<< "
         popd
+        #
+        echo "= = = Done.  = = = "
 
     - exec: echo " - - - End."
     - exec: cat .netrc
@@ -47,12 +67,9 @@
     DestinationHost:
       required: true
       value: matrixoflife.org
-    Secret:
-      required: true
-      value: chooseapill
     SourceDirectory:
       required: true
-      value: joobkps
+      value: ~/backups_repository
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password

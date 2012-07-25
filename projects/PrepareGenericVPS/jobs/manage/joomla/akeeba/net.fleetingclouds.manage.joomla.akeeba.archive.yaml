@@ -7,7 +7,8 @@
     commands:
     - exec: echo " Start - - - "
     - exec: echo "Move file to RunDeck home directory to be picked up later via scp."
-    - exec: sudo mv ${option.SourceDirectory}/${option.BackupFilename} ~
+    - exec: mkdir -p ${option.BackupsRepository}
+    - exec: sudo mv ${option.SourceDirectory}/${option.BackupFilename} ${option.BackupsRepository}
     - exec: echo " - - - End."
   description: This job moves a Joomla site backup to the home directory of RunDeck.
   name: MoveBackupToArchive
@@ -24,6 +25,10 @@
   options:
     BackupFilename:
       required: true
+      value: site-*.jpa
+    BackupsRepository:
+      required: true
+      value: ~/backups_repository
     SourceDirectory:
       required: true
       description: 'The directory where the file should be deposited:  Root directory
