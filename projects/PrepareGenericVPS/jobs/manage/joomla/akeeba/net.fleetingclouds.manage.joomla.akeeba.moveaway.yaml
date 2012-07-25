@@ -1,0 +1,60 @@
+- id: net.fleetingclouds.manage.joomla.akeeba.moveaway
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "Will copy the latest backup file over to " ${option.DestinationHost}
+    - exec: ls -l ${option.SourceDirectory}
+    - script: |+
+        #! /bin/bash
+        #
+        echo " - - - - - - Preparing temporary script file tmp.sh in directory ..."
+        [  ! -f .netrc  ] || [ 1 -gt `grep -c 453 .netrc` ] && cat >> .netrc <<EOF
+        machine matrixoflife.org login matrixoflife password Water454
+        EOF
+        #
+        chmod 600 .netrc
+        #
+        pushd @option.SourceDirectory@
+        declare LATEST_FILE=`find . -type f -iname $(ls -r site* | head -1)`
+        echo "Will move the file [ " ${LATEST_FILE} " ] to @option.DestinationHost@ using key @option.Secret@"
+        #
+        ftp @option.DestinationHost@ <<EOF
+        put ${LATEST_FILE}
+        exit
+        EOF
+        #
+        popd
+
+    - exec: echo " - - - End."
+    - exec: cat .netrc
+  description: This job collects a Joomla site backup from RunDeck's home directory on the remote server.
+  name: MoveBackupOffSite
+  uuid: net.fleetingclouds.manage.joomla.akeeba.moveaway
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/manage/joomla/akeeba
+  options:
+    DestinationHost:
+      required: true
+      value: matrixoflife.org
+    Secret:
+      required: true
+      value: chooseapill
+    SourceDirectory:
+      required: true
+      value: joobkps
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: okmmpl,,
+      secure: true
