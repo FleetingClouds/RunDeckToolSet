@@ -107,23 +107,23 @@
         #!/bin/bash
         #
         echo ". . . . . . Create a Virtual Host for the administrator."
-        ./mkConf.sh @option.AdminServerName@ admin/
-        mkdir -p @option.BuildDirectory@/frapi/logs/@option.AdminServerName@;
+        ./mkConf.sh @option.AdminServerName@.@option.BaseDomainName@ admin/
+        mkdir -p @option.BuildDirectory@/frapi/logs/@option.AdminServerName@.@option.BaseDomainName@;
         #
         echo ". . . . . . Create a Virtual Host for the users."
-        ./mkConf.sh @option.ApiServerName@
-        mkdir -p @option.BuildDirectory@/frapi/logs/@option.ApiServerName@;
+        ./mkConf.sh @option.ApiServerName@.@option.BaseDomainName@
+        mkdir -p @option.BuildDirectory@/frapi/logs/@option.ApiServerName@.@option.BaseDomainName@;
         #
         echo ". . . . . . Move them to /etc/nginx/sites-available"
-        rm -f /etc/nginx/sites-available/@option.AdminServerName@.conf
-        rm -f /etc/nginx/sites-available/@option.ApiServerName@.conf
-        mv @option.AdminServerName@.conf /etc/nginx/sites-available
-        mv @option.ApiServerName@.conf /etc/nginx/sites-available
+        rm -f /etc/nginx/sites-available/@option.AdminServerName@.@option.BaseDomainName@.conf
+        rm -f /etc/nginx/sites-available/@option.ApiServerName@.@option.BaseDomainName@.conf
+        mv @option.AdminServerName@.@option.BaseDomainName@.conf /etc/nginx/sites-available
+        mv @option.ApiServerName@.@option.BaseDomainName@.conf /etc/nginx/sites-available
         pushd /etc/nginx/sites-enabled
-        rm -f @option.AdminServerName@
-        rm -f @option.ApiServerName@
-        ln -s ../sites-available/@option.AdminServerName@.conf @option.AdminServerName@
-        ln -s ../sites-available/@option.ApiServerName@.conf @option.ApiServerName@
+        rm -f @option.AdminServerName@.@option.BaseDomainName@
+        rm -f @option.ApiServerName@.@option.BaseDomainName@
+        ln -s ../sites-available/@option.AdminServerName@.@option.BaseDomainName@.conf @option.AdminServerName@.@option.BaseDomainName@
+        ln -s ../sites-available/@option.ApiServerName@.@option.BaseDomainName@.conf @option.ApiServerName@.@option.BaseDomainName@
         popd
         #
         echo "Done."
@@ -134,11 +134,11 @@
     - jobref:
         group: net/fleetingclouds/install/openssl
         name: PrepareSSL_Certificate
-        args: -TargetDirectory /etc/nginx/${option.AdminServerName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.AdminServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -TargetDirectory /etc/nginx/${option.AdminServerName}.${option.BaseDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.AdminServerName}.${option.BaseDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/openssl
         name: PrepareSSL_Certificate
-        args: -TargetDirectory /etc/nginx/${option.ApiServerName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ApiServerName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -TargetDirectory /etc/nginx/${option.ApiServerName}.${option.BaseDomainName} -CountryCode ${option.CountryCode}  -Email ${option.Email}  -Organization ${option.Organization}  -OrganizationUnit ${option.OrganizationUnit}  -ServerName ${option.ApiServerName}.${option.BaseDomainName}  -StateProvCode ${option.StateProvCode}  -Town ${option.Town}  -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: sudo /etc/init.d/php-fastcgi restart
     - exec: sudo /etc/init.d/nginx restart
     - exec: echo " - - - End."
@@ -158,11 +158,14 @@
     AdminServerName:
       required: true
       description: Certificate Server Name
-      value: fradm.cgf.justtrade.net
+      value: fradm
     ApiServerName:
       required: true
       description: Certificate Server Name
-      value: frapi.cgf.justtrade.net
+      value: frapi
+    BaseDomainName:
+      required: true
+      value: meta.fleetingclouds.net
     BuildDirectory:
       required: true
       description: The directory MySql will be installed to.
