@@ -1,0 +1,69 @@
+- id: net.fleetingclouds.test.phpextension
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "... Start rebuilding Open Transaction PHP extension"
+    - exec: mkdir -p ~/projects
+    - script: |-
+        #! /bin/bash
+        #
+        echo " - - - - - - - - - - - Preparing temporary script file tmp.sh in directory ..." 
+        pwd 
+        # 
+        rm -fr tmp.sh 
+        cat > tmp.sh <<EOF 
+        #! /bin/bash  
+        # 
+        echo "   - -   PATH is " $PATH
+        # aptitude install -y git-core
+        pushd ~/projects
+        if [ -d "OT_PHP_Ext" ]; then
+            echo "Already cloned, so pull."
+            pushd OT_PHP_Ext
+            git pull
+        else
+            echo "First run, so clone."
+            git clone git://github.com/FleetingClouds/OT_PHP_Ext.git
+            pushd OT_PHP_Ext
+        fi
+        #
+        /usr/local/php5/bin/phpize
+        #
+        ./configure --with-php-config=/usr/local/php5/bin/php-config
+        #
+        make
+        #
+        make install
+        #
+        popd
+        #
+        chown -R rundeck:rundeck OT_PHP_Ext
+        chmod -R ug+rw OT_PHP_Ext
+        popd 
+        #
+        echo " - - - - - - - - - - - tmp script has been executed." 
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo "... Finished rebuilding Open Transaction PHP extension"
+  description: This build and tests a PHP extension.
+  name: TestPhpExtension
+  uuid: net.fleetingclouds.test.phpextension
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/test
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
