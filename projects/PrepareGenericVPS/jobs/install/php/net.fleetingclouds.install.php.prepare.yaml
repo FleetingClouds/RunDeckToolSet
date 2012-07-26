@@ -135,23 +135,21 @@
         pushd /usr/local/php5/lib
         #
         cat > php.ini-production.patch <<EOPF
-        --- php.ini      2012-07-18 00:26:19.000000000 +0400
-        +++ php.ini.new  2012-07-18 00:45:22.000000000 +0400
-        @@ -839,6 +840,11 @@
+        --- php.ini     2012-07-23 18:28:35.000000000 +0400
+        +++ php.ini.new 2012-07-23 23:44:52.000000000 +0400
+        @@ -839,6 +839,9 @@
          ; Dynamic Extensions ;
          ;;;;;;;;;;;;;;;;;;;;;;
          
-        +
         +extension=apc.so
         +extension=memcached.so
-        +
         +
          ; If you wish to have an extension loaded automatically, use the following
          ; syntax:
          ;
         EOPF
         #
-        mv php.ini php.ini.orig
+        [ -f php.ini ] && mv php.ini php.ini.orig
         cp ../../src/php-@option.InstallerVersion@/php.ini-production php.ini
         patch < php.ini-production.patch
         # 
