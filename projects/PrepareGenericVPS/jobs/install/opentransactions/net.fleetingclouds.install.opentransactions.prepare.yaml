@@ -14,8 +14,8 @@
         echo "deb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
         echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list.d/backports.list
         aptitude -y install g++
-        aptitude -y install php5-dev
-        aptitude -y install build-essential libtool automake cmake pkg-config
+        #aptitude -y install php5-dev pkg-config
+        aptitude -y install build-essential libtool automake cmake
         aptitude -y install libboost-dev libboost-thread-dev libzmq-dev libmsgpack-dev libssl-dev
         aptitude -y -t sid install libprotobuf-dev
         EOF
@@ -139,7 +139,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/install/opentransactions
   options:
     BuildDirectory:
@@ -152,7 +152,7 @@
     Version:
       required: true
       description: Which version of the project to download.
-      value: FellowTraveler
+      value: da2ce7
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
