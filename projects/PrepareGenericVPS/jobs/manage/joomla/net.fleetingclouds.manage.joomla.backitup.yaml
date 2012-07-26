@@ -2,7 +2,7 @@
   project: PrepareGenericVPS
   schedule:
     time:
-      hour: '04'
+      hour: '08'
       minute: '00'
       seconds: '0'
     month: '*'
@@ -33,6 +33,11 @@
     - exec: echo " - - - End."
   description: This job calls Akeeba Backups sub-tasks, to completely secure a backup copy of a Joomla site.
   name: PerformBackupSequence
+  notification:
+    onfailure:
+      recipients: martinhbramwell@gmail.com
+    onsuccess:
+      recipients: martinhbramwell@gmail.com
   uuid: net.fleetingclouds.manage.joomla.backitup
   nodefilters:
     dispatch:
