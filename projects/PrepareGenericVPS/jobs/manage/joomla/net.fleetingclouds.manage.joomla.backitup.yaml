@@ -2,8 +2,8 @@
   project: PrepareGenericVPS
   schedule:
     time:
-      hour: '08'
-      minute: '00'
+      hour: '09'
+      minute: '01'
       seconds: '0'
     month: '*'
     year: '*'
