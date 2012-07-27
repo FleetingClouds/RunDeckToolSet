@@ -5,7 +5,8 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo " . . . .  . . . .  . . . . Run First Step  . . . .  . . . .  . . . .  . . . . "
+    - exec: 'echo " . . . .  . . . .  . . . . Run First Step  . . . .  . . . .  .
+        . . .  . . . . " '
     - jobref:
         group: net/fleetingclouds/initial
         name: Push RunDeck public key to host
