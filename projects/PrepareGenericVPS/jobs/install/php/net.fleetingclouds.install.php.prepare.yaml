@@ -79,7 +79,8 @@
         make install
         #
         echo ">> >> - - - - - - - - - - - Provide an ini file for PHP."
-        cp php.ini-production /usr/local/php5/lib/php.ini
+        # [  ! -f /usr/local/php5/lib/php.ini ] && cp $HOME/build/php5/php.ini-production /usr/local/php5/lib/php.ini
+        [  ! -f /usr/local/php5/lib/php.ini ] && cp ./php.ini-production /usr/local/php5/lib/php.ini
         # 
         echo ">> >> - - - - - - - - - - - Step out of @option.BuildDirectory@/php5 <<<<<"  
         popd 
@@ -147,10 +148,20 @@
          ; If you wish to have an extension loaded automatically, use the following
          ; syntax:
          ;
+         
+        @@ -916,7 +919,7 @@
+         [Date]
+         ; Defines the default timezone used by the date functions
+         ; http://php.net/date.timezone
+        -;date.timezone =
+        +date.timezone = "America/Montreal"
+         
+         ; http://php.net/date.default-latitude
+         ;date.default_latitude = 31.7667
         EOPF
         #
-        [ -f php.ini ] && mv php.ini php.ini.orig
-        cp ../../src/php-@option.InstallerVersion@/php.ini-production php.ini
+        [ -f php.ini ] && cp php.ini php.ini.orig
+        ## probably crap ##  cp ../../src/php-@option.InstallerVersion@/php.ini-production php.ini
         patch < php.ini-production.patch
         # 
         echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<"  
