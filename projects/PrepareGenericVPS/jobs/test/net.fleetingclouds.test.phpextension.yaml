@@ -16,9 +16,11 @@
         rm -fr tmp.sh 
         cat > tmp.sh <<EOF 
         #! /bin/bash  
-        # 
+        #
+        aptitude install -y git-core
+        #
         echo "   - -   PATH is " $PATH
-        # aptitude install -y git-core
+        # 
         pushd ~/projects
         if [ -d "OT_PHP_Ext" ]; then
             echo "Already cloned, so pull."
@@ -42,7 +44,58 @@
         #
         chown -R rundeck:rundeck OT_PHP_Ext
         chmod -R ug+rw OT_PHP_Ext
+        #
+        if [ -d "rlyeh" ]; then
+            echo "Already cloned, so pull."
+            pushd rlyeh
+            git pull
+        else
+            echo "First run, so clone."
+            git clone git://github.com/kchodorow/rlyeh.git
+            pushd rlyeh
+        fi
+        #
+        /usr/local/php5/bin/phpize
+        #
+        ./configure --with-php-config=/usr/local/php5/bin/php-config
+        #
+        make
+        #
+        make install
+        #
+        popd
+        #
+        chown -R rundeck:rundeck rlyeh
+        chmod -R ug+rw rlyeh
+        #
         popd 
+
+        # 
+        echo " - - - - - - - - - - - Step into /usr/local/php5/lib >>>>>"  
+        pushd /usr/local/php5/lib
+        #
+        cat > php.ini-otapi_ext.patch <<EOPF
+        --- php.ini     2012-07-23 18:28:35.000000000 +0400
+        +++ php.ini.new 2012-07-23 23:44:52.000000000 +0400
+        @@ -839,4 +839,6 @@
+         ;;;;;;;;;;;;;;;;;;;;;;
+         ; Dynamic Extensions ;
+         ;;;;;;;;;;;;;;;;;;;;;;
+         
+        +extension=rlyeh.so
+        +extension=otapi_php.so
+        EOPF
+        #
+        echo ">>  - - - - - - - - - - - Patch the php.ini file ..."
+        [ -f php.ini.orig ] && cp php.ini.orig php.ini.orig_bk
+        [ -f php.ini ] && cp php.ini php.ini.orig
+        patch  --fuzz=5 < php.ini-otapi_ext.patch
+        # 
+        echo ">> - - - - - - - - - - - Step out of /usr/local/php5/lib <<<<<"  
+        popd
+        # 
+        echo " - - - - - - - - - - - Restart fastcgi and nginx"
+        /etc/init.d/php-fastcgi restart && /etc/init.d/nginx restart
         #
         echo " - - - - - - - - - - - tmp script has been executed." 
         EOF
