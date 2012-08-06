@@ -6,8 +6,8 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: echo sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa  2> /dev/null
-    - exec: sudo wget -nc -c -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}_${option.BackupVersion}.jpa   2> /dev/null
+    - exec: echo sudo wget -nc -c --ftp-user='${option.FtpUser}' --ftp-password='${option.FtpPassword}' -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}-${option.BackupVersion}.jpa  2> /dev/null
+    - exec: sudo wget -nc -c --ftp-user='${option.FtpUser}' --ftp-password='${option.FtpPassword}' -P ${option.TargetDirectory} ${option.RepositoryURL}/${option.Filename}-${option.BackupVersion}.jpa  2> /dev/null
     - exec: echo "Executing ... sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}_${option.BackupVersion}.jpa"
     - exec: sudo chown httpd:httpd ${option.TargetDirectory}/${option.Filename}_${option.BackupVersion}.jpa
     - exec: echo " - - - End."
@@ -16,6 +16,10 @@
     
     ${option.BackupVersion}
     Script Content: @option.BackupVersion@ 
+    
+    sudo wget -nc -c --ftp-user='matrixoflife' --ftp-password='Water454' ftp://matrixoflife.org/site-mol.fleetingclouds.net-20120806-124151.jpa
+    
+    ${option.FtpPassword}
   name: GetBackupToRestore
   uuid: net.fleetingclouds.install.joomla.akeeba.restore
   nodefilters:
@@ -25,7 +29,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/joomla/akeeba
   options:
     BackupVersion:
@@ -33,11 +37,20 @@
     Filename:
       required: true
       description: The compressed file.
-      value: site-BasicJoomlaNewSite
+      value: site-mol.fleetingclouds.net
+    FtpPassword:
+      required: true
+      description: For getting the backup file to restore
+    FtpUser:
+      required: true
+      description: For getting the backup file
     RepositoryURL:
+      enforced: true
       required: true
       description: the place to get it from
-      value: https://github.com/downloads/FleetingClouds/RunDeckToolSet
+      values:
+      - ftp://matrixoflife.org/
+      - https://github.com/downloads/FleetingClouds/RunDeckToolSet
     TargetDirectory:
       required: true
       description: 'The directory where the file should be deposited:  Root directory
@@ -46,5 +59,4 @@
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true
