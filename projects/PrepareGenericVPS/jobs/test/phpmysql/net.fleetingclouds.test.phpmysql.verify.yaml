@@ -155,4 +155,7 @@
     Host:
       required: true
       description: the host where the file should go
-      value: mol.fleetingclouds.net
+      value: meta.fleetingclouds.net
+      values:
+      - meta.fleetingclouds.net
+      - mol.fleetingclouds.net
