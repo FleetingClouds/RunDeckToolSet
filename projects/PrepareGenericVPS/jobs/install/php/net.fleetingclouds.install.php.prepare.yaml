@@ -213,9 +213,12 @@
       description: The directory MySql will be installed to.
       value: /usr/local/src
     BuildForCMS:
+      enforced: true
       required: true
       description: If set to false this will NOT append configure switches needed by Joomla &/or Drupal
-      value: false true
+      values:
+      - 'false'
+      - 'true'
     InstallerURL:
       required: true
       description: The place to get it from
