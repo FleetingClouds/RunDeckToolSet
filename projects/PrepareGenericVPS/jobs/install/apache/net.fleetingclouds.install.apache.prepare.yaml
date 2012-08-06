@@ -131,7 +131,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/apache
   options:
     BuildDirectory:
@@ -141,7 +141,10 @@
     Host:
       required: true
       description: The host where the test script file should go
-      value: mol.fleetingclouds.net
+      value: meta.fleetingclouds.net
+      values:
+      - meta.fleetingclouds.net
+      - mol.fleetingclouds.net
     InstallerURL:
       required: true
       description: the place to get it from
