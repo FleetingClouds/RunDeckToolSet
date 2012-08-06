@@ -6,10 +6,11 @@
     strategy: node-first
     commands:
     - exec: echo "Install Nginx ......................................................."
+    - exec: echo -Host ${node.ServerName} -PurgeApache true
     - jobref:
         group: net/fleetingclouds/initial
         name: BasicGeneralInitialConfigurations
-        args: -Host ${node.ServerName} -PurgeApache yes -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+        args: -Host ${node.ServerName} -PurgeApache true -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - jobref:
         group: net/fleetingclouds/install/php
         name: PreparePhp
@@ -40,5 +41,4 @@
   options:
     sudoPwdRunDeck:
       required: true
-      value: okmmpl,,
       secure: true
