@@ -7,11 +7,11 @@
     commands:
     - exec: echo " Start - - - "
     - exec: echo " Get dependencies ................. "
-    - exec: sudo aptitude -y install subversion
+    - exec: sudo apt-get --force-yes -y install subversion
     - script: |
         #!/bin/bash 
         #
-        mkdir -p  @option.BuildDirectory@
+        mkdir -p  @option.BuildForNginxDirectory@
         #
         echo " - - - - - - - - - - - Creating tmporary script file tmp.sh in directory ..."
         pwd
@@ -22,8 +22,8 @@
         cat > tmp.sh <<EOF
         #!/bin/bash
           #
-          echo " - - - - - - - - - - - Step into @option.BuildDirectory@  >>>>>" 
-          pushd @option.BuildDirectory@
+          echo " - - - - - - - - - - - Step into @option.BuildForNginxDirectory@  >>>>>" 
+          pushd @option.BuildForNginxDirectory@
           pwd
           #
           rm -fr ./@option.Branch@
@@ -50,7 +50,7 @@
           echo ">> >> - - - - - - - - - - - Step out of Installer PHP <<<<<" 
           popd
           #
-          echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
+          echo ">> - - - - - - - - - - - Step out of @option.BuildForNginxDirectory@ <<<<<" 
           popd
           #
           echo " - - - - - - - - - - - Magento should now be available for installation."
@@ -95,8 +95,8 @@
           rm -fr magento-sample-data
           mv magento_sd/v1.6.1.0 ./magento-sample-data
           rm -fr magento_sd
-          cp -Rf ./magento-sample-data/media/* @option.BuildDirectory@/magento/media
-          chown -R httpd:httpd @option.BuildDirectory@/magento/media
+          cp -Rf ./magento-sample-data/media/* @option.BuildForNginxDirectory@/magento/media
+          chown -R httpd:httpd @option.BuildForNginxDirectory@/magento/media
           #
           echo "Sample data is ready for loading"
         EOF
@@ -110,8 +110,8 @@
     - exec: echo " - - - Magento sample data has been loaded."
     - exec: echo " = = = = = = = = = = = Done. Magento should now be available for installation."
   description: |
-    Install Subversion if necessary, check out Magento into the Apache htdocs directory and then create its sample database.
-  name: GetMagento
+    Install Subversion if necessary, check out Magento into the HTTPD  html or directory and then create its sample database.
+  name: GetMagento2
   uuid: net.fleetingclouds.install.joomla.magento.get
   nodefilters:
     dispatch:
@@ -120,21 +120,32 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
-  group: net/fleetingclouds/install/joomla/magento
+      name: curr.*
+  group: net/fleetingclouds/install/magento
   options:
     Branch:
       required: true
       description: The compressed file.
       value: '1.7'
-    BuildDirectory:
+    BuildForApacheDirectory:
       required: true
       description: The directory to which Magento will be decompressed.
-      value: /usr/local/apache/htdocs
+      value: /usr/local/apache/htdocs/
+    BuildForNginxDirectory:
+      required: true
+      description: The directory to which Magento will be decompressed.
+      value: /usr/local/nginx/html/
     DatabaseSamplesFile:
       required: true
       description: A remote file that will restore a database.
       value: magento_sample_data_for_1.6.1.0.sql
+    HttpdServerType:
+      enforced: true
+      required: true
+      value: nginx
+      values:
+      - apache
+      - nginx
     InstallerURL:
       required: true
       description: the place to get it from
