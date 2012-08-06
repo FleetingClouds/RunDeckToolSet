@@ -73,7 +73,11 @@
         # 
         echo " - - - - - - - - - - - Step into /usr/local/php5/lib >>>>>"  
         pushd /usr/local/php5/lib
+        pwd
         #
+        if [  1 -gt  \$(cat php.ini | grep -c "@option.SharedObjectName@") ]; then
+
+
         cat > php.ini-otapi_ext.patch <<EOPF
         --- php.ini     2012-07-23 18:28:35.000000000 +0400
         +++ php.ini.new 2012-07-23 23:44:52.000000000 +0400
@@ -81,15 +85,21 @@
          ;;;;;;;;;;;;;;;;;;;;;;
          ; Dynamic Extensions ;
          ;;;;;;;;;;;;;;;;;;;;;;
-         
+
         +extension=rlyeh.so
-        +extension=otapi_php.so
+        +extension=@option.SharedObjectName@
         EOPF
-        #
-        echo ">>  - - - - - - - - - - - Patch the php.ini file ..."
-        [ -f php.ini.orig ] && cp php.ini.orig php.ini.orig_bk
-        [ -f php.ini ] && cp php.ini php.ini.orig
-        patch  --fuzz=5 < php.ini-otapi_ext.patch
+
+
+
+            #
+            echo ">>  - - - - - - - - - - - Patch the php.ini file ..."
+            [ -f php.ini.orig ] && cp php.ini.orig php.ini.orig_bk
+            [ -f php.ini ] && cp php.ini php.ini.orig
+            patch  --fuzz=5 < php.ini-otapi_ext.patch
+        else
+            echo "* * * * will not patch the php.ini file a second time.  * * * "
+        fi
         # 
         echo ">> - - - - - - - - - - - Step out of /usr/local/php5/lib <<<<<"  
         popd
@@ -102,8 +112,15 @@
         # 
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
+    - script: |
+        #!/bin/bash
+        #
+        echo "Command line execution results are : "
+        php -r 'otapi_GetTime(true);'
+        php -r 'otapi_GetTime(false);'
+        #
     - exec: echo "... Finished rebuilding Open Transaction PHP extension"
-  description: This build and tests a PHP extension.
+  description: This build and tests the creation of two PHP extensions as shared objects.
   name: TestPhpExtension
   uuid: net.fleetingclouds.test.phpextension
   nodefilters:
@@ -116,6 +133,10 @@
       name: curr.*
   group: net/fleetingclouds/test
   options:
+    SharedObjectName:
+      required: true
+      description: The file name of the object library
+      value: otapi_php.so
     sudoPwdRunDeck:
       required: true
       value: okmmpl,,
