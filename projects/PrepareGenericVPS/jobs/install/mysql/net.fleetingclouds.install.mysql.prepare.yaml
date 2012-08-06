@@ -19,7 +19,11 @@
         pwd
         #
         echo " - - - - - - - - - - - Getting targz'd source ..." 
-        wget -nc -c @option.InstallerURL@   2> /dev/null
+        rm -fr index.html
+        # rm -fr mysql*
+        # wget -nc -c @option.InstallerURL@/mysql-@option.InstallerVersion@.tar.gz   2> /dev/null
+        wget -nc -c @option.InstallerURL@/mysql-@option.InstallerVersion@.tar.gz
+        #
         ls -l
         #
         popd
@@ -49,9 +53,11 @@
         pwd
         #
         echo ">> - - - - - - - - - - - Unzip the downloaded file" 
-        tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz >/dev/null 2>&1
+        3 tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz >/dev/null 2>&1
+        tar zxvf @option.InstallersRepository@/mysql-@option.InstallerVersion@.tar.gz
         #
         echo ">> - - - - - - - - - - - Make a symbolic link to it."
+        rm -f mysql
         ln -s mysql-@option.InstallerVersion@ mysql
         #
         echo ">> - - - - - - - - - - - Step into @option.BuildDirectory@/mysql  >>>>>" 
@@ -163,7 +169,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/mysql
   options:
     BuildDirectory:
@@ -173,21 +179,21 @@
     InstallerURL:
       required: true
       description: the place to get it from
-      value: http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.5-m8-linux2.6-x86_64.tar.gz/from/ftp://mirror.anl.gov/pub/mysql/
+      value: http://cdn.mysql.com/Downloads/MySQL-5.5
     InstallerVersion:
       required: true
       description: The version to obtain.
-      value: 5.6.5-m8-linux2.6-x86_64
+      value: 5.5.27-linux2.6-x86_64
     InstallersRepository:
       required: true
       description: Where we keep the original download
-      value: ~/installers
+      value: /home/rundeck/installers
     MySqlRootPwd:
       required: true
       description: The root password to use for MySql
-      value: okmmpl,,
+      secure: true
+      valueExposed: true
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true
