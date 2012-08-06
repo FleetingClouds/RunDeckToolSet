@@ -11,18 +11,19 @@
     - jobref:
         group: net/fleetingclouds/install
         name: InstallMySql
-        args: -MySqlRootPwd ${option.MySqlRootPwd} -PurgeApache ${option.PurgeApache}
+        args: -MySqlRootPwd ${option.MySqlRootPwd} -PurgeApache ${option.PurgeApache} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: 'echo " ####################  Calling [PrepareJoomlaDatabase] ###################
         "'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomlaDatabase
-        args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser}  -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+        args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser} -MySqlRootPwd ${option.MySqlRootPwd} -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
     - exec: 'echo " ####################  Calling [PrepareApache] ###################
         "'
     - jobref:
         group: net/fleetingclouds/install/apache
         name: PrepareApache
+        args: -Host <> -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: 'echo " ####################  Calling [PreparePhp] ###################
         "'
     - jobref:
@@ -55,10 +56,9 @@
         args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
     - exec: 'echo " ####################  Calling [GetVirtueMart] ###################
         "'
-    - jobref:
-        group: net/fleetingclouds/install/joomla/virtuemart
-        name: GetVirtueMart
-        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+    - exec: '# GetVirtueMart'
+    - exec: '# net/fleetingclouds/install/joomla/virtuemart'
+    - exec: '# -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}'
     - exec: 'echo " ####################  Calling [GetBackupToRestore] ###################
         "'
     - jobref:
@@ -77,16 +77,24 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install
   options:
     BackupVersion:
       required: true
       description: The version of the backup file we want to restore
+      value: 20120806-124151
     BuildDirectory:
       required: true
       description: Where programs are built.
       value: ~/build
+    Host:
+      required: true
+      description: The host where the test script file should go
+      value: meta.fleetingclouds.net
+      values:
+      - meta.fleetingclouds.net
+      - mol.fleetingclouds.net
     InstallersRepository:
       required: true
       value: ~/installers
@@ -97,6 +105,9 @@
     MySqlJoomlaPwd:
       required: true
       description: Joomla user password.
+      value: okmmpl,,
+      secure: true
+      valueExposed: true
     MySqlJoomlaUser:
       required: true
       description: A MySQL username
@@ -104,17 +115,25 @@
     MySqlRootPwd:
       required: true
       description: The root access password for all of MySql
+      value: okmmpl,,
+      secure: true
+      valueExposed: true
     MySqlServer:
       required: true
       description: The name of the MySQL host
       value: localhost
     PurgeApache:
+      enforced: true
       required: true
       description: yes or no to purge Apache
-      value: 'yes'
+      value: 'true'
+      values:
+      - 'false'
+      - 'true'
     RemoteSiteFtpPassword:
       required: true
       description: Since the file is obtained by ftp a user name and password are required.
+      value: Water454
     sudoPwdRunDeck:
       required: true
       value: okmmpl,,
