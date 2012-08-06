@@ -51,7 +51,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: mol.*
   group: net/fleetingclouds/install/rstudio
   options:
     InstallersRepository:

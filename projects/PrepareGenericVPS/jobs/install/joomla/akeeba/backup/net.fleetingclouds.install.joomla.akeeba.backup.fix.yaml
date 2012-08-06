@@ -57,7 +57,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/joomla/akeeba/fix
   options:
     AkeebaBinDirectory:

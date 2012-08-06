@@ -72,7 +72,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/joomla/akeeba
   options:
     BuildDirectory:
@@ -94,5 +94,4 @@
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true

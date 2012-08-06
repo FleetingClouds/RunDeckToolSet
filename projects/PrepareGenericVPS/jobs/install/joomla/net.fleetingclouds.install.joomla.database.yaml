@@ -37,7 +37,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install/joomla
   options:
     DatabaseBackupFile:
@@ -54,7 +54,8 @@
       value: mol01_
     MySqlJoomlaPwd:
       required: true
-      value: okmmpl,,
+      secure: true
+      valueExposed: true
     MySqlJoomlaUser:
       required: true
       description: A MySQL username
@@ -62,7 +63,8 @@
     MySqlRootPwd:
       required: true
       description: The root password to use for MySql
-      value: okmmpl,,
+      secure: true
+      valueExposed: true
     MySqlServer:
       required: true
       description: The name of the MySQL host
@@ -74,5 +76,4 @@
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
-      value: okmmpl,,
       secure: true
