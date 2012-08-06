@@ -21,7 +21,7 @@
         cat >> apt_stuff.sh <<EOF
         #
         echo "Update apt ......................................."
-        apt-get -y update
+        apt-get -y --force-yes update
         #
         echo "Upgrade apt ......................................"
         apt-get -y upgrade
@@ -87,14 +87,21 @@
   group: net/fleetingclouds/initial
   options:
     Host:
+      enforced: true
       required: true
       description: the host where the file should go
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     PurgeApache:
+      enforced: true
       required: true
       description: yes or no to purge Apache
-      value: 'no'
+      value: 'false'
+      values:
+      - 'false'
+      - 'true'
     sudoPwdRunDeck:
+      enforced: true
       required: true
       description: The password the script must use for sudo steps.
-      value: okmmpl,,
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/pwdtmp.json
       secure: true
