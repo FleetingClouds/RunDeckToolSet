@@ -439,6 +439,9 @@
   group: net/fleetingclouds/install/apache
   options:
     Host:
+      enforced: true
       required: true
       description: the host where the file should go
-      value: mol.fleetingclouds.net
+      values:
+      - meta.fleetingclouds.net
+      - mol.fleetingclouds.net
