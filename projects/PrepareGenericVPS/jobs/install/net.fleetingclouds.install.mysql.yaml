@@ -18,7 +18,7 @@
     - jobref:
         group: net/fleetingclouds/install/mysql
         name: PrepareMySql
-        args: -BuildDirectory ${option.BuildDirectory} -InstallerVersion ${option.InstallerVersion} -InstallersRepository ${option.InstallersRepository}  -MySqlRootPwd ${option.MySqlRootPwd}
+        args: -BuildDirectory ${option.BuildDirectory} -InstallerVersion ${option.InstallerVersion} -InstallersRepository ${option.InstallersRepository}  -MySqlRootPwd ${option.MySqlRootPwd} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "Done installing MySql ................................................."
   description: |
     Install MySql and all the products it depends on.
@@ -32,7 +32,7 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: mol.*
+      name: curr.*
   group: net/fleetingclouds/install
   options:
     BuildDirectory:
@@ -42,21 +42,27 @@
     Host:
       required: true
       description: The machine we are preparing
-      value: mol.fleetingclouds.net
+      value: meta.fleetingclouds.net
     InstallerVersion:
       required: true
       description: The version to obtain.
-      value: 5.6.5-m8-linux2.6-x86_64
+      value: 5.5.27-linux2.6-x86_64
     InstallersRepository:
       required: true
-      value: ~/installers
+      value: /home/rundeck/installers
     MySqlRootPwd:
       required: true
       description: The root password to use for MySql
+      secure: true
+      valueExposed: true
     PurgeApache:
+      enforced: true
       required: true
       description: yes or no to purge Apache
+      value: 'false'
+      values:
+      - 'false'
+      - 'true'
     sudoPwdRunDeck:
       required: true
-      value: okmmpl,,
       secure: true
