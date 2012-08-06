@@ -11,7 +11,7 @@
         pwd
         ./backupJobs.sh ${RD_JOB_PROJECT} ${RD_OPTION_TOKEN}
   description: |
-    This'll backup the jobs of any project, but it's here until a later release of RunDeck allows global jobs.
+    This will backup the jobs of any project, but hopefully it is only needed until a later release of RunDeck allows global jobs.
   name: BackUpThisProjectzJobs
   uuid: net.fleetingclouds.backup
   group: net/fleetingclouds
