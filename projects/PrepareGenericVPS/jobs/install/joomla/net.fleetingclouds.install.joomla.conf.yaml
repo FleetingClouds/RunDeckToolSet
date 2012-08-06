@@ -91,9 +91,11 @@
       required: true
       value: joomlaadmin
     Host:
+      enforced: true
       required: true
       description: the host where the file should go
       value: mol.fleetingclouds.net
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     JoomlaDataBase:
       required: true
       value: joomladb
