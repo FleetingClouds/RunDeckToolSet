@@ -153,9 +153,9 @@
   group: net/fleetingclouds/test/phpmysql
   options:
     Host:
+      enforced: true
       required: true
       description: the host where the file should go
-      value: meta.fleetingclouds.net
       values:
       - meta.fleetingclouds.net
       - mol.fleetingclouds.net
