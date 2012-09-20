@@ -50,7 +50,6 @@
         echo "= = = Done.  = = = "
 
     - exec: echo " - - - End."
-    - exec: cat .netrc
   description: This job collects a Joomla site backup from RunDeck's home directory on the remote server.
   name: MoveBackupOffSite
   uuid: net.fleetingclouds.manage.joomla.akeeba.moveaway
