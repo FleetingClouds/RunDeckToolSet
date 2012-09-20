@@ -9,6 +9,13 @@
     - script: |-
         rm -f configuration.php
         #
+        echo "SiteName = " @option.SiteName@
+        echo "DbUser = " @option.DbUser@
+        echo "MySqlJoomlaPwd = " @option.MySqlJoomlaPwd@
+        echo "JoomlaDataBase = " @option.JoomlaDataBase@
+        echo "JoomlaTblPrefix = " @option.JoomlaTblPrefix@
+        echo "AdminEmail = " @option.AdminEmail@
+
         cat > configuration.php <<EOF
         <?php
         class JConfig {
@@ -40,7 +47,7 @@
         	public \$tmp_path = '/usr/local/apache/htdocs/tmp';
         	public \$log_path = '/usr/local/apache/htdocs/logs';
         	public \$live_site = '';
-        	public $force_ssl = '0';
+        	public \$force_ssl = '0';
         	public \$offset = 'UTC';
         	public \$offset_user = 'UTC';
         	public \$lifetime = '15';
@@ -77,6 +84,7 @@
         	public \$MetaVersion = '0';
         }
         EOF
+    - exec: echo " Sending to " ${RD_OPTION_HOST}
     - exec: scp configuration.php  ${RD_OPTION_HOST}:.
     - exec: echo " ....... Done"
   description: ''
@@ -104,6 +112,9 @@
       description: The table identifier that permits muliple sites to use one database.
     MySqlJoomlaPwd:
       required: true
+      description: Joomla user password.
+      secure: true
+      valueExposed: true
     SiteName:
       required: true
       value: Matrix of Life
