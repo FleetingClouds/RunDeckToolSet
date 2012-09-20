@@ -11,13 +11,13 @@
     - jobref:
         group: net/fleetingclouds/test/phpmysql
         name: VerifyPhpMySql
-        args: -HOST ${option.Host}
+        args: -Host ${option.Host}
     - exec: 'echo " ####################  Calling [HttpdConf] ###################
         "'
     - jobref:
         group: net/fleetingclouds/install/apache
         name: HttpdConf
-        args: -HOST ${option.Host}
+        args: -Host ${option.Host}
     - script: |
         #!/bin/bash 
         #
@@ -120,6 +120,7 @@
     - jobref:
         group: net/fleetingclouds/install/webalizer
         name: PrepareWebalizer
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: echo "Done Preparing Apache .............................................."
   description: ''
   name: PrepareApache
@@ -139,9 +140,9 @@
       description: The directory MySql will be installed to.
       value: /usr/local/src
     Host:
+      enforced: true
       required: true
       description: The host where the test script file should go
-      value: meta.fleetingclouds.net
       values:
       - meta.fleetingclouds.net
       - mol.fleetingclouds.net

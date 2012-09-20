@@ -39,8 +39,8 @@
           echo ">> - - - - - - - - - - - Decompress the downloaded file" 
           unzip -uo @option.InstallersRepository@/@option.Filename@>/dev/null 2>&1 
           #
-          echo ">> - - - - - - - - - - - Deliver it all to httpd:httpd" 
-          chown -R httpd:httpd .
+          echo ">> - - - - - - - - - - - Deliver it all to www-data:www-data" 
+          chown -R www-data:www-data .
           #
           echo ">> - - - - - - - - - - - Step out of @option.BuildDirectory@ <<<<<" 
           popd
@@ -68,9 +68,12 @@
   group: net/fleetingclouds/install/joomla/akeeba
   options:
     BuildDirectory:
+      enforced: true
       required: true
       description: The directory to which Akeeba backup will be decompressed.
-      value: /usr/local/apache/htdocs
+      values:
+      - /usr/local/apache/htdocs
+      - /var/www
     Filename:
       required: true
       description: The compressed file.
