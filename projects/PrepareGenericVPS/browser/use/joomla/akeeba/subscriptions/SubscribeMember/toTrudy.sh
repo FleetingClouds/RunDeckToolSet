@@ -1,0 +1,4 @@
+cp TestCase_RemoveSubscriber_trudy.html TestCase_RemoveSubscriber.html 
+cp TestCase_RemoveUser_trudy.html TestCase_RemoveUser.html 
+cp TestCase_SubmitProfile_trudy.html TestCase_SubmitProfile.html
+
