@@ -6,23 +6,55 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - exec: echo "sudo apt-get update"
     - exec: echo " Get dependencies ................. "
     - exec: sudo apt-get --force-yes -y install subversion
+    - exec: echo "Create a virtual host for Magento"
+    - script: |
+        echo "Make a virtual host specification for @option.VirtualServerName@"
+        cat > @option.VirtualServerName@ <<EOF
+        <VirtualHost *:80>
+
+          ServerName  @option.VirtualServerName@
+          ServerAlias @option.VirtualServerName@
+
+          DocumentRoot /var/magento/@option.VirtualServerName@/magento
+
+          LogLevel warn
+          ErrorLog  /var/magento/@option.VirtualServerName@/log/error.log
+          CustomLog /var/magento/@option.VirtualServerName@/log/access.log combined
+
+        </VirtualHost>
+        EOF
+        #
+    - exec: echo "Obtain Magento . . . "
     - script: |
         #!/bin/bash
         #
         declare HttpUser=;
         declare BuildForDirectory=;
-        declare HttpdServerType=nginx;
+        declare HttpdServerType=@option.HttpdServerType@;
+        declare HttpdServerUser=@option.HttpdServerUser@;
+        declare HttpdVirtualHostsDir=@option.HttpdVirtualHostsDir@
+        declare HttpdPublicDir=/var/magento/@option.VirtualServerName@
+        declare HttpdLogDir=/var/magento/@option.VirtualServerName@/log
+        declare HttpdWWWDir=/var/magento/www
+
+
+            echo " * * * Building for ${HttpdServerType} * * * "
+
         if [  "$HttpdServerType" == "apache"  ]; then
+            echo " * * * Building for Apache * * * "
             cat > vars.sh <<EOFA
-                BuildForDirectory=/usr/local/apache/htdocs/
-                HttpUser=httpd
+                BuildForDirectory=/var/magento/@option.VirtualServerName@
+                HttpUser=${HttpdServerUser}
         EOFA
         elif [  "$HttpdServerType" == "nginx"  ]; then
+            echo " * * * Building for nginx * * * "
             cat > vars.sh <<EOFG
                 BuildForDirectory=/srv/www/vhosts/meta.fleetingclouds.net/www/
                 HttpUser=www-data
+                HttpdVirtualHostsDir=/etc/nginx
         EOFG
         else
             echo "No such HTTPD server";
@@ -42,6 +74,15 @@
         #!/bin/bash
             #
             sudo mkdir -p ${BuildForDirectory}
+            sudo mkdir -p ${HttpdPublicDir}
+            sudo mkdir -p ${HttpdLogDir}
+            sudo mkdir -p ${HttpdWWWDir}
+            #
+            echo " - - - Put the virtual host definition where the web server can find it ..."
+            sudo mv @option.VirtualServerName@ ${HttpdVirtualHostsDir}/sites-available/
+            pushd ${HttpdVirtualHostsDir}/sites-enabled/
+            sudo ln -s ../sites-available/@option.VirtualServerName@ @option.VirtualServerName@
+            popd
             #
             echo " - - - - - - - - - - - Step into ${BuildForDirectory}  >>>>>" 
             pushd ${BuildForDirectory}
@@ -135,7 +176,7 @@
     - exec: echo " = = = = = = = = = = = Done. Magento should now be available for installation."
   description: |
     Install Subversion if necessary, check out Magento into the HTTPD  html or directory and then create its sample database.
-  name: GetMagento
+  name: InstallMagento
   uuid: net.fleetingclouds.install.magento.get
   nodefilters:
     dispatch:
@@ -158,10 +199,20 @@
     HttpdServerType:
       enforced: true
       required: true
-      value: nginx
+      value: apache
       values:
       - apache
       - nginx
+    HttpdServerUser:
+      enforced: true
+      required: true
+      value: www-data
+      values:
+      - httpd:httpd
+      - www-data
+    HttpdVirtualHostsDir:
+      required: true
+      value: /etc/apache2
     InstallerURL:
       required: true
       description: the place to get it from
@@ -189,6 +240,9 @@
       required: true
       description: Where there is a database backup stored for later restore.
       value: https://github.com/FleetingClouds/MagentoSampleData/zipball/master
+    VirtualServerName:
+      required: true
+      value: shop.warehouseman.com
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
