@@ -6,6 +6,11 @@
     strategy: node-first
     commands:
     - exec: echo "Install Joomla ......................................................."
+    - exec: sudo chmod ugo+rw /dev/null
+    - exec: sudo chmod ugo+rw /dev/urandom
+    - exec: sudo chmod ugo+rw /dev/random
+    - exec: sudo apt-get -y update
+    - exec: sudo apt-get -y upgrade
     - exec: 'echo " ####################  Calling [InstallMySql] ###################
         "'
     - script: |
@@ -16,9 +21,9 @@
     - exec: sudo debconf-set-selections mysql-server.seed
     - exec: sudo apt-get install -y mysql-server mysql-client
     - exec: sudo apt-get install -y apache2
-    - exec: sudo apt-get -y install patch
+    - exec: sudo apt-get -y install patch unzip
     - script: |
-        cat > apache2.conf.patch <<EOFAPC
+        cat > apache2.conf.patchHN <<EOFAPC
         --- apache2.conf.orig 2012-08-07 17:22:21.000000000 +0400
         +++ apache2.conf      2012-08-07 17:25:25.000000000 +0400
         @@ -35,7 +35,7 @@
@@ -31,7 +36,7 @@
          # ServerRoot: The top of the directory tree under which the server's
          # configuration, error, and log files are kept.
         EOFAPC
-    - exec: echo "Prepare apache2.conf patch ................................................."
+    - exec: echo "Prepare apache2.conf Host Name patch ................................................."
     - script: |-
         #!/bin/bash
         #
@@ -43,14 +48,14 @@
         cd /etc/apache2
         #
         declare PATCH_IT=\$(cat apache2.conf | grep -c "ServerName @option.Host@")
-        [  1 -gt \$PATCH_IT  ]  &&   sudo patch <~/apache2.conf.patch
+        [  1 -gt \$PATCH_IT  ]  &&   sudo patch <~/apache2.conf.patchHN
         #
         exit 0;
         #
         EOF
         #
         chmod a+x tmp.sh
-    - exec: echo "Patch apache2.conf ................................................."
+    - exec: echo "Patch apache2.conf host name................................................."
     - exec: sudo ./tmp.sh
     - exec: echo "Install PHP extensions ................................................."
     - exec: sudo apt-get install -y php5 libapache2-mod-php5
@@ -63,7 +68,7 @@
         phpinfo();
         ?>
         EOFIP
-    - exec: sudo mv info.php /var/www
+    - exec: sudo mv info.php ${option.WWWDirectory}
     - exec: sudo chown -R www-data:www-data /var/log/apache2/
     - exec: sudo chmod 755 /var/log/apache2/
     - exec: sudo mkdir -p /usr/local/apache/htdocs/logs
@@ -76,11 +81,12 @@
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomlaDatabase
         args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser} -MySqlRootPwd ${option.MySqlRootPwd} -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
-    - exec: 'echo " ###  Calling [PrepareJoomla] ### "  ${option.MySqlJoomlaPwd}'
+    - exec: 'echo " ###  Calling [PrepareJoomla] ### " -BuildDirectory ${option.WWWDirectory}  -Host
+        ${option.Host}  -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}  -Port ${option.Port}'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomla
-        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+        args: -BuildDirectory ${option.WWWDirectory}  -Host ${option.Host}  -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}  -Port ${option.Port}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
     - exec: 'echo " ####################  Calling [GetAkeebaKickstart] ###################
         "'
     - jobref:
@@ -92,8 +98,8 @@
     - jobref:
         group: net/fleetingclouds/install/joomla/akeeba
         name: GetBackupToRestore
-        args: -RepositoryURL ${option.RepositoryURL} -BackupVersion ${option.BackupVersion} -FtpPassword ${option.RemoteSiteFtpPassword} -FtpUser ${option.RemoteSiteFtpUser} -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
-    - exec: sudo /etc/init.d/apache restart
+        args: -TargetDirectory ${option.WWWDirectory} -RepositoryURL ${option.RepositoryURL} -BackupVersion ${option.BackupVersion} -FtpPassword ${option.RemoteSiteFtpPassword} -FtpUser ${option.RemoteSiteFtpUser} -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+    - exec: sudo /etc/init.d/apache2 restart
     - exec: echo "Done installing Joomla ................................................."
   description: Install Joomla and all the products it depends on.
   name: InstallJoomla
@@ -111,7 +117,7 @@
     BackupVersion:
       required: true
       description: The version of the backup file we want to restore
-      value: 20120806-124151
+      value: 20120813-222556
     BuildDirectory:
       required: true
       description: Where programs are built.
@@ -120,10 +126,8 @@
       enforced: true
       required: true
       description: The host where the test script file should go
-      value: meta.fleetingclouds.net
-      values:
-      - meta.fleetingclouds.net
-      - mol.fleetingclouds.net
+      value: meta.warehouseman.com
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     InstallersRepository:
       required: true
       value: ~/installers
@@ -151,6 +155,14 @@
       required: true
       description: The name of the MySQL host
       value: localhost
+    Port:
+      enforced: true
+      required: true
+      description: The remote port to connect to.
+      value: '22'
+      values:
+      - '22'
+      - '7822'
     PurgeApache:
       enforced: true
       required: true
@@ -162,22 +174,20 @@
     RemoteSiteFtpPassword:
       required: true
       description: Since the file is obtained by ftp a user name and password are required.
-      value: Water454
       secure: true
       valueExposed: true
     RemoteSiteFtpUser:
       required: true
       description: Since the file is obtained by ftp a user name and password are required.
-      value: matrixoflife
       secure: true
       valueExposed: true
     RepositoryURL:
       enforced: true
       required: true
       description: the place to get it from
-      value: ftp://matrixoflife.org/
+      value: ftp://matrixoflife.org
       values:
-      - ftp://matrixoflife.org/
+      - ftp://matrixoflife.org
       - https://github.com/downloads/FleetingClouds/RunDeckToolSet
     WWWDirectory:
       enforced: true
