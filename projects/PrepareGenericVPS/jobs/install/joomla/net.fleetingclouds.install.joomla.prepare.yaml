@@ -6,12 +6,12 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
-    - exec: 'echo " ####################  Calling [JoomlaConf] ###################
-        "'
+    - exec: 'echo " ####################  Calling [JoomlaConf] ############### ####
+        "  ${option.MySqlJoomlaPwd}'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: JoomlaConf
-        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix}
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix} -Host ${option.Host}
     - script: |-
         #!/bin/bash
         #
@@ -24,48 +24,48 @@
         wget -nc -c @option.InstallerURL@/Joomla_@option.InstallerVersion@.tar.bz2 2> /dev/null 
         popd
         #
-        mkdir -p  @option.BuildDirectory@/
-        #
         #
         rm -f tmp.sh
         #
         cat > tmp.sh <<EOF
         #!/bin/bash  
         #
-        cd @option.BuildDirectory@
-        echo "Stepping into ..."
-        pwd
-        #
-        # 
-        echo "Unzip the downloaded file" 
-        tar xvfj @option.InstallersRepository@/Joomla_@option.InstallerVersion@.tar.bz2
-        #
-        echo "Remove Apache's default index.html"
-        if [ -e index.html ]; then sudo mv index.html apache_hello.html; fi
-        #
-        echo ". . . . . . Step into /usr/local/apache/htdocs >>>>>"
-        pushd /usr/local/apache/htdocs/
-          #
-          echo ">>  Remove Joomla's installation directory"
-          mkdir -p /usr/local/src/joomla/
-          if [ -e installation ]; then
-            rm -fr /usr/local/src/joomla/installation
-            mv installation /usr/local/src/joomla/
-          fi
-          #
-          echo "Provide Joomla with a configuration file"
-          if [ ! -e configuration.php ]; then cp $HOME/configuration.php .; fi
-          #
-          echo "Make it all property of httpd and allow group writes"
-          chown -R httpd:httpd *
-          chmod -R g+w *
-          #
-        echo ". . . . . . Step out of /usr/local/apache/htdocs <<<<<"
-        popd
-        #
-        echo "Restart Apache"
-        /etc/init.d/apache restart
-        #
+            mkdir -p @option.BuildDirectory@
+            #
+            cd @option.BuildDirectory@
+            echo "Stepping into ..."
+            pwd
+            #
+            # 
+            echo "Unzip the downloaded file" 
+            tar xvfj @option.InstallersRepository@/Joomla_@option.InstallerVersion@.tar.bz2
+            #
+            echo "Remove Apache's default index.html"
+            if [ -e index.html ]; then sudo mv index.html apache_hello.html; fi
+            #
+            echo ". . . . . . Step into @option.BuildDirectory@ >>>>>"
+            pushd @option.BuildDirectory@
+              #
+              echo ">>  Remove Joomla's installation directory"
+              mkdir -p /usr/local/src/joomla/
+              if [ -e installation ]; then
+                rm -fr /usr/local/src/joomla/installation
+                mv installation /usr/local/src/joomla/
+              fi
+              #
+              echo "Provide Joomla with a configuration file"
+              if [ ! -e configuration.php ]; then cp $HOME/configuration.php .; fi
+              #
+              echo "Make it all property of www-data and allow group writes"
+              chown -R www-data:www-data *
+              chmod -R g+w *
+              #
+            echo ". . . . . . Step out of @option.BuildDirectory@ <<<<<"
+            popd
+            #
+            echo "Restart Apache"
+            /etc/init.d/apache2 restart
+            #
         #
         EOF
         #
@@ -86,9 +86,19 @@
   group: net/fleetingclouds/install/joomla
   options:
     BuildDirectory:
+      enforced: true
       required: true
       description: Where programs are built.
-      value: /usr/local/apache/htdocs/
+      value: /var/www/
+      values:
+      - /usr/local/apache/htdocs/
+      - /var/www/
+    Host:
+      enforced: true
+      required: true
+      description: the host where the file should go
+      value: meta.fleetingclouds.net
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     InstallerURL:
       required: true
       value: http://joomlacode.org/gf/download/frsrelease/17173/74756
@@ -104,6 +114,9 @@
       value: mol01_
     MySqlJoomlaPwd:
       required: true
+      description: Joomla user password.
+      secure: true
+      valueExposed: true
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
