@@ -13,12 +13,12 @@
     - exec: echo " - - - End."
   description: |-
     This job simply obtains a Joomla site backup, previously created by Akeeba Backup and makes it ready for restoring by Akeeba Kickstart.
-    
+
     ${option.BackupVersion}
     Script Content: @option.BackupVersion@ 
-    
+
     sudo wget -nc -c --ftp-user='matrixoflife' --ftp-password='Water454' ftp://matrixoflife.org/site-mol.fleetingclouds.net-20120806-124151.jpa
-    
+
     ${option.FtpPassword}
   name: GetBackupToRestore
   uuid: net.fleetingclouds.install.joomla.akeeba.restore
@@ -34,16 +34,21 @@
   options:
     BackupVersion:
       required: true
+      description: The version of the backup file we want to restore
     Filename:
       required: true
       description: The compressed file.
       value: site-mol.fleetingclouds.net
     FtpPassword:
       required: true
-      description: For getting the backup file to restore
+      description: Since the file is obtained by ftp a user name and password are required.
+      secure: true
+      valueExposed: true
     FtpUser:
       required: true
-      description: For getting the backup file
+      description: Since the file is obtained by ftp a user name and password are required.
+      secure: true
+      valueExposed: true
     RepositoryURL:
       enforced: true
       required: true
