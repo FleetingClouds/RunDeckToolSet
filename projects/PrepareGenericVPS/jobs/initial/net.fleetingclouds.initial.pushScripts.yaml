@@ -5,13 +5,13 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Copying  to host   . . . .  " ${RD_OPTION_HOST}
+    - exec: 'echo "Copying  to host   . . . .  " ${RD_OPTION_HOST}:${RD_OPTION_PORT} '
     - exec: 'echo The path that scp will use : ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}'
-    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
-    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/toggleAptCache.sh  ${RD_OPTION_HOST}:.
-    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/defineHosts.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  -P ${RD_OPTION_PORT} ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/appendNameValuePairToFile.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  -p 7822 ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/toggleAptCache.sh  ${RD_OPTION_HOST}:.
+    - exec: scp  -p 7822 ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/defineHosts.sh  ${RD_OPTION_HOST}:.
+    - exec: scp -p 7822  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/makeNewSshUser.sh  ${RD_OPTION_HOST}:.
     - exec: echo ". . . .  . . . .  . . . .  Done . . . .  . . . .  . . . .  "
-    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/makeNewSshUser.sh  ${RD_OPTION_HOST}:.
   description: 'Step Three: This script copies shell scripts over to the default directory
     of the user''s account in the indicated remote host.'
   name: PushOverSomeInitializationScripts
@@ -19,8 +19,18 @@
   group: net/fleetingclouds/initial
   options:
     Host:
+      enforced: true
       required: true
       description: the host where the file should go
+      value: mol.fleetingclouds.com
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
+    Port:
+      enforced: true
+      required: true
+      value: '7822'
+      values:
+      - '22'
+      - '7822'
     ProjectsPath:
       required: true
       description: 'The root directory of scripts and jobs '

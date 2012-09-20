@@ -15,7 +15,7 @@
     - jobref:
         group: net/fleetingclouds/initial
         name: CreateAdminUsers
-        args: -Host ${option.RemoteHost} -User ${option.User}
+        args: -Host ${option.RemoteHost} -User ${option.User} -Port ${option.Port}
     - exec: echo " . . . .  . . . .  . . . . Finished  . . . .  . . . .  . . . .  . . . . "
     - script: |-
         cat > ./fixSSH.sh <<-EOF
@@ -58,9 +58,8 @@
         echo "*******************************************************************"
   description: |
     Calls Steps One & Two
-    
+
     To determine the default Fingerprint for the remote machine, simply attempt an SSH connection to it.  It will report an unknown host, and display its fingerprint-
-    
   name: PrepareHost
   uuid: net.fleetingclouds.initial.prepHost
   group: net/fleetingclouds/initial
@@ -68,13 +67,24 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
+      value: 7a:49:47:40:5d:dd:84:ee:8a:4c:09:22:bf:06:c1:84
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
+      value: f6aa4a38ccca68fa
+    Port:
+      enforced: true
+      required: true
+      description: The remote port to connect to.
+      value: '7822'
+      values:
+      - '22'
+      - '7822'
     RemoteHost:
       enforced: true
       required: true
       description: This is a host that RunDeck will be accessing in the future.
+      value: mol.fleetingclouds.com
       valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     User:
       required: true

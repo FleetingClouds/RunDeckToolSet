@@ -6,12 +6,12 @@
     strategy: node-first
     commands:
     - exec: echo ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}
-    - exec: echo scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
-    - exec: scp  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh    ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
+    - exec: echo scp -P ${RD_OPTION_PORT}  ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh   ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
+    - exec: scp   -P ${RD_OPTION_PORT}   ${RD_OPTION_PROJECTSPATH}/${RD_JOB_PROJECT}/scripts/initializeForAdminUsers.sh ${RD_OPTION_USER}@${RD_OPTION_HOST}:.
     - exec: echo  .............................................................
     - script: |-
         # 
-        export COMMAND="spawn ssh $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 300 ; expect \"Welcome to Ubuntu\" ; sleep 10 ; send \"sudo bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 15 ; send \"exit\n\" ; interact" 
+        export COMMAND="spawn ssh -p $RD_OPTION_PORT $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 300 ; expect \"Last login:\" ; sleep 10 ; send \"sudo bash initializeForAdminUsers.sh\n\" ; expect \"Finished  ...\" ; sleep 15 ; send \"exit\n\" ; interact" 
         # 
         echo Execute this == $COMMAND ==
         # 
@@ -38,6 +38,14 @@
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
+    Port:
+      enforced: true
+      required: true
+      description: The remote port to connect to.
+      value: '22'
+      values:
+      - '22'
+      - '7822'
     ProjectsPath:
       required: true
       value: /home/yourself/dev/RunDeckToolSet/projects

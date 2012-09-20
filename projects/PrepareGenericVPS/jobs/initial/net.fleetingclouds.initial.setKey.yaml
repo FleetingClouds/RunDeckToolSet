@@ -17,11 +17,15 @@
     - exec: 'echo Now push  key to host - $RD_OPTION_HOST :: $RD_OPTION_PASSWORD'
     - script: |
         #
-        export COMMAND="spawn ssh-copy-id $RD_OPTION_USER@$RD_OPTION_HOST ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
+        echo "Placing key with ssh-copy-id to "$RD_OPTION_USER@$RD_OPTION_HOST -p $RD_OPTION_PORT""
+        #
+        export COMMAND="spawn ssh-copy-id \"$RD_OPTION_USER@$RD_OPTION_HOST -p $RD_OPTION_PORT\" ; set timeout 60 ; expect \"$RD_OPTION_FINGERPRINT\" ; sleep 5 ; send \"yes\n\" ; expect assword ; sleep 10 ; send \"$RD_OPTION_PASSWORD\n\" ; expect \"authorized_keys\" ; sleep 5 ; send \"\n\" ; interact"
         #
         echo Execute this $COMMAND
         #
         eval expect -c "'$COMMAND'"
+        #
+        echo Done
         #
     - exec: echo "Pushed RunDeck public key to host"
     - exec: echo " . . . .  . . . .  . . . .  . . . . Done . . . .  . . . .  . . . . "
@@ -40,14 +44,24 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: '45:d0:c2:33:a6:44:ff:4c:5d:7d:c3:03:12:cb:ff:2f '
+      value: ca:2e:a3:41:29:34:aa:44:24:ed:ac:a3:9e:5e:06:88
     Host:
+      enforced: true
       required: true
       description: This is a host that RunDeck will be accessing in the future.
+      value: ssh.fleetingclouds.com
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     Password:
       required: true
       description: This is the password for ${option.User} for the host ${option.Host.  It should be used just this one time, and never again.
-      value: sBYfn95p0HbhRByoup64
+      value: f6aa4a38ccca68fa
+    Port:
+      enforced: true
+      required: true
+      value: '7822'
+      values:
+      - '22'
+      - '7822'
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
