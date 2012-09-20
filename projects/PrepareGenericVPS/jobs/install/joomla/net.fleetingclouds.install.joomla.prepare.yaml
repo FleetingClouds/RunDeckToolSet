@@ -11,7 +11,7 @@
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: JoomlaConf
-        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix} -Host ${option.Host}
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -JoomlaTblPrefix ${option.JoomlaTblPrefix} -Host ${option.Host} -Port ${option.Port}
     - script: |-
         #!/bin/bash
         #
@@ -63,14 +63,98 @@
             echo ". . . . . . Step out of @option.BuildDirectory@ <<<<<"
             popd
             #
-            echo "Restart Apache"
-            /etc/init.d/apache2 restart
-            #
         #
         EOF
         #
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
+    - exec: sudo apt-get -y install patch
+    - script: |
+        cat > default.patchAO <<EOFDAO
+        --- default.orig 2012-08-08 20:57:34.000000000 +0400
+        +++ default      2012-08-08 20:58:01.000000000 +0400
+        @@ -8,7 +8,7 @@
+         	</Directory>
+         	<Directory /var/www/>
+         		Options Indexes FollowSymLinks MultiViews
+        -		AllowOverride None
+        +		AllowOverride All
+         		Order allow,deny
+         		allow from all
+         	</Directory>
+        EOFDAO
+    - script: |
+        cat > apache2.conf.patchAO <<EOFAPC
+        --- apache2.conf.orig 2012-08-08 17:50:50.000000000 +0400
+        +++ apache2.conf      2012-08-08 17:51:27.000000000 +0400
+        @@ -152,6 +152,14 @@
+         
+         AccessFileName .htaccess
+         
+        +<Directory />
+        +    AllowOverride None
+        +</Directory>
+        +
+        +<Directory /var/www>
+        +    AllowOverride All
+        +</Directory>
+        +
+         #
+         # The following lines prevent .htaccess and .htpasswd files from being 
+         # viewed by Web clients.
+        EOFAPC
+    - exec: echo "Prepare apache2.conf and default AllowOverride patches ................................................."
+    - script: |-
+        #!/bin/bash
+        #
+        rm -f tmp.sh
+        #
+        cat > tmp.sh <<EOF
+        #!/bin/bash  
+        #
+        cd /etc/apache2
+        #
+        echo " - - trying to patch now - - "
+        declare PATCH_IT1=\$(cat apache2.conf | grep -c "AllowOverride All")
+        [  1 -gt \$PATCH_IT1  ]   &&   patch <~/apache2.conf.patchAO
+        #
+        cd /etc/apache2/sites-available
+        declare PATCH_IT2=\$(cat default | grep -c "AllowOverride All")
+        [  1 -gt \$PATCH_IT2  ]   &&   patch <~/default.patchAO
+        #
+        cd /etc/apache2/mods-enabled/
+        ln -s ../mods-available/rewrite.load rewrite.load
+        #
+        exit 0;
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: echo "Patch apache2.conf  and default AllowOverride ................................................."
+    - exec: sudo ./tmp.sh
+    - script: |-
+        #!/bin/bash
+        #
+        rm -f tmpAO.sh
+        #
+        cat > tmpAO.sh <<EOF
+        #!/bin/bash  
+        #
+        cd @option.BuildDirectory@
+        #
+        rm -f .htaccess
+        cp htaccess.txt .htaccess
+        sudo chown -R www-data:www-data .htaccess
+        sudo chmod 755 .htaccess
+        sudo chown -R www-data:www-data *
+        sudo chmod 755 *
+        EOF
+        #
+        chmod a+x tmpAO.sh
+    - exec: echo "Enable Joomlas htaccess file ................................................."
+    - exec: sudo ./tmpAO.sh
+    - exec: echo "Restart Apache"
+    - exec: sudo /etc/init.d/apache2 restart
     - exec: echo " - - - End."
   description: ''
   name: PrepareJoomla
@@ -89,15 +173,13 @@
       enforced: true
       required: true
       description: Where programs are built.
-      value: /var/www/
       values:
-      - /usr/local/apache/htdocs/
-      - /var/www/
+      - /usr/local/apache/htdocs
+      - /var/www
     Host:
       enforced: true
       required: true
       description: the host where the file should go
-      value: meta.fleetingclouds.net
       valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     InstallerURL:
       required: true
@@ -117,6 +199,13 @@
       description: Joomla user password.
       secure: true
       valueExposed: true
+    Port:
+      enforced: true
+      required: true
+      description: The remote port to connect to.
+      values:
+      - '22'
+      - '7822'
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password
