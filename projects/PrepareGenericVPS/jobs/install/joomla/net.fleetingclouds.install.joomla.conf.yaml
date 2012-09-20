@@ -85,7 +85,8 @@
         }
         EOF
     - exec: echo " Sending to " ${RD_OPTION_HOST}
-    - exec: scp configuration.php  ${RD_OPTION_HOST}:.
+    - exec: echo scp -P ${RD_OPTION_PORT} configuration.php  ${RD_OPTION_HOST}:.
+    - exec: scp -P ${RD_OPTION_PORT} configuration.php  ${RD_OPTION_HOST}:.
     - exec: echo " ....... Done"
   description: ''
   name: JoomlaConf
@@ -102,7 +103,6 @@
       enforced: true
       required: true
       description: the host where the file should go
-      value: mol.fleetingclouds.net
       valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
     JoomlaDataBase:
       required: true
@@ -115,6 +115,13 @@
       description: Joomla user password.
       secure: true
       valueExposed: true
+    Port:
+      enforced: true
+      required: true
+      description: The remote port to connect to.
+      values:
+      - '22'
+      - '7822'
     SiteName:
       required: true
       value: Matrix of Life
