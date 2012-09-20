@@ -8,66 +8,94 @@
     - exec: echo "Install Joomla ......................................................."
     - exec: 'echo " ####################  Calling [InstallMySql] ###################
         "'
-    - jobref:
-        group: net/fleetingclouds/install
-        name: InstallMySql
-        args: -MySqlRootPwd ${option.MySqlRootPwd} -PurgeApache ${option.PurgeApache} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
-    - exec: 'echo " ####################  Calling [PrepareJoomlaDatabase] ###################
+    - script: |
+        cat > mysql-server.seed <<EOFMSS
+        mysql-server-5.0        mysql-server/root_password_again        select @option.MySqlRootPwd@
+        mysql-server-5.0        mysql-server/root_password              select @option.MySqlRootPwd@
+        EOFMSS
+    - exec: sudo debconf-set-selections mysql-server.seed
+    - exec: sudo apt-get install -y mysql-server mysql-client
+    - exec: sudo apt-get install -y apache2
+    - exec: sudo apt-get -y install patch
+    - script: |
+        cat > apache2.conf.patch <<EOFAPC
+        --- apache2.conf.orig 2012-08-07 17:22:21.000000000 +0400
+        +++ apache2.conf      2012-08-07 17:25:25.000000000 +0400
+        @@ -35,7 +35,7 @@
+         # such as the number of concurrent requests it can handle or where it
+         # can find its configuration files.
+         #
+        -
+        +ServerName @option.Host@
+         #
+         # ServerRoot: The top of the directory tree under which the server's
+         # configuration, error, and log files are kept.
+        EOFAPC
+    - exec: echo "Prepare apache2.conf patch ................................................."
+    - script: |-
+        #!/bin/bash
+        #
+        rm -f tmp.sh
+        #
+        cat > tmp.sh <<EOF
+        #!/bin/bash  
+        #
+        cd /etc/apache2
+        #
+        declare PATCH_IT=\$(cat apache2.conf | grep -c "ServerName @option.Host@")
+        [  1 -gt \$PATCH_IT  ]  &&   sudo patch <~/apache2.conf.patch
+        #
+        exit 0;
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: echo "Patch apache2.conf ................................................."
+    - exec: sudo ./tmp.sh
+    - exec: echo "Install PHP extensions ................................................."
+    - exec: sudo apt-get install -y php5 libapache2-mod-php5
+    - exec: sudo apt-get install -y php5-mysql
+    - exec: sudo apt-get install -y php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+    - exec: sudo /etc/init.d/apache2 restart
+    - script: |
+        cat > info.php <<EOFIP
+        <?php
+        phpinfo();
+        ?>
+        EOFIP
+    - exec: sudo mv info.php /var/www
+    - exec: sudo chown -R www-data:www-data /var/log/apache2/
+    - exec: sudo chmod 755 /var/log/apache2/
+    - exec: sudo mkdir -p /usr/local/apache/htdocs/logs
+    - exec: 'echo " ##########  Done installing LAMP.  Now for Joomla  ##########
         "'
+    - exec: sudo chown -R www-data:www-data /usr/local/apache/htdocs/logs
+    - exec: sudo chmod 755 /usr/local/apache/htdocs/logs
+    - exec: 'echo " ###  Calling [PrepareJoomlaDatabase] ### "'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomlaDatabase
         args: -JoomlaDataBase ${option.JoomlaDataBase} -MySqlJoomlaPwd ${option.MySqlJoomlaPwd} -MySqlJoomlaUser ${option.MySqlJoomlaUser} -MySqlRootPwd ${option.MySqlRootPwd} -MySqlServer ${option.MySqlServer}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
-    - exec: 'echo " ####################  Calling [PrepareApache] ###################
-        "'
-    - jobref:
-        group: net/fleetingclouds/install/apache
-        name: PrepareApache
-        args: -Host <> -sudoPwdRunDeck ${option.sudoPwdRunDeck}
-    - exec: 'echo " ####################  Calling [PreparePhp] ###################
-        "'
-    - jobref:
-        group: net/fleetingclouds/install/php
-        name: PreparePhp
-    - exec: 'echo " ####################  Calling [PrepareJoomla] ###################
-        "'
+    - exec: 'echo " ###  Calling [PrepareJoomla] ### "  ${option.MySqlJoomlaPwd}'
     - jobref:
         group: net/fleetingclouds/install/joomla
         name: PrepareJoomla
-        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}
-    - exec: sudo /etc/init.d/apache restart
-    - exec: 'echo " ####################  Calling [GetAkeebaSubscriptions] ###################
-        "'
-    - jobref:
-        group: net/fleetingclouds/install/joomla/akeeba
-        name: GetAkeebaSubscriptions
-        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
-    - exec: 'echo " ####################  Calling [GetAkeebaBackup] ###################
-        "'
-    - jobref:
-        group: net/fleetingclouds/install/joomla/akeeba
-        name: GetAkeebaBackup
-        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
+        args: -MySqlJoomlaPwd ${option.MySqlJoomlaPwd}  -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
     - exec: 'echo " ####################  Calling [GetAkeebaKickstart] ###################
         "'
     - jobref:
         group: net/fleetingclouds/install/joomla/akeeba
         name: GetAkeebaKickStart
-        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}
-    - exec: 'echo " ####################  Calling [GetVirtueMart] ###################
-        "'
-    - exec: '# GetVirtueMart'
-    - exec: '# net/fleetingclouds/install/joomla/virtuemart'
-    - exec: '# -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository}'
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck} -InstallersRepository ${option.InstallersRepository} -BuildDirectory ${option.WWWDirectory}
     - exec: 'echo " ####################  Calling [GetBackupToRestore] ###################
         "'
     - jobref:
         group: net/fleetingclouds/install/joomla/akeeba
         name: GetBackupToRestore
-        args: -RemoteSiteFtpPassword ${option.RemoteSiteFtpPassword} -BackupVersion ${option.BackupVersion}
+        args: -RepositoryURL ${option.RepositoryURL} -BackupVersion ${option.BackupVersion} -FtpPassword ${option.RemoteSiteFtpPassword} -FtpUser ${option.RemoteSiteFtpUser} -sudoPwdRunDeck  ${option.sudoPwdRunDeck}
+    - exec: sudo /etc/init.d/apache restart
     - exec: echo "Done installing Joomla ................................................."
-  description: |
-    Install Joomla and all the products it depends on.
+  description: Install Joomla and all the products it depends on.
   name: InstallJoomla
   uuid: net.fleetingclouds.install.joomla
   nodefilters:
@@ -89,6 +117,7 @@
       description: Where programs are built.
       value: ~/build
     Host:
+      enforced: true
       required: true
       description: The host where the test script file should go
       value: meta.fleetingclouds.net
@@ -134,7 +163,32 @@
       required: true
       description: Since the file is obtained by ftp a user name and password are required.
       value: Water454
+      secure: true
+      valueExposed: true
+    RemoteSiteFtpUser:
+      required: true
+      description: Since the file is obtained by ftp a user name and password are required.
+      value: matrixoflife
+      secure: true
+      valueExposed: true
+    RepositoryURL:
+      enforced: true
+      required: true
+      description: the place to get it from
+      value: ftp://matrixoflife.org/
+      values:
+      - ftp://matrixoflife.org/
+      - https://github.com/downloads/FleetingClouds/RunDeckToolSet
+    WWWDirectory:
+      enforced: true
+      required: true
+      description: The directory to which Akeeba backup will be decompressed.
+      value: /var/www
+      values:
+      - /usr/local/apache/htdocs
+      - /var/www
     sudoPwdRunDeck:
       required: true
+      description: RunDeck's password
       value: okmmpl,,
       secure: true
