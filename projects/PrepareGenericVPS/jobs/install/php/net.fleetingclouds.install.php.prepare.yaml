@@ -39,7 +39,7 @@
         #! /bin/bash  
         # 
         echo " - - - - - - - - - - - Resolve dependencies" 
-        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg8-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev bison re2c automake libtool libevent-dev
+        aptitude -y install libxml2-dev libpng3 libpng12-dev mcrypt libncurses5 libjpeg8-dev libmcrypt-dev libmhash-dev libcurl3-dev build-essential libncurses5-dev bison re2c automake libtool libevent-dev libcloog-ppl0
         # 
         echo " - - - - - - - - - - - Step into @option.BuildDirectory@ >>>>>"  
         pushd @option.BuildDirectory@ 
@@ -66,9 +66,10 @@
         #
         declare CMS_SWITCHES=""
         if [  "XX@option.BuildForCMS@" == "XXtrue"   ]; then
-          CMS_SWITCHES="--with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --disable-cgi --with-ttf  --enable-magic-quotes --with-pdo-mysql"
+          CMS_SWITCHES="--with-apxs2=/usr/local/apache/bin/apxs --with-mysql=/usr/local/mysql --with-mysql-sock=/tmp/mysql.sock --disable-cgi --with-pdo-mysql"
         fi
         #
+        aptitude install -y libpng12-dev
         autoconf
         ./configure \$GENERAL_SWITCHES \$CMS_SWITCHES;
         #
@@ -222,10 +223,11 @@
     InstallerURL:
       required: true
       description: The place to get it from
-      value: http://us.php.net/distributions/php-XXXXX.tar.bz2
+      value: http://us.php.net/distributions/php-5.4.5.tar.bz2
     InstallerVersion:
       required: true
       description: The version to obtain.
+      value: 5.4.5
     InstallersRepository:
       required: true
       description: Where we keep the original download
