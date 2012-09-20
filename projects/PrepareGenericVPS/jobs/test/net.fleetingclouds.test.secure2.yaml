@@ -5,9 +5,16 @@
     keepgoing: false
     strategy: node-first
     commands:
-    - exec: echo "Start 2 ..."
-    - exec: sudo pwd
-    - exec: echo "... End 2"
+    - exec: echo "Start ..." && hostname
+    - script: |
+        #!/bin/bash
+        #
+        php -r 'otapi_GetTime(false);'
+        declare CREDENTIALS="@option.VPSaccess@"
+        #
+        echo "$CREDENTIALS"
+        #
+    - exec: echo "... End"
   description: |
     This tests the use, on a remote machine, of a secure option on a job called from another job.
     
@@ -21,9 +28,17 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: mol.*
   group: net/fleetingclouds/test
   options:
+    RemoteProp:
+      value: ' --- NOT FILLED ---'
+    VPSaccess:
+      value: '  Server Name: pdxvmg964   Username: root   Password: uh8h5jESo8akqvfN7BS0   SSH
+        Key: 67:78:fe:86:93:47:7f:0a:45:43:41:9a:95:5b:df:07 (RSA)   PayPal Order:
+        I-5PD02771DU1S (martinhbramwell@yahoo.com)  ** For security reasons, all other
+        VPS details are available via control panel **   ** Please see your control
+        panel username/password email for login details **'
     sudoPwdRunDeck:
-      value: badpassword
+      value: okmmpl,,
       secure: true
