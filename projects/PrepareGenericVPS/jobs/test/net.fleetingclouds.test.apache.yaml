@@ -1,0 +1,40 @@
+- id: net.fleetingclouds.test.apache
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Install Apache ......................................................."
+    - exec: 'echo " ####################  Calling [PrepareApache] ###################
+        "'
+    - jobref:
+        group: net/fleetingclouds/install/apache
+        name: PrepareApache
+        args: -Host ${option.Host} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "Apache Installed ......................................................."
+  description: ''
+  name: VerifyBuildApache
+  uuid: net.fleetingclouds.test.apache
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/test/apache
+  options:
+    Host:
+      enforced: true
+      required: true
+      description: The host where the test script file should go
+      value: meta.fleetingclouds.net
+      values:
+      - meta.fleetingclouds.net
+      - mol.fleetingclouds.net
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true

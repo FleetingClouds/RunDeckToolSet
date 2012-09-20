@@ -1,0 +1,41 @@
+- id: net.fleetingclouds.test.conn
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Install Joomla ......................................................."
+    - script: pwd
+    - exec: 'echo " ####################  Calling [InstallMySql] ###################
+        "'
+    - script: |
+        cat > mysql-server.seed <<EOFMSS
+        mysql-server-5.0        mysql-server/root_password_again        select @option.MySqlRootPwd@
+        mysql-server-5.0        mysql-server/root_password              select @option.MySqlRootPwd@
+        EOFMSS
+    - exec: echo "Done installing Joomla ................................................."
+  description: Install Joomla and all the products it depends on.
+  name: testConnection
+  uuid: net.fleetingclouds.test.conn
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/test
+  options:
+    MySqlRootPwd:
+      required: true
+      description: Joomla user password.
+      value: 34erdfer34
+      secure: true
+      valueExposed: true
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: 34erdfer34
+      secure: true

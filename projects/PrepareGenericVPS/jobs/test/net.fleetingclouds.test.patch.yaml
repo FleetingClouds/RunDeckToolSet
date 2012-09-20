@@ -1,0 +1,33 @@
+- id: net.fleetingclouds.test.patch
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start 1 ..."
+    - exec: export QQ="sssss"  &&  echo $QQ
+    - exec: export REMOTE_IP=$(echo $SSH_CLIENT | cut -d ' ' -f1)  &&  echo The remote IP of this connection is $REMOTE_IP
+    - exec: sudo pwd
+    - jobref:
+        group: net/fleetingclouds/test
+        name: TestSecureOption2
+        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}
+    - exec: echo "... End 1"
+  description: This tests the use, on a remote machine, of a job using a secure option and calling a second job that uses the same secure option.
+  name: TestPatchingFiles
+  uuid: net.fleetingclouds.test.patch
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: cgf.*
+  group: net/fleetingclouds/test
+  options:
+    sudoPwdRunDeck:
+      required: true
+      value: okmmpl,,
+      secure: true
