@@ -68,11 +68,9 @@
     FingerPrint:
       required: true
       description: This is the SSH fingerprint that RunDeck must expect for all future connections to the indicated host.
-      value: 20:2b:2c:93:b6:06:cd:28:00:42:2b:d5:fe:b4:9b:b2
     Password:
       required: true
       description: This is the root password for the indicated host.  It should be used just this one time, and never again.
-      value: rFqTV50n5pbOjs0vM8py
     RemoteHost:
       enforced: true
       required: true
