@@ -9,6 +9,7 @@
     - exec: echo "sudo apt-get update"
     - exec: echo " Get dependencies ................. "
     - exec: sudo apt-get --force-yes -y install subversion
+    - exec: sudo apt-get --force-yes -y autoremove
     - exec: echo "Create a virtual host for Magento"
     - script: |
         echo "Make a virtual host specification for @option.VirtualServerName@"
@@ -173,6 +174,33 @@
     - exec: echo "Run it into the sample database"
     - exec: mysql -u ${option.MySqlMagentoUser} -p${option.MySqlMagentoPwd} ${option.MagentoDataBase}  < ./magento-sample-data/${option.DatabaseSamplesFile}
     - exec: echo " - - - Magento sample data has been loaded."
+    - script: |
+        rm -f ./getCleanUp.sh
+        #
+        source vars.sh
+        #
+        echo "Make a temporary script to put magento-cleanup.php in the magento directory."
+        cat > getCleanUp.sh <<EOF
+        #!/bin/bash
+            #
+            pushd ${BuildForDirectory}/magento
+            pwd
+            rm -f magento-cleanup*
+            wget http://www.magentocommerce.com/wiki/_media/groups/227/magento-cleanup2.zip
+            unzip magento-cleanup2.zip
+            chown ${HttpUser}:${HttpUser} magento-cleanup.php
+            sudo chmod ug+rw,o+r magento-cleanup.php
+            rm -f magento-cleanup2.zip
+            popd
+            #
+            echo "Clean up tool is available"
+        EOF
+        echo "Make it executable."
+        #
+        chmod a+x getCleanUp.sh
+        #
+    - exec: sudo ./getCleanUp.sh
+    - exec: echo " - - - Magento cleanup is available."
     - exec: echo " = = = = = = = = = = = Done. Magento should now be available for installation."
   description: |
     Install Subversion if necessary, check out Magento into the HTTPD  html or directory and then create its sample database.
