@@ -11,8 +11,23 @@
 <tr><td rowspan="1" colspan="3">Install Magento</td></tr>
 </thead><tbody>
 <tr>
+	<td>store</td>
+	<td>34erdfer34</td>
+	<td>HIDDEN_PASSWORD</td>
+</tr>
+<tr>
 	<td>open</td>
-	<td>/</td>
+	<td>/magento-cleanup.php</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>CLEANUP COMPLETED</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/index.php/install</td>
 	<td></td>
 </tr>
 <tr>
@@ -98,7 +113,7 @@
 <tr>
 	<td>type</td>
 	<td>id=password</td>
-	<td>MUST_HIDE_PASSWORD</td>
+	<td>${HIDDEN_PASSWORD}</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -178,12 +193,12 @@
 <tr>
 	<td>type</td>
 	<td>id=password</td>
-	<td>MUST_HIDE_PASSWORD</td>
+	<td>${HIDDEN_PASSWORD}</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>id=confirmation</td>
-	<td>MatrixOfLife2012</td>
+	<td>${HIDDEN_PASSWORD}</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -193,6 +208,91 @@
 <tr>
 	<td>click</td>
 	<td>css=button.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>You're All Set!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>xpath=(//button[@type='button'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/index.php/admin/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=username</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>${HIDDEN_PASSWORD}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.form-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a[title=&quot;close&quot;] &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//a[contains(text(),'Index Management')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Select All</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=form#indexer_processes_grid_massaction-form fieldset&nbsp;&nbsp;span.field-row button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/index.php/admin/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.active &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Go to messages inbox</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Select All</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=notificationGrid_massaction-select</td>
+	<td>label=Mark as Read</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=form#notificationGrid_massaction-form fieldset span.field-row button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a &gt; span</td>
 	<td></td>
 </tr>
 </tbody></table>
