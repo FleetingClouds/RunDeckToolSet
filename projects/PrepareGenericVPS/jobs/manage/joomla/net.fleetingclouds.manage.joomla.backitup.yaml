@@ -34,9 +34,9 @@
   description: This job calls Akeeba Backups sub-tasks, to completely secure a backup copy of a Joomla site.
   name: PerformBackupSequence
   notification:
-    onsuccess:
-      recipients: martinhbramwell@gmail.com
     onfailure:
+      recipients: martinhbramwell@gmail.com
+    onsuccess:
       recipients: martinhbramwell@gmail.com
   uuid: net.fleetingclouds.manage.joomla.backitup
   nodefilters:
