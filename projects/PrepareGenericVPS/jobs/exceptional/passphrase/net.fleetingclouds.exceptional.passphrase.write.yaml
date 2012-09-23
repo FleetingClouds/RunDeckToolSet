@@ -1,0 +1,45 @@
+- id: net.fleetingclouds.exceptional.passphrase.write
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Recording a temporary passphrase ..."
+    - exec: rm -f ${option.PassPhraseFileName}
+    - exec: echo ${option.Phrase} > ${option.PassPhraseFileName}
+    - exec: sudo mv ${option.PassPhraseFileName} ${option.PassPhraseDirectory}
+    - exec: echo "Recorded a temporary passphrase ..."
+  description: This script will create a temporary passphrase file in the indicated directory.
+  name: WriteTemporaryPassPhrase
+  uuid: net.fleetingclouds.exceptional.passphrase.write
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/exceptional/passphrase
+  options:
+    PassPhraseDirectory:
+      required: true
+      description: The name of the passphrase temporary file.
+      value: /etc/ssl
+      values:
+      - /etc/apache2
+      - /etc/ssl
+    PassPhraseFileName:
+      required: true
+      description: The name of the passphrase temporary file.
+      value: passphrase.txt
+    Phrase:
+      required: true
+      description: The passphrase to be saved temporarily.
+      secure: true
+      valueExposed: true
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      secure: true
