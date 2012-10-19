@@ -1,0 +1,83 @@
+- id: net.fleetingclouds.initial.user.http
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start > > > ."
+    - exec: echo Will create new HTTP user ${option.User}.
+    - script: |-
+        #!/bin/bash  
+        # 
+        echo " - - - - Creating a script makeNewHttpUser.sh - - - - - - " 
+        # 
+        rm -f ./makeNewHttpUser.sh 
+        # 
+        echo "Make a script to create an HTTP user." 
+        cat > makeNewHttpUser.sh <<EOF 
+        #!/bin/bash
+        export A_NEW_USER=\$1
+        export NEW_USER_NAME=\$2
+        #
+        echo "Show what we have before ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        echo "Get \${A_NEW_USER} home directory .. . . . . . . . "
+        export A_NEW_USER_HOME=\$(  grep "\${A_NEW_USER}" /etc/passwd | awk -F: '{print \$6}'  )
+        echo "New user's hme directory is \${A_NEW_USER_HOME}"
+        #
+        if [  "XX\${A_NEW_USER_HOME}" == "XX"  ]; then
+        	#
+        	echo "Create a HTTP user  ..........................."
+        	export PASS_HASH=\$(perl -e 'print crypt(\$ARGV[0], "password")' "ok\${A_NEW_USER}ok")
+        	echo \${PASS_HASH} for "ok\${A_NEW_USER}ok"
+        	# addgroup sudo
+        	useradd -Ds /bin/bash
+        	useradd -m -G httpd  -c \${NEW_USER_NAME} -p \${PASS_HASH} \${A_NEW_USER}
+        	passwd -e \${A_NEW_USER}
+        	#
+        	A_NEW_USER_HOME=/home/\${A_NEW_USER}
+        else
+        	echo "Add existing user \${A_NEW_USER} to httpd group . . . "
+        	sudo usermod -a -G httpd -c \${NEW_USER_NAME} \${A_NEW_USER}
+        fi
+        #
+        echo "Show what we have after ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        EOF
+        #
+        echo "Make it executable." 
+        # 
+        chmod a+x makeNewHttpUser.sh 
+        #
+    - exec: sudo ~/makeNewHttpUser.sh ${option.User} "${option.UserFullName}"
+    - exec: echo  .............................................................
+    - exec: echo "> > >  Done."
+  description: ''
+  name: MakeNewHttpdUser
+  uuid: net.fleetingclouds.initial.user.http
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/initial/user
+  options:
+    User:
+      required: true
+      description: The user for whom we will create an account.
+    UserFullName: {}
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true
