@@ -1,0 +1,82 @@
+- id: net.fleetingclouds.install.sele_py
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo  ${option.InstallersRepository}
+    - exec: mkdir -p  ${option.InstallersRepository}
+    - exec: rm -f ./tmp.sh
+    - script: |
+        #! /bin/bash  
+        cat > tmp.sh <<EOF
+        #! /bin/bash  
+        #
+        echo " = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+        #
+        aptitude -y update
+        aptitude -y upgrade
+        #
+        aptitude -f -y install
+        #
+        aptitude -y install python2.7-dev
+        aptitude -y install libncurses5-dev
+        #
+        cd  @option.InstallersRepository@
+        #
+        echo " = = = = = = = = = Prepare distribute_setup.py = = = = = = = = = = = = ="
+        # 
+        wget http://python-distribute.org/distribute_setup.py
+        python distribute_setup.py
+        #
+        echo " = = = = = = = = = = = = Prepare get-pip.py  = = = = = = = = = = = = = ="
+        #
+        wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+        python get-pip.py
+        #
+        echo " = = = = = = = = = = = = = Prepare IPython = = = = = = = = = = = = = = ="
+        #
+        pip install readline
+        pip install ipython
+        #
+        echo " = = = = = = = = = = = = = Prepare Selenium = = = = = = = = = = = = = = "
+        #
+        sudo aptitude -y install xvfb
+        sudo aptitude -y install xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
+        #
+        pip install pyvirtualdisplay
+        pip install -U selenium
+        #
+        sudo aptitude -y install firefox
+        #
+        EOF
+        # 
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo " - - - End."
+  description: |-
+    This sets up an environment for running headless Selenium from Python.
+    It expects Python 2.7 to be installed already.
+    It will install Xvfb.
+  name: Prepare Python Selenium
+  uuid: net.fleetingclouds.install.sele_py
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/install/python_selenium
+  options:
+    InstallersRepository:
+      required: true
+      value: ~/installers
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      value: xxxxx
+      secure: true
