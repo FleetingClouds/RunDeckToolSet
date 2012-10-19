@@ -1,0 +1,52 @@
+- id: net.fleetingclouds.install.openerp.textbk
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo Starting
+    - jobref:
+        group: net/fleetingclouds/install/postgres
+        name: PreparePostgreSQL
+        args: '-ClientSystemUserName openerp -ClientSystemUserPwd ${option.ClientSystemUserPwd}
+          -PostgreSqlRootPwd  ${option.PostgreSqlRootPwd} -sudoPwdRunDeck  ${option.sudoPwdRunDeck} '
+    - exec: wget http://nightly.openerp.com/6.1/releases/openerp_6.1-latest-1_all.deb
+    - exec: sudo aptitude -y install python-webdav python-vobject python-vatnumber
+    - exec: sudo aptitude -y install python-tz python-reportlab  python-dateutil
+    - exec: sudo aptitude -y install python-feedparser python-gdata python-ldap
+    - exec: sudo aptitude -y install python-libxslt1 python-lxml python-mako python-simplejson
+    - exec: sudo aptitude -y install python-openid python-psycopg2 python-pybabel
+    - exec: sudo aptitude -y install python-zsi python-yaml python-xlwt  python-werkzeug
+    - exec: sudo aptitude -y install python-pychart python-pydot python-pyparsing  postgresql-client
+    - exec: sudo dpkg -i openerp_6.1-latest-1_all.deb
+    - exec: echo Done
+  description: This is a standard install of OpenERP
+  name: InstallOpenERP
+  uuid: net.fleetingclouds.install.openerp.textbk
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/install/openerp
+  options:
+    ClientSystemUserPwd:
+      required: true
+      description: The password to use for the client system
+      value: 34erdfer34
+      secure: true
+      valueExposed: true
+    PostgreSqlRootPwd:
+      required: true
+      description: The root password to use for PostgreSql
+      value: 34erdfer34
+      secure: true
+      valueExposed: true
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      secure: true
