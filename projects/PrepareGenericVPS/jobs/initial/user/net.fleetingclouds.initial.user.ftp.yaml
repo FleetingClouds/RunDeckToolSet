@@ -1,0 +1,96 @@
+- id: net.fleetingclouds.initial.user.ftp
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Start > > > ."
+    - exec: echo Will create new FTP user ${option.User}.
+    - script: |-
+        #!/bin/bash  
+        # 
+        echo " - - - - Creating a script makeNewFtpUser.sh - - - - - - " 
+        # 
+        rm -f ./makeNewFtpUser.sh 
+        # 
+        echo "Make a script to create an FTP user." 
+        cat > makeNewFtpUser.sh <<EOF 
+        #!/bin/bash
+        export A_NEW_USER=\$1
+        export COMMENT=" -c "
+        export GECOS="\${COMMENT}'\$2'"
+        if [  "\${GECOS}" == "\${COMMENT}''"  ]; then
+        	echo "#### >No COMMENT<"
+        	GECOS=
+        else
+        	echo "#### >\${GECOS}<"
+        fi
+        #
+        echo "Show what we have before ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        echo "Get \${A_NEW_USER} home directory .. . . . . . . . "
+        export A_NEW_USER_HOME=\$(  grep "\${A_NEW_USER}" /etc/passwd | awk -F: '{print \$6}'  )
+        echo "New user's hme directory is \${A_NEW_USER_HOME}"
+        #
+        if [  "XX\${A_NEW_USER_HOME}" == "XX"  ]; then
+        	#
+        	echo "Create a FTP user : \${A_NEW_USER} ..................."
+        	export PASS_HASH=\$(perl -e 'print crypt(\$ARGV[0], "password")' "ok\${A_NEW_USER}ok")
+        	echo \${PASS_HASH} for "ok\${A_NEW_USER}ok"
+        	# addgroup sudo
+        	useradd -Ds /bin/bash
+        	declare CMD="useradd -m -G ftp \${GECOS} -p \${PASS_HASH} \${A_NEW_USER}"
+        	echo \${CMD}
+        	eval \${CMD}
+        #	passwd -e \${A_NEW_USER}
+        	#
+        	A_NEW_USER_HOME=/home/\${A_NEW_USER}
+        else
+        	echo "Add existing user \${A_NEW_USER} to FTP group . . . "
+        	declare CMD="sudo usermod -a -G ftp \${GECOS} \${A_NEW_USER}"
+        	echo \${CMD}
+        	eval \${CMD}
+        fi
+        #
+        echo "Show what we have after ............................"
+        sudo grep \${A_NEW_USER} /etc/passwd
+        sudo grep \${A_NEW_USER} /etc/group
+        echo "....................................................."
+        #
+        EOF
+        #
+        echo "Make it executable." 
+        # 
+        chmod a+x makeNewFtpUser.sh 
+        #
+    - exec: sudo ~/makeNewFtpUser.sh ${option.User} ${option.UserFullName}
+    - exec: echo  .............................................................
+    - exec: echo "> > >  Done."
+  description: ''
+  name: MakeNewFtpUser
+  uuid: net.fleetingclouds.initial.user.ftp
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: mol.*
+  group: net/fleetingclouds/initial/user
+  options:
+    User:
+      required: true
+      description: The user for whom we will create an account.
+      value: tdickens
+    UserFullName:
+      value: Tim Dickens
+    sudoPwdRunDeck:
+      required: true
+      description: The password the script must use for sudo steps.
+      value: okmmpl,,
+      secure: true

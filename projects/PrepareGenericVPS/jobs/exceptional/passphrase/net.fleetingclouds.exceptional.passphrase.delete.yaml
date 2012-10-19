@@ -1,0 +1,35 @@
+- id: net.fleetingclouds.exceptional.passphrase.delete
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo "Removing temporary passphrase ${option.PassPhraseFileName} from directory ${option.PassPhraseDirectory} . . . "
+    - exec: sudo rm -f ${option.PassPhraseDirectory}/${option.PassPhraseFileName}
+    - exec: echo "Removed a temporary passphrase ..."
+  description: This script will delete the indicated temporary passphrase file from the indicated directory.
+  name: DeleteTemporaryPassPhrase
+  uuid: net.fleetingclouds.exceptional.passphrase.delete
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/exceptional/passphrase
+  options:
+    PassPhraseDirectory:
+      required: true
+      description: The name of the passphrase temporary file.
+      value: /etc/ssl
+    PassPhraseFileName:
+      required: true
+      description: The name of the passphrase temporary file.
+      value: passphrase.txt
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      secure: true

@@ -8,7 +8,7 @@
     - exec: echo "Start > > > ."
     - exec: echo  .............................................................
     - exec: 'echo Will create new user ${option.User} on host : ${option.Host}'
-    - exec: sudo ~/makeNewSshUser.sh dpearson
+    - exec: sudo ~/makeNewSshUser.sh ${option.User}
     - exec: echo  .............................................................
     - exec: echo "> > >  Done."
   description: ''
@@ -21,20 +21,21 @@
       excludePrecedence: true
       rankOrder: ascending
     include:
-      name: cgf.*
+      name: curr.*
   group: net/fleetingclouds/initial/user
   options:
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
-      value: cgf.justtrade.net
+      value: erp.warehouseman.com
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehouseman.com/nodeNames.json
     PathToScript:
       required: true
       value: '~'
     User:
       required: true
       description: The user for whom we will create an account.
-      value: dpearson
+      value: openerp
     sudoPwdRunDeck:
       required: true
       description: The password the script must use for sudo steps.

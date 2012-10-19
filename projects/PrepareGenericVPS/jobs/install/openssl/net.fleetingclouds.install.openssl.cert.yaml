@@ -6,6 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo " Start - - - "
+    - jobref:
+        group: net/fleetingclouds/exceptional/passphrase
+        name: WriteTemporaryPassPhrase
+        args: -PassPhraseDirectory ${option.TargetDirectory} -PassPhraseFileName ${option.PassPhraseFileName} -Phrase ${option.Phrase} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
     - exec: 'echo "Will write keys to directory : " ${option.TargetDirectory}'
     - script: |-
         #! /bin/bash  
@@ -16,15 +20,30 @@
         declare CERT_SUBJECT="/C=@option.CountryCode@/ST=@option.StateProvCode@/O=@option.Organization@/localityName=@option.Town@/commonName=@option.ServerName@/organizationalUnitName=@option.OrganizationUnit@/emailAddress=@option.Email@"
         echo \${CERT_SUBJECT}
         #
-        mkdir -p @option.TargetDirectory@
+        mkdir -p @option.TargetDirectory@/@option.CertificatesDirectory@
+        mkdir -p @option.TargetDirectory@/@option.KeysDirectory@
         #
-        openssl req -new -x509 -days 4312 -nodes -keyout @option.TargetDirectory@/web.key -out @option.TargetDirectory@/web.pem -subj "\${CERT_SUBJECT}"
+        pushd @option.TargetDirectory@
+        rm -f ./@option.KeysDirectory@/@option.CertFileName@.key
+        rm -f ./@option.CertificatesDirectory@/@option.CertFileName@.crt
+        #
+        openssl genrsa -aes128 -out @option.CertFileName@.key -passout file:@option.PassPhraseFileName@ 2048
+        openssl req -new -config @option.OpenSSLConfFile@ -passin file:@option.PassPhraseFileName@ -key @option.CertFileName@.key -out @option.CertFileName@.csr -subj "\${CERT_SUBJECT}"
+        openssl x509 -req -passin file:@option.PassPhraseFileName@ -days 3650 -in @option.CertFileName@.csr -signkey @option.CertFileName@.key -out @option.CertFileName@.crt
+        #
+        mv @option.CertFileName@.crt ./@option.CertificatesDirectory@
+        mv @option.CertFileName@.key ./@option.KeysDirectory@
+        popd
         #
         EOF
         #
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
     - exec: echo " - - - End."
+    - jobref:
+        group: net/fleetingclouds/exceptional/passphrase
+        name: DeleteTemporaryPassPhrase
+        args: -PassPhraseDirectory ${option.TargetDirectory} -PassPhraseFileName ${option.PassPhraseFileName} -sudoPwdRunDeck ${option.sudoPwdRunDeck}
   description: ''
   name: PrepareSSL_Certificate
   uuid: net.fleetingclouds.install.openssl.cert
@@ -38,38 +57,114 @@
       name: curr.*
   group: net/fleetingclouds/install/openssl
   options:
+    CertFileName:
+      required: true
+      description: Name of certificate file
+      value: Matrixoflife.net
+      values:
+      - FleetingClouds.net
+      - JustTrade.net
+      - Matrixoflife.net
+      - Matrixoflife.org
+      - Warehouseman.com
+    CertificatesDirectory:
+      required: true
+      description: Subdirectory of target directory where certificates are kept
+      value: certs
     CountryCode:
       required: true
       description: Certificate country code
-      value: us
+      value: US
+      values:
+      - CA
+      - US
     Email:
       required: true
       description: Certificate Email
-      value: trudy_cool@yahoo.com
+      value: admin@matrixoflife.org
+      values:
+      - admin@matrixoflife.org
+      - martinhbramwell@yahoo.com
+      - trudy_cool@yahoo.com
+      - willisde@gmail.com
+    Expiry:
+      required: true
+      description: How many days until this certificate expires
+      value: '1825'
+      values:
+      - '1825'
+      - '365'
+      - '3650'
+    KeysDirectory:
+      required: true
+      description: Subdirectory of target directory where private keys are kept
+      value: private
+    OpenSSLConfFile:
+      required: true
+      description: The chosen OpenSSL configuration file to be used.
+      value: /etc/ssl/openssl.cnf
+      values:
+      - /etc/ssl/openssl.cnf
     Organization:
       required: true
       description: Certificate organization
-      value: Just Trade
+      value: Matrix Of Life
+      values:
+      - Fleeting Clouds
+      - Just Trade
+      - Matrix Of Life
+      - Warehouseman
     OrganizationUnit:
       required: true
       description: Certificate Organization Unit
-      value: rCredits
+      value: PR
+      values:
+      - IT
+      - PR
+      - rCredits
+    PassPhraseFileName:
+      required: true
+      description: The name of the passphrase temporary file.
+      value: passphrase.txt
+    Phrase:
+      required: true
+      description: The passphrase to be saved temporarily.
+      secure: true
+      valueExposed: true
     ServerName:
       required: true
-      description: Certificate Server Name
-      value: cgf.justtrade.net
+      description: Secured Server Name
+      value: matrixoflife.net
+      values:
+      - cgf.justtrade.net
+      - fleetingclouds.net
+      - matrixoflife.net
+      - warehouse.com
+      - www2.matrixoflife.org
     StateProvCode:
       required: true
       description: Certificate regional code
-      value: MA
+      value: OR
+      values:
+      - MA
+      - OR
+      - QC
     TargetDirectory:
       required: true
       description: The directory in which to store the resulting keys
-      value: /etc/nginx
+      value: /etc/ssl
+      values:
+      - /etc/apache2
+      - /etc/nginx
+      - /etc/ssl
     Town:
       required: true
       description: Certificate Town Name
-      value: Andover
+      value: Grants Pass
+      values:
+      - Andover
+      - Grants Pass
+      - Montreal
     sudoPwdRunDeck:
       required: true
       description: RunDeck's password

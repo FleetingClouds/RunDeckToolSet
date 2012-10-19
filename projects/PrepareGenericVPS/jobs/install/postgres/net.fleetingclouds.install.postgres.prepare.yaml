@@ -1,0 +1,151 @@
+- id: net.fleetingclouds.install.postgres.prepare
+  project: PrepareGenericVPS
+  loglevel: INFO
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - exec: echo " Start - - - "
+    - exec: echo "- - - - - - - -  installing Postgres server - - - - - - - - "
+    - script: |
+        #! /bin/bash 
+        #
+        echo " - - - - - - - - - - - Stepping into ..."
+        pwd
+        #
+        #
+        rm -fr tmp.sh
+        cat > tmp.sh <<EOF
+        #! /bin/bash 
+        #
+        echo " - - - - - - - - - - - Resolve dependencies : " 
+        #
+        aptitude -y update
+        aptitude -y upgrade
+        aptitude -y install postgresql
+        #
+        echo -e "@option.PostgreSqlRootPwd@\n@option.PostgreSqlRootPwd@" | passwd postgres
+        #
+        echo " = = = = = = = = = = = Done. PostgreSQL should now be part of your system."
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo "- - - - - - - -  patch the pg_hba.conf file - - - - - - - -  "
+    - script: |
+        #! /bin/bash 
+
+        pwd
+        #
+        #
+        rm -fr pg_hba.conf.patch
+        cat > pg_hba.conf.patch <<EOP
+        --- pg_hba.conf     2012-10-16 17:42:00.590576504 +0000
+        +++ pg_hba.conf.new 2012-10-16 17:43:07.630579326 +0000
+        @@ -87,7 +87,7 @@
+         # TYPE  DATABASE        USER            ADDRESS                 METHOD
+         
+         # "local" is for Unix domain socket connections only
+        -local   all             all                                     peer
+        +local   all             all                                     md5
+         # IPv4 local connections:
+         host    all             all             127.0.0.1/32            md5
+         # IPv6 local connections:
+        EOP
+        #
+        #
+        #
+        rm -fr tmp.sh
+        cat > tmp.sh <<EOF
+        #! /bin/bash 
+        #
+        cd ~
+        chown postgres:postgres pg_hba.conf.patch
+        #
+        pushd /etc/postgresql/9.1/main
+        pwd
+        #
+        mv ~/pg_hba.conf.patch .
+        test -f pg_hba.conf.orig || cp pg_hba.conf pg_hba.conf.orig
+        cp pg_hba.conf.orig pg_hba.conf
+        patch -i pg_hba.conf.patch
+        #
+        popd
+        EOF
+        #
+        #
+        #
+        chmod a+x tmp.sh
+    - exec: sudo ./tmp.sh
+    - exec: echo "- - - - - - - - Restart Postgres service - - - - - - - - "
+    - exec: sudo sudo service postgresql restart
+    - exec: echo "- - - - - - - - Add user  ${option.ClientSystemUserName}  - - - - - - - - "
+    - script: |
+        #! /bin/bash 
+        #
+        pwd
+        #
+        rm -fr tmp.sh
+        cat > tmp.sh <<EOF
+        #! /bin/bash 
+        #
+        echo "Creating user if not already done."
+        declare HAVE_USER=\$(psql -c "select rolname from pg_catalog.pg_roles where rolname = '@option.ClientSystemUserName@';" | grep -c "@option.ClientSystemUserName@")
+        if [[ \$HAVE_USER < 1 ]]
+        then
+           echo " - - - - Creating role - - - - "
+           createuser -E -S -d -R @option.ClientSystemUserName@
+           psql -c "ALTER ROLE @option.ClientSystemUserName@ WITH PASSWORD '@option.ClientSystemUserPwd@'"
+        else 
+           echo "Role exists"
+        fi
+        #
+        declare HAVE_DB=\$(psql -c "select datname from pg_catalog.pg_database where datname = '@option.ClientSystemUserName@';" | grep -c "@option.ClientSystemUserName@")
+        if [[ \$HAVE_DB < 1 ]]
+        then
+           echo "Creating db"
+           createdb @option.ClientSystemUserName@ --owner @option.ClientSystemUserName@
+        else
+           echo " db exists"
+        fi
+        #
+        EOF
+        #
+        chmod a+x tmp.sh
+        echo "- - - - - - Role creation script complete. - - - - - "
+    - exec: sudo -u postgres ./tmp.sh
+    - exec: rm -f ./tmp.sh
+    - exec: echo " - - - End."
+  description: |-
+    This job installs PostgreSQL.
+    It expects there to be a some client system, such as OpenERP, that requires an initial empty database to be created, along with a user role.
+  name: PreparePostgreSQL
+  uuid: net.fleetingclouds.install.postgres.prepare
+  nodefilters:
+    dispatch:
+      threadcount: 1
+      keepgoing: false
+      excludePrecedence: true
+      rankOrder: ascending
+    include:
+      name: curr.*
+  group: net/fleetingclouds/install/postgres
+  options:
+    ClientSystemUserName:
+      required: true
+      description: The password to use for the client system
+    ClientSystemUserPwd:
+      required: true
+      description: The password to use for the client system
+      secure: true
+      valueExposed: true
+    PostgreSqlRootPwd:
+      required: true
+      description: The root password to use for PostgreSql
+      secure: true
+      valueExposed: true
+    sudoPwdRunDeck:
+      required: true
+      description: RunDeck's password
+      secure: true

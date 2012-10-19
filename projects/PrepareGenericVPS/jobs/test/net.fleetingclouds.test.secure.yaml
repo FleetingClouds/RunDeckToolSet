@@ -6,14 +6,10 @@
     strategy: node-first
     commands:
     - exec: echo "Start 1 ..."
-    - exec: echo ${node.Organization}
-    - exec: sudo pwd
-    - exec: export QQ="sssss"  &&  echo $QQ
-    - exec: export REMOTE_IP=$(echo $SSH_CLIENT | cut -d ' ' -f1)  &&  echo The remote IP of this connection is $REMOTE_IP
     - jobref:
         group: net/fleetingclouds/test
         name: TestSecureOption2
-        args: -sudoPwdRunDeck ${option.sudoPwdRunDeck}  -RemoteProp ${node.myProperty}
+        args: '-sudoPwdRunDeck ${option.sudoPwdRunDeck} '
     - exec: echo "... End 1"
   description: This tests the use, on a remote machine, of a job using a secure option and calling a second job that uses the same secure option.
   name: TestSecureOption
@@ -31,9 +27,7 @@
     LoadedOption:
       required: true
       value: '--- NOT YET SET ---'
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta/net.fleetingclouds.install.nginx.OPTIONS.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/net.fleetingclouds.install.nginx.OPTIONS.json
     sudoPwdRunDeck:
-      enforced: true
       required: true
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta/net.fleetingclouds.install.nginx.OPTIONS.json
       secure: true
