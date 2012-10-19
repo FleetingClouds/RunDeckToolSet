@@ -21,6 +21,11 @@
 
           DocumentRoot /var/magento/@option.VirtualServerName@/magento
 
+          <Directory />
+            Options FollowSymLinks
+            AllowOverride All
+          </Directory>
+
           LogLevel warn
           ErrorLog  /var/magento/@option.VirtualServerName@/log/error.log
           CustomLog /var/magento/@option.VirtualServerName@/log/access.log combined
@@ -82,7 +87,7 @@
             echo " - - - Put the virtual host definition where the web server can find it ..."
             sudo mv @option.VirtualServerName@ ${HttpdVirtualHostsDir}/sites-available/
             pushd ${HttpdVirtualHostsDir}/sites-enabled/
-            sudo ln -s ../sites-available/@option.VirtualServerName@ @option.VirtualServerName@
+            sudo ln -sf ../sites-available/@option.VirtualServerName@ @option.VirtualServerName@
             popd
             #
             echo " - - - - - - - - - - - Step into ${BuildForDirectory}  >>>>>" 
