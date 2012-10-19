@@ -60,10 +60,12 @@
     CertFileName:
       required: true
       description: Name of certificate file
-      value: Warehouseman.com
+      value: Matrixoflife.net
       values:
       - FleetingClouds.net
       - JustTrade.net
+      - Matrixoflife.net
+      - Matrixoflife.org
       - Warehouseman.com
     CertificatesDirectory:
       required: true
@@ -72,21 +74,23 @@
     CountryCode:
       required: true
       description: Certificate country code
-      value: CA
+      value: US
       values:
       - CA
       - US
     Email:
       required: true
       description: Certificate Email
-      value: martinhbramwell@yahoo.com
+      value: admin@matrixoflife.org
       values:
+      - admin@matrixoflife.org
       - martinhbramwell@yahoo.com
       - trudy_cool@yahoo.com
+      - willisde@gmail.com
     Expiry:
       required: true
       description: How many days until this certificate expires
-      value: '365'
+      value: '1825'
       values:
       - '1825'
       - '365'
@@ -104,17 +108,19 @@
     Organization:
       required: true
       description: Certificate organization
-      value: Warehouseman
+      value: Matrix Of Life
       values:
       - Fleeting Clouds
       - Just Trade
+      - Matrix Of Life
       - Warehouseman
     OrganizationUnit:
       required: true
       description: Certificate Organization Unit
-      value: IT
+      value: PR
       values:
       - IT
+      - PR
       - rCredits
     PassPhraseFileName:
       required: true
@@ -128,17 +134,20 @@
     ServerName:
       required: true
       description: Secured Server Name
-      value: warehouse.com
+      value: matrixoflife.net
       values:
       - cgf.justtrade.net
       - fleetingclouds.net
+      - matrixoflife.net
       - warehouse.com
+      - www2.matrixoflife.org
     StateProvCode:
       required: true
       description: Certificate regional code
-      value: QC
+      value: OR
       values:
       - MA
+      - OR
       - QC
     TargetDirectory:
       required: true
@@ -151,9 +160,10 @@
     Town:
       required: true
       description: Certificate Town Name
-      value: Montreal
+      value: Grants Pass
       values:
       - Andover
+      - Grants Pass
       - Montreal
     sudoPwdRunDeck:
       required: true
