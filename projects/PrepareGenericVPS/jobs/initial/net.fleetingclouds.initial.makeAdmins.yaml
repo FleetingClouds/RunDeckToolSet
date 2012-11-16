@@ -38,6 +38,7 @@
     Host:
       required: true
       description: This is a host that RunDeck will be accessing in the future.
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehouseman.com/nodeNames.json
     Port:
       enforced: true
       required: true
