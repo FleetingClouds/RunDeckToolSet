@@ -58,7 +58,7 @@
         echo "*******************************************************************"
   description: |
     Calls Steps One & Two
-
+    
     To determine the default Fingerprint for the remote machine, simply attempt an SSH connection to it.  It will report an unknown host, and display its fingerprint-
   name: PrepareHost
   uuid: net.fleetingclouds.initial.prepHost
@@ -85,7 +85,7 @@
       required: true
       description: This is a host that RunDeck will be accessing in the future.
       value: mol.fleetingclouds.com
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehouseman.com/nodeNames.json
     User:
       required: true
       description: 'The user authorized to do this : ${option.User}'
