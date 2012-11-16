@@ -23,7 +23,7 @@
       required: true
       description: the host where the file should go
       value: meta.warehouseman.com
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehoiuseman.com/nodeNames.json
     Port:
       enforced: true
       required: true
