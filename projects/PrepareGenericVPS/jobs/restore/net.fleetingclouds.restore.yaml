@@ -5,6 +5,7 @@
     keepgoing: false
     strategy: node-first
     commands:
+    - exec: 'echo "If necessary try :    sudo aptitude -y install libxml-xpath-perl"'
     - script: |
         cd ${RD_OPTION_PROJECTSPATH}
         ls -la
@@ -22,4 +23,4 @@
     Token:
       required: true
       description: Get your authorization token and paste it here.
-      value: Vd48OC2S01O4P4ESvERcp5KesdOV8R3d
+      value: 6p4PVkCN56oe0645S3opoddVk4pK1SNk
