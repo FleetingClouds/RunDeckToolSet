@@ -85,7 +85,7 @@
       enforced: true
       required: true
       description: the host where the file should go
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehouseman.com/nodeNames.json
     PurgeApache:
       enforced: true
       required: true
