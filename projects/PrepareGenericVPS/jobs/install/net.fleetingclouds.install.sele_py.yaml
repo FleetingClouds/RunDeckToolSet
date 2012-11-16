@@ -10,7 +10,8 @@
     - exec: mkdir -p  ${option.InstallersRepository}
     - exec: rm -f ./tmp.sh
     - script: |
-        #! /bin/bash  
+        #! /bin/bash
+        #
         cat > tmp.sh <<EOF
         #! /bin/bash  
         #
@@ -55,6 +56,54 @@
         # 
         chmod a+x tmp.sh
     - exec: sudo ./tmp.sh
+    - exec: echo " - - - Create utility script for starting Xvfb virtual screen buffer - - - "
+    - script: |+
+        #! /bin/bash
+        #
+        cat > xvfbKill.sh <<EOF
+        #!/bin/bash
+        # 
+        echo "Stopping virtual screen . . . "
+        #
+        echo " Kill previously record Xvfb PID "
+        kill -9 \$(cat xvfb.pid)
+        #
+        echo " Give a couple seconds for things to warm up  "
+        sleep 2
+
+        #
+        EOF
+        # 
+        chmod a+x xvfbKill.sh
+
+    - exec: echo " - - - Create utility script for killing Xvfb virtual screen buffer - - - "
+    - script: |+
+        #! /bin/bash
+        #
+        cat > xvfbStart.sh <<EOF
+        #!/bin/bash
+        # 
+        echo "Configuring screen parameters..."
+        #
+        #- Start an X Virtual Frame Buffer on screen 1, send any output to /dev/null
+        Xvfb :1 -screen 1 1024x768x24 2>&1 >/dev/null &
+        #
+        #- Get Xvfb PID, so we can kill it later
+        export XVFB=\$!
+        echo \$XVFB  > xvfb.pid
+        #
+        #- Export our display for this particular session to what we defined in the above command
+        export DISPLAY=:1
+        #
+        #- Give a couple seconds for things to warm up
+        sleep 2
+        #
+        EOF
+        # 
+        chmod a+x xvfbStart.sh
+
+
+
     - exec: echo " - - - End."
   description: |-
     This sets up an environment for running headless Selenium from Python.
