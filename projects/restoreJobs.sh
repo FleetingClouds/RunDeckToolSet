@@ -22,13 +22,17 @@ recursiveList() {
 			(cd ${DEF_FILE}; recursiveList $SPACER)
 		else
 #
-			curl --silent --output ~/tmp/rdLogs/${DEF_FILE}.rslt --form xmlBatch=@${DEF_FILE} "${RUNDECK_HOST}/${IMPORT_ACTION}?format=${FILE_FORMAT}&dupeOption=${DUPE_OPTION}&authtoken=${AUTH_TOKEN}"
-			SUCCESS=`cat ~/tmp/rdLogs/${DEF_FILE}.rslt | xpath -q -e '//*[@count="1"]' | grep -c succeeded`
-			if [  ${SUCCESS} -lt 1  ]; then
-				echo $SPACER Problem with ${DEF_FILE}
-				echo ${DEF_FILE} >> ~/tmp/rdLogs/failures.txt
+			if [  $(echo ${DEF_FILE} | grep -c .yaml) -gt 0  ]; then 
+				curl --silent --output ~/tmp/rdLogs/${DEF_FILE}.rslt --form xmlBatch=@${DEF_FILE} "${RUNDECK_HOST}/${IMPORT_ACTION}?format=${FILE_FORMAT}&dupeOption=${DUPE_OPTION}&authtoken=${AUTH_TOKEN}"
+				SUCCESS=`cat ~/tmp/rdLogs/${DEF_FILE}.rslt | xpath -q -e '//*[@count="1"]' | grep -c succeeded`
+				if [  ${SUCCESS} -lt 1  ]; then
+					echo $SPACER Problem with ${DEF_FILE}
+					echo ${DEF_FILE} >> ~/tmp/rdLogs/failures.txt
+				else
+					echo $SPACER Restored ${DEF_FILE}
+				fi
 			else
-				echo $SPACER Restored ${DEF_FILE}
+				echo "Will not process ${DEF_FILE}";
 			fi
 		fi
 	done
