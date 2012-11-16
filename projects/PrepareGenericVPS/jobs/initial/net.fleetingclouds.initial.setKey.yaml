@@ -50,7 +50,7 @@
       required: true
       description: This is a host that RunDeck will be accessing in the future.
       value: ssh.fleetingclouds.com
-      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.fleetingclouds.net/nodeNames.json
+      valuesUrl: http://openerpns.warehouseman.com/downloads/rundeck/resources/meta.warehouseman.com/nodeNames.json
     Password:
       required: true
       description: This is the password for ${option.User} for the host ${option.Host.  It should be used just this one time, and never again.
