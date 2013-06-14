@@ -30,6 +30,7 @@ apt-get install -f
 #
 # Activate locales
 #
+apt-get install language-pack-en
 locale-gen en_US en_US.UTF-8
 dpkg-reconfigure locales
 #
